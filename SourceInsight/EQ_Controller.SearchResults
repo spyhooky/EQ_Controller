@@ -1,0 +1,13 @@
+---- topicidx Matches (14 in 1 files) ----
+MQTTSub_task in Task_MQTT.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\Task) :     u8 topicidx;
+MQTTSub_task in Task_MQTT.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\Task) :                         topicidx = i;
+MQTTSub_task in Task_MQTT.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\Task) :                         if(subjson->valueint == MQTT_SubInfo[topicidx].msgcnt)//�˴����˷��ɴ������������ϵ���һ��
+MQTTSub_task in Task_MQTT.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\Task) :                             MQTT_SubInfo[topicidx].msgcnt++;
+MQTTSub_task in Task_MQTT.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\Task) :                             MQTT_SubInfo[topicidx].msgcnt = subjson->valueint + 1;
+MQTTSub_task in Task_MQTT.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\Task) :                             if((USARTCAN.Usart[topicidx][uartDatatype] == t_HEX)||((USARTCAN.can[canDatatype] == t_HEX)&&(topicidx == t_can)))
+MQTTSub_task in Task_MQTT.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\Task) :                                 if(topicidx == t_can)
+MQTTSub_task in Task_MQTT.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\Task) :                                 ETH2Usartcan_send(topicidx,&subbuf[0],cnt/2);//�ַ�תhex��ʱ��������һ��
+MQTTSub_task in Task_MQTT.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\Task) :                             if((USARTCAN.Usart[topicidx][uartDatatype] == t_ASCII)||((USARTCAN.can[canDatatype] == t_ASCII)&&(topicidx == t_can)))
+MQTTSub_task in Task_MQTT.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\Task) :                                 if(topicidx == t_can)
+MQTTSub_task in Task_MQTT.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\Task) :                                 if(topicidx<t_heartbeat)
+MQTTSub_task in Task_MQTT.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\Task) :                                     ETH2Usartcan_send(topicidx,&subbuf[0],cnt);//ͨ�����ڻ�CAN��������
