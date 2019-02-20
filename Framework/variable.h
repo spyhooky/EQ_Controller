@@ -189,6 +189,7 @@ typedef struct Framework_Variable
 	u8 DIP_SwitchStatus;   //当前拨码开关状态
 	u32 Digit_InputStatus; //数字开关量状态，0-断开，1-对地闭合
 	u16 CurrentEnvTemp;   //当前环境温度
+    u8  Power_5V;
 }Framework_Variable_Info;
 extern Framework_Variable_Info Globle_Framework;
 

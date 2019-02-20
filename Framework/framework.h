@@ -5,7 +5,8 @@
 #include <math.h>
 
 void Framework_Timer1ms(void);
-void Calc_CurrentTemp(uint16_t sch_timer,uint16_t sch_cycle);
+void Calc_CurrentTemp(u16 sch_timer,u16 sch_cycle);
+void Calc_Power_5V(u16 sch_timer,u16 sch_cycle);
 void UART_CAN_Handler(void *p_arg);
 
 

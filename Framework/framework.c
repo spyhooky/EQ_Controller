@@ -22,16 +22,21 @@ void Framework_Timer1ms(void)
     TCPIP_Timer1ms();
 }
 
-static float_t Get_CurrentTemp(uint16_t tempsensor_AD)
+static float_t Get_CurrentTemp(u16 tempsensor_AD)
 {
-	float_t temp;
+	float temp;
 	temp = (1.42 - tempsensor_AD*3.3/4096)*1000/4.35 + 25;
 	return temp;
 }
 
-void Calc_CurrentTemp(uint16_t sch_timer,uint16_t sch_cycle)
+void Calc_CurrentTemp(u16 sch_timer,u16 sch_cycle)
 {
 	Globle_Framework.CurrentEnvTemp =  Get_CurrentTemp(Global_Driver.AD_Result[TempSensor]);
+}
+
+void Calc_Power_5V(u16 sch_timer,u16 sch_cycle)
+{
+    Globle_Framework.Power_5V =  Global_Driver.AD_Result[Power_5V]*110/4096;
 }
 
 

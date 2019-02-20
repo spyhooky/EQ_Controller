@@ -25,16 +25,14 @@ static struct DIPType       	DIP_Switch_Sts[DIP_SWITCH_BITS_NUM];//
 #define Cur_DIP_Status(n)		DIP_Switch_Sts[n].digitstatus.Bits.cur_status
 #define DIP_TimerEn(n)			DIP_Switch_Sts[n].digitstatus.Bits.timer_en
 #define DIP_STS_KEEP_TIME(n)	DIP_Switch_Sts[n].keep_time
-#define DIP_SWITCH_FILTER                            80 //拨码开关滤波时间，单位ms
+#define DIP_SWITCH_FILTER                            80u //拨码开关滤波时间，单位ms
 
-#ifdef INPUT_TRIGGER_FILTER
-static struct DIPType           DigitInput_Sts[17];//
+static struct DIPType           DigitInput_Sts[DIGIT_INPUT_CHN_NUM];//
 #define Pre_Input_Level(n)		DigitInput_Sts[n].digitstatus.Bits.pre_level
 #define Cur_Input_Status(n)		DigitInput_Sts[n].digitstatus.Bits.cur_status
 #define DigitInputTimerEn(n)	DigitInput_Sts[n].digitstatus.Bits.timer_en
 #define INPUT_STS_KEEP_TIME(n)	DigitInput_Sts[n].keep_time
-#define DIGIT_INPUT_FILTER                            100 //拨码开关滤波时间，单位ms
-#endif
+#define DIGIT_INPUT_FILTER                            100u //拨码开关滤波时间，单位ms
 
 
 
@@ -43,7 +41,7 @@ static void INPUT_Check_Mainfunction(void);
 static void LED_MainFunction(void);
 
 u8 Get_LED_Status(void);
-void Blink_LED_Status(uint16_t timer);
+void Blink_LED_Status(u16 timer);
 
 void TaskIO_Timer1ms(void)
 {
@@ -107,7 +105,7 @@ u8 Get_LED_Status(void)
 	return (sts==ON) ? OFF:ON;
 }
 
-void Blink_LED_Status(u16 timer)
+void Blink_LED_Status(u16 mstimer)
 {
 	if(Get_LED_Status() == OFF)
 	{
@@ -117,7 +115,7 @@ void Blink_LED_Status(u16 timer)
 	{
 		SET_LED_STATUS(OFF);
 	}
-	LED_Blink_time = timer;
+	LED_Blink_time = mstimer;
 }
 
 static void LED_MainFunction(void)
@@ -129,22 +127,14 @@ static void LED_MainFunction(void)
 	}
 }
 
-
 static void DIP_Switch_Mainfunction(void)
 {
 	u8 i,j;
 	u8 temp=0;
 	u8 cur_level[DIP_SWITCH_BITS_NUM];
-	cur_level[0] = GET_DIP_SWITCH_1_STATUS;
-	cur_level[1] = GET_DIP_SWITCH_2_STATUS;
-	cur_level[2] = GET_DIP_SWITCH_3_STATUS;
-	cur_level[3] = GET_DIP_SWITCH_4_STATUS;
-	cur_level[4] = GET_DIP_SWITCH_5_STATUS;
-	cur_level[5] = GET_DIP_SWITCH_6_STATUS;
-	cur_level[6] = GET_DIP_SWITCH_7_STATUS;
-	cur_level[7] = GET_DIP_SWITCH_8_STATUS;
 	for(i=0;i<DIP_SWITCH_BITS_NUM;i++)
 	{
+        cur_level[i] = GET_DIP_SWITCH_STATUS(i);
 		if(Pre_DIP_Level(i) != cur_level[i])
 		{
 			DIP_STS_KEEP_TIME(i) = 0u;
@@ -171,32 +161,14 @@ static void DIP_Switch_Mainfunction(void)
 	}
 }
 
-#ifdef INPUT_TRIGGER_FILTER
 static void INPUT_Check_Mainfunction(void)
 {
     u8 i;
     u8 cur_level[DIGIT_INPUT_CHN_NUM];
     memset(cur_level,0,sizeof(cur_level));
-    cur_level[0] = GET_INPUT_1_STATUS;
-    cur_level[1] = GET_INPUT_2_STATUS;
-    cur_level[2] = GET_INPUT_3_STATUS;
-    cur_level[3] = GET_INPUT_4_STATUS;
-    cur_level[4] = GET_INPUT_5_STATUS;
-    cur_level[5] = GET_INPUT_6_STATUS;
-    cur_level[6] = GET_INPUT_7_STATUS;
-    cur_level[7] = GET_INPUT_8_STATUS;
-    cur_level[8] = GET_INPUT_9_STATUS;
-    cur_level[9] = GET_INPUT_10_STATUS;
-    cur_level[10] = GET_INPUT_11_STATUS;
-    cur_level[11] = GET_INPUT_12_STATUS;
-    cur_level[12] = GET_INPUT_13_STATUS;
-    cur_level[13] = GET_INPUT_14_STATUS;
-    cur_level[14] = GET_INPUT_15_STATUS;
-    cur_level[15] = GET_INPUT_16_STATUS;
-    //cur_level[16] = GET_INPUT_17_STATUS;
-    
     for(i=0;i<DIGIT_INPUT_CHN_NUM;i++)
     {
+        cur_level[i] = GET_DIGIT_INPUT_STATUS(i);
         if(Pre_Input_Level(i) != cur_level[i])
         {
             INPUT_STS_KEEP_TIME(i) = 0u;
@@ -218,7 +190,7 @@ static void INPUT_Check_Mainfunction(void)
         Pre_Input_Level(i) = cur_level[i];
     }
 }
-#endif
+
 
 
 

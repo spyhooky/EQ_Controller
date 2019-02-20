@@ -117,7 +117,7 @@ void Task_BackGround(void *p_arg)
 		UART_CAN_Handler(p_arg);
 		ReadADCAverageValue(Background_Timer,CYCLE_READ_ADC_VALUE);
 		Calc_CurrentTemp(Background_Timer,CYCLE_CALC_ENV_TEMP);
-		//Calc_PowerVoltage(Background_Timer,CYCLE_CALC_POWER_VOL);
+        Calc_Power_5V(Background_Timer,CYCLE_CALC_POWER_VOL);
 		/******************APPLICATION START******************/
         
 		

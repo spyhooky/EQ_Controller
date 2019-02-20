@@ -118,11 +118,75 @@ enum ADC_Channel
 
 /**************************************** LED ****************************************/
 #define LED_GPIO_APB                RCC_APB2Periph_GPIOE
-#define LEDG_PORT                   GPIOD
-#define LEDG_PIN                    GPIO_Pin_10
+#define LEDG_PORT                   GPIOE
+#define LEDG_PIN                    GPIO_Pin_9
 #define LED_G(n)                    { (n) ? ( GPIO_ResetBits(LEDG_PORT,LEDG_PIN)) : (GPIO_SetBits(LEDG_PORT,LEDG_PIN)); }
 
 #define IO_TRIGGER(port,pin)        { if(GPIO_ReadOutputDataBit(port,pin)) GPIO_ResetBits(port,pin); else GPIO_SetBits(port,pin); }
+
+/**************************************** OUTPUT & RELAY ****************************************/
+#define DIGIT_OUTPUT_NUM            7U
+
+#define RELAY_GPIO_APB              RCC_APB2Periph_GPIOC
+/**********  RELAY 1  ***********/
+#define RELAY_1_PORT                GPIOC
+#define RELAY_1_PIN                 GPIO_Pin_3
+#define RELAY_1_OUT(n)              { (n) ? ( GPIO_SetBits(RELAY_1_PORT,RELAY_1_PIN)) : (GPIO_ResetBits(RELAY_1_PORT,RELAY_1_PIN)); }
+/**********  RELAY 2  ***********/
+#define RELAY_2_PORT                GPIOC
+#define RELAY_2_PIN                 GPIO_Pin_2
+#define RELAY_2_OUT(n)              { (n) ? ( GPIO_SetBits(RELAY_2_PORT,RELAY_2_PIN)) : (GPIO_ResetBits(RELAY_2_PORT,RELAY_2_PIN)); }
+/**********  RELAY 3  ***********/
+#define RELAY_3_PORT                GPIOC
+#define RELAY_3_PIN                 GPIO_Pin_1
+#define RELAY_3_OUT(n)              { (n) ? ( GPIO_SetBits(RELAY_3_PORT,RELAY_3_PIN)) : (GPIO_ResetBits(RELAY_3_PORT,RELAY_3_PIN)); }
+/**********  RELAY 4  ***********/
+#define RELAY_4_PORT                GPIOC
+#define RELAY_4_PIN                 GPIO_Pin_0
+#define RELAY_4_OUT(n)              { (n) ? ( GPIO_SetBits(RELAY_4_PORT,RELAY_4_PIN)) : (GPIO_ResetBits(RELAY_4_PORT,RELAY_4_PIN)); }
+/**********  OUTPUT 1  ***********/
+#define OUTPUT_1_PORT               GPIOC
+#define OUTPUT_1_PIN                GPIO_Pin_15
+#define OUTPUT_1_OUT(n)             { (n) ? ( GPIO_SetBits(OUTPUT_1_PORT,OUTPUT_1_PIN)) : (GPIO_ResetBits(OUTPUT_1_PORT,OUTPUT_1_PIN)); }
+/**********  OUTPUT 2  ***********/
+#define OUTPUT_2_PORT               GPIOC
+#define OUTPUT_2_PIN                GPIO_Pin_14
+#define OUTPUT_2_OUT(n)             { (n) ? ( GPIO_SetBits(OUTPUT_2_PORT,OUTPUT_2_PIN)) : (GPIO_ResetBits(OUTPUT_2_PORT,OUTPUT_2_PIN)); }
+/**********  OUTPUT 1  ***********/
+#define OUTPUT_3_PORT               GPIOC
+#define OUTPUT_3_PIN                GPIO_Pin_13
+#define OUTPUT_3_OUT(n)             { (n) ? ( GPIO_SetBits(OUTPUT_3_PORT,OUTPUT_3_PIN)) : (GPIO_ResetBits(OUTPUT_3_PORT,OUTPUT_3_PIN)); }
+
+#define DIGIT_OUTPUT_REG_LIST \
+{\
+    {\
+        {\
+            RELAY_1_PORT,RELAY_1_PIN \
+        },\
+        {\
+            RELAY_2_PORT,RELAY_2_PIN \
+        },\
+        {\
+            RELAY_3_PORT,RELAY_3_PIN \
+        },\
+        {\
+            RELAY_4_PORT,RELAY_4_PIN \
+        },\
+        {\
+            OUTPUT_1_PORT,OUTPUT_1_PIN \
+        },\
+        {\
+            OUTPUT_2_PORT,OUTPUT_2_PIN \
+        },\
+        {\
+            OUTPUT_3_PORT,OUTPUT_3_PIN \
+        },\
+    },\
+    NULL,\
+    GPIO_SetBits,\
+    GPIO_ResetBits\
+}\
+
 
 /**************************************** USART ****************************************/
 //USART1
@@ -274,8 +338,7 @@ struct {
 #define PERIPH_CLOCK_IO_ALL_ENABLE RCC_APB2PeriphClockCmd( RCC_APB2Periph_GPIOA|RCC_APB2Periph_GPIOB|RCC_APB2Periph_GPIOC|RCC_APB2Periph_GPIOD|RCC_APB2Periph_GPIOE,ENABLE)
 
 /*********************************   INPUT   *********************************/
-enum trigger_type{INTERRUPT=0,FILTER};
-#define INPUT_TRIGGER_FILTER   //INPUT_TRIGGER_INTERRUPT
+//#define INPUT_TRIGGER_INTERRUPT   //INPUT_TRIGGER_FILTER
 
 #define DIGIT_INPUT_CHN_NUM             16U
 
@@ -283,160 +346,147 @@ enum trigger_type{INTERRUPT=0,FILTER};
 #define MCU_IN_1_PORT				    GPIOC
 #define MCU_IN_1_PIN 				    GPIO_Pin_7
 #define GET_INPUT_1_STATUS              GPIO_ReadInputDataBit(MCU_IN_1_PORT,MCU_IN_1_PIN)
-#define MCU_IN_9_PORTSOURCE             GPIO_PortSourceGPIOC
-#define MCU_IN_1_PIN_SOURCE             GPIO_PinSource7
-#define MCU_IN_1_EXITLINE               EXTI_Line7
-#define MCU_IN_1_IRQ_CHN                EXTI9_5_IRQn
 
 /****  	MCU_IN 2	****/
 #define MCU_IN_2_PORT				    GPIOC
 #define MCU_IN_2_PIN 				    GPIO_Pin_8
 #define GET_INPUT_2_STATUS              GPIO_ReadInputDataBit(MCU_IN_2_PORT,MCU_IN_2_PIN)
-#define MCU_IN_9_PORTSOURCE             GPIO_PortSourceGPIOC
-#define MCU_IN_2_PIN_SOURCE             GPIO_PinSource8
-#define MCU_IN_2_EXITLINE               EXTI_Line8
-#define MCU_IN_2_IRQ_CHN                EXTI9_5_IRQn
 
 /****  	MCU_IN 3	****/
 #define MCU_IN_3_PORT				    GPIOC
 #define MCU_IN_3_PIN 				    GPIO_Pin_9
 #define GET_INPUT_3_STATUS              GPIO_ReadInputDataBit(MCU_IN_3_PORT,MCU_IN_3_PIN)
-#define MCU_IN_9_PORTSOURCE             GPIO_PortSourceGPIOC
-#define MCU_IN_3_PIN_SOURCE             GPIO_PinSource9
-#define MCU_IN_3_EXITLINE               EXTI_Line9
-#define MCU_IN_3_IRQ_CHN                EXTI9_5_IRQn
 
 /****  	MCU_IN 4	****/
 #define MCU_IN_4_PORT				    GPIOA
 #define MCU_IN_4_PIN 				    GPIO_Pin_8
 #define GET_INPUT_4_STATUS              GPIO_ReadInputDataBit(MCU_IN_4_PORT,MCU_IN_4_PIN)
-#define MCU_IN_9_PORTSOURCE             GPIO_PortSourceGPIOA
-#define MCU_IN_4_PIN_SOURCE             GPIO_PinSource8
-#define MCU_IN_4_EXITLINE               EXTI_Line8
-#define MCU_IN_4_IRQ_CHN                EXTI9_5_IRQn
 
 /****  	MCU_IN 5	****/
 #define MCU_IN_5_PORT				    GPIOA
 #define MCU_IN_5_PIN 				    GPIO_Pin_11
 #define GET_INPUT_5_STATUS              GPIO_ReadInputDataBit(MCU_IN_5_PORT,MCU_IN_5_PIN)
-#define MCU_IN_9_PORTSOURCE             GPIO_PortSourceGPIOA
-#define MCU_IN_5_PIN_SOURCE             GPIO_PinSource11
-#define MCU_IN_5_EXITLINE               EXTI_Line11
-#define MCU_IN_5_IRQ_CHN                EXTI15_10_IRQn
 
 /****  	MCU_IN 1	****/
 #define MCU_IN_6_PORT				    GPIOD
 #define MCU_IN_6_PIN 				    GPIO_Pin_3
 #define GET_INPUT_6_STATUS              GPIO_ReadInputDataBit(MCU_IN_6_PORT,MCU_IN_6_PIN)
-#define MCU_IN_9_PORTSOURCE             GPIO_PortSourceGPIOD
-#define MCU_IN_6_PIN_SOURCE             GPIO_PinSource3
-#define MCU_IN_6_EXITLINE               EXTI_Line3
-#define MCU_IN_6_IRQ_CHN                EXTI3_IRQn
 
 /****  	MCU_IN 7	****/
 #define MCU_IN_7_PORT				    GPIOD
 #define MCU_IN_7_PIN 				    GPIO_Pin_4
 #define GET_INPUT_7_STATUS              GPIO_ReadInputDataBit(MCU_IN_7_PORT,MCU_IN_7_PIN)
-#define MCU_IN_9_PORTSOURCE             GPIO_PortSourceGPIOD
-#define MCU_IN_7_PIN_SOURCE             GPIO_PinSource4
-#define MCU_IN_7_EXITLINE               EXTI_Line4
-#define MCU_IN_7_IRQ_CHN                EXTI4_IRQn
 
 /****  	MCU_IN 8	****/
 #define MCU_IN_8_PORT				    GPIOD
 #define MCU_IN_8_PIN 				    GPIO_Pin_5
 #define GET_INPUT_8_STATUS              GPIO_ReadInputDataBit(MCU_IN_8_PORT,MCU_IN_8_PIN)
-#define MCU_IN_9_PORTSOURCE             GPIO_PortSourceGPIOD
-#define MCU_IN_8_PIN_SOURCE             GPIO_PinSource5
-#define MCU_IN_8_EXITLINE               EXTI_Line5
-#define MCU_IN_8_IRQ_CHN                EXTI9_5_IRQn
 
 /****  	MCU_IN 9	****/
 #define MCU_IN_9_PORT				    GPIOD
 #define MCU_IN_9_PIN 				    GPIO_Pin_6
 #define GET_INPUT_9_STATUS              GPIO_ReadInputDataBit(MCU_IN_9_PORT,MCU_IN_9_PIN)
-#define MCU_IN_9_PORTSOURCE             GPIO_PortSourceGPIOD
-#define MCU_IN_9_PIN_SOURCE             GPIO_PinSource6
-#define MCU_IN_9_EXITLINE               EXTI_Line6
-#define MCU_IN_9_IRQ_CHN                EXTI9_5_IRQn
 
 /****  	MCU_IN 10	****/
 #define MCU_IN_10_PORT				    GPIOD
 #define MCU_IN_10_PIN 				    GPIO_Pin_7
 #define GET_INPUT_10_STATUS             GPIO_ReadInputDataBit(MCU_IN_10_PORT,MCU_IN_10_PIN)
-#define MCU_IN_9_PORTSOURCE             GPIO_PortSourceGPIOD
-#define MCU_IN_10_PIN_SOURCE             GPIO_PinSource7
-#define MCU_IN_10_EXITLINE               EXTI_Line7
-#define MCU_IN_10_IRQ_CHN                EXTI9_5_IRQn
 
 /****  	MCU_IN 11	****/
 #define MCU_IN_11_PORT				    GPIOE
 #define MCU_IN_11_PIN 				    GPIO_Pin_1
 #define GET_INPUT_11_STATUS             GPIO_ReadInputDataBit(MCU_IN_11_PORT,MCU_IN_11_PIN)
-#define MCU_IN_9_PORTSOURCE             GPIO_PortSourceGPIOE
-#define MCU_IN_11_PIN_SOURCE             GPIO_PinSource1
-#define MCU_IN_11_EXITLINE               EXTI_Line7
-#define MCU_IN_11_IRQ_CHN                EXTI1_IRQn
 
 /****  	MCU_IN 12	****/
 #define MCU_IN_12_PORT				    GPIOE
 #define MCU_IN_12_PIN 				    GPIO_Pin_2
 #define GET_INPUT_12_STATUS             GPIO_ReadInputDataBit(MCU_IN_12_PORT,MCU_IN_12_PIN)
-#define MCU_IN_9_PORTSOURCE             GPIO_PortSourceGPIOE
-#define MCU_IN_12_PIN_SOURCE             GPIO_PinSource2
-#define MCU_IN_12_EXITLINE               EXTI_Line2
-#define MCU_IN_12_IRQ_CHN                EXTI2_IRQn
 
 /****  	MCU_IN 13	****/
 #define MCU_IN_13_PORT				    GPIOE
 #define MCU_IN_13_PIN 				    GPIO_Pin_3
 #define GET_INPUT_13_STATUS             GPIO_ReadInputDataBit(MCU_IN_13_PORT,MCU_IN_13_PIN)
-#define MCU_IN_9_PORTSOURCE             GPIO_PortSourceGPIOE
-#define MCU_IN_13_PIN_SOURCE             GPIO_PinSource3
-#define MCU_IN_13_EXITLINE               EXTI_Line3
-#define MCU_IN_13_IRQ_CHN                EXTI3_IRQn
 
 /****  	MCU_IN 14	****/
 #define MCU_IN_14_PORT				    GPIOE
 #define MCU_IN_14_PIN 				    GPIO_Pin_4
 #define GET_INPUT_14_STATUS             GPIO_ReadInputDataBit(MCU_IN_14_PORT,MCU_IN_14_PIN)
-#define MCU_IN_9_PORTSOURCE             GPIO_PortSourceGPIOE
-#define MCU_IN_14_PIN_SOURCE             GPIO_PinSource4
-#define MCU_IN_14_EXITLINE               EXTI_Line4
-#define MCU_IN_14_IRQ_CHN                EXTI4_IRQn
 
 /****  	MCU_IN 15	****/
 #define MCU_IN_15_PORT				    GPIOE
 #define MCU_IN_15_PIN 				    GPIO_Pin_5
 #define GET_INPUT_15_STATUS             GPIO_ReadInputDataBit(MCU_IN_15_PORT,MCU_IN_15_PIN)
-#define MCU_IN_9_PORTSOURCE             GPIO_PortSourceGPIOD
-#define MCU_IN_15_PIN_SOURCE             GPIO_PinSource5
-#define MCU_IN_15_EXITLINE               EXTI_Line5
-#define MCU_IN_15_IRQ_CHN                EXTI9_5_IRQn
 
 /****  	MCU_IN 16	****/
 #define MCU_IN_16_PORT				    GPIOE
 #define MCU_IN_16_PIN 				    GPIO_Pin_6
 #define GET_INPUT_16_STATUS             GPIO_ReadInputDataBit(MCU_IN_16_PORT,MCU_IN_16_PIN)
-#define MCU_IN_9_PORTSOURCE             GPIO_PortSourceGPIOE
-#define MCU_IN_16_PIN_SOURCE             GPIO_PinSource6
-#define MCU_IN_16_EXITLINE               EXTI_Line6
-#define MCU_IN_16_IRQ_CHN                EXTI9_5_IRQn
 
 /****  	MCU_IN 17	****/
 #define MCU_IN_17_PORT				    GPIOE
 #define MCU_IN_17_PIN 				    GPIO_Pin_6
 #define GET_INPUT_17_STATUS             GPIO_ReadInputDataBit(MCU_IN_17_PORT,MCU_IN_17_PIN)
-#define MCU_IN_9_PORTSOURCE             GPIO_PortSourceGPIOE
-#define MCU_IN_17_PIN_SOURCE             GPIO_PinSource6
-#define MCU_IN_17_EXITLINE               EXTI_Line6
-#define MCU_IN_17_IRQ_CHN                EXTI9_5_IRQn
 
-
-#define GET_INPUT_STATUS(n)             GPIO_ReadInputDataBit(MCU_IN_##n##_PORT,MCU_IN_##n##_PIN)
+#define DIGIT_INPUT_REG_LIST \
+{\
+    {\
+        {\
+            MCU_IN_1_PORT,MCU_IN_1_PIN\
+        },\
+        {\
+            MCU_IN_2_PORT,MCU_IN_2_PIN\
+        },\
+        {\
+            MCU_IN_3_PORT,MCU_IN_3_PIN\
+        },\
+        {\
+            MCU_IN_4_PORT,MCU_IN_4_PIN\
+        },\
+        {\
+            MCU_IN_5_PORT,MCU_IN_5_PIN\
+        },\
+        {\
+            MCU_IN_6_PORT,MCU_IN_6_PIN\
+        },\
+        {\
+            MCU_IN_7_PORT,MCU_IN_7_PIN\
+        },\
+        {\
+            MCU_IN_8_PORT,MCU_IN_8_PIN\
+        },\
+        {\
+            MCU_IN_9_PORT,MCU_IN_9_PIN\
+        },\
+        {\
+            MCU_IN_10_PORT,MCU_IN_10_PIN\
+        },\
+        {\
+            MCU_IN_11_PORT,MCU_IN_11_PIN\
+        },\
+        {\
+            MCU_IN_12_PORT,MCU_IN_12_PIN\
+        },\
+        {\
+            MCU_IN_13_PORT,MCU_IN_13_PIN\
+        },\
+        {\
+            MCU_IN_14_PORT,MCU_IN_14_PIN\
+        },\
+        {\
+            MCU_IN_15_PORT,MCU_IN_15_PIN\
+        },\
+        {\
+            MCU_IN_16_PORT,MCU_IN_16_PIN\
+        }\
+    },\
+    GPIO_ReadInputDataBit,\
+    NULL,\
+    NULL\
+}\
 
 /*********************************   DIP_SWITCH   *********************************/
 #define DIP_SWITCH_BITS_NUM             8U
+
 /****  	DIP_SWITCH_1	****/
 #define DIP_SWITCH_1_PORT				GPIOC
 #define DIP_SWITCH_1_PIN 				GPIO_Pin_6
@@ -470,7 +520,38 @@ enum trigger_type{INTERRUPT=0,FILTER};
 #define DIP_SWITCH_8_PIN 				GPIO_Pin_10
 #define GET_DIP_SWITCH_8_STATUS         GPIO_ReadInputDataBit(DIP_SWITCH_8_PORT,DIP_SWITCH_8_PIN)
 
-#define GET_DIP_SWITCH_STATUS(n)        GPIO_ReadInputDataBit(DIP_SWITCH_##n##_PORT,DIP_SWITCH_##n##_PIN)
+
+#define DIP_SWITCH_REG_LIST  {\
+    {\
+        {\
+            DIP_SWITCH_1_PORT,DIP_SWITCH_1_PIN\
+        },\
+        {\
+            DIP_SWITCH_2_PORT,DIP_SWITCH_2_PIN\
+        },\
+        {\
+            DIP_SWITCH_3_PORT,DIP_SWITCH_3_PIN\
+        },\
+        {\
+            DIP_SWITCH_4_PORT,DIP_SWITCH_4_PIN\
+        },\
+        {\
+            DIP_SWITCH_5_PORT,DIP_SWITCH_5_PIN\
+        },\
+        {\
+            DIP_SWITCH_6_PORT,DIP_SWITCH_6_PIN\
+        },\
+        {\
+            DIP_SWITCH_7_PORT,DIP_SWITCH_7_PIN\
+        },\
+        {\
+            DIP_SWITCH_7_PORT,DIP_SWITCH_8_PIN\
+        }\
+    },\
+    GPIO_ReadInputDataBit,\
+    NULL,\
+    NULL\
+}\
 
 /*********************************   OUTPUT   *********************************/
 /****  	MCU_OUTPUT 1	****/

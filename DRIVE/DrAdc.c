@@ -44,12 +44,15 @@ void DrAdc(void)
   
  RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA|RCC_APB2Periph_GPIOB|RCC_APB2Periph_GPIOC, ENABLE);
   
- GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0|GPIO_Pin_1|GPIO_Pin_2|GPIO_Pin_3;
+ GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0|GPIO_Pin_1|GPIO_Pin_2|GPIO_Pin_14;
  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AIN;  //模拟输入模式
  GPIO_Init(GPIOC, &GPIO_InitStructure);
- GPIO_InitStructure.GPIO_Pin = GPIO_Pin_1;
+ GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0|GPIO_Pin_1;
  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AIN;  //模拟输入模式
  GPIO_Init(GPIOB, &GPIO_InitStructure);
+ GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0;
+ GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AIN;  //模拟输入模式
+ GPIO_Init(GPIOA, &GPIO_InitStructure);
  ADC1_DMA_Config();
   
  RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1, ENABLE);

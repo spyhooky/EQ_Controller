@@ -1,0 +1,324 @@
+<html>
+<body>
+<pre>
+<h1>礦ision Build Log</h1>
+<h2>Project:</h2>
+D:\Develop\李总\Code\设备控制器\EQ_Controller\RVMDK\EQ_Controller.uvproj
+Project File Date:  02/18/2019
+
+<h2>Output:</h2>
+Rebuild target 'DAQ_Project'
+compiling Task_TCPIP.c...
+compiling Task_IO.c...
+compiling Task_LED.c...
+compiling Task_Main.c...
+compiling Task_ModbusTCP.c...
+compiling Task_MQTT.c...
+..\Task\Task_MQTT.c(463): warning:  #550-D: variable "topicidx" was set but never used
+      u8 topicidx;
+..\Task\Task_MQTT.c: 1 warning, 0 errors
+compiling Task_HTTP.c...
+compiling main.c...
+compiling framework.c...
+compiling interface.c...
+compiling stm32f10x_it.c...
+compiling variable.c...
+compiling DrFlash.c...
+compiling DrTimer.c...
+compiling DrGpio.c...
+..\DRIVE\DrGpio.c(29): warning:  #144-D: a value of type "void (*)(GPIO_TypeDef *, uint16_t)" cannot be used to initialize an entity of type "u8 (*)(GPIO_TypeDef *, u16)"
+  IO_REG_GROUP DIGIT_OUTPUT_REG = DIGIT_OUTPUT_REG_LIST;
+..\DRIVE\DrGpio.c(29): warning:  #144-D: a value of type "void (*)(GPIO_TypeDef *, uint16_t)" cannot be used to initialize an entity of type "u8 (*)(GPIO_TypeDef *, u16)"
+  IO_REG_GROUP DIGIT_OUTPUT_REG = DIGIT_OUTPUT_REG_LIST;
+..\DRIVE\DrGpio.c(51): warning:  #177-D: variable "index" was declared but never referenced
+      u8 index=0;
+..\DRIVE\DrGpio.c: 3 warnings, 0 errors
+compiling DrSpi.c...
+compiling DrEthernet.c...
+compiling DrUart.c...
+compiling DrCan.c...
+compiling cJSON.c...
+..\DRIVE\cJSON.c(55): warning:  #1293-D: assignment in condition
+        if (!(copy = (char*)cJSON_malloc(len))) return 0;
+..\DRIVE\cJSON.c(278): warning:  #1293-D: assignment in condition
+        ptr=str;while ((token=*ptr) && ++len) {if (strchr("\"\\\b\f\n\r\t",token)) len++; else if (token<32) len+=5;ptr++;}
+..\DRIVE\cJSON.c(355): warning:  #111-D: statement is unreachable
+        return p.buffer;
+..\DRIVE\cJSON.c(426): warning:  #1293-D: assignment in condition
+                if (!(new_item=cJSON_New_Item())) return 0;     /* memory fail */
+..\DRIVE\cJSON.c(538): warning:  #1293-D: assignment in condition
+                if (!(new_item=cJSON_New_Item()))       return 0; /* memory fail */
+..\DRIVE\cJSON.c: 5 warnings, 0 errors
+compiling DrAdc.c...
+compiling core_cm3.c...
+compiling system_stm32f10x.c...
+assembling startup_stm32f10x_cl.s...
+compiling misc.c...
+compiling stm32f10x_adc.c...
+compiling stm32f10x_bkp.c...
+compiling stm32f10x_can.c...
+compiling stm32f10x_crc.c...
+compiling stm32f10x_dac.c...
+compiling stm32f10x_dbgmcu.c...
+compiling stm32f10x_dma.c...
+compiling stm32f10x_exti.c...
+compiling stm32f10x_flash.c...
+compiling stm32f10x_fsmc.c...
+compiling stm32f10x_gpio.c...
+compiling stm32f10x_i2c.c...
+compiling stm32f10x_iwdg.c...
+compiling stm32f10x_pwr.c...
+compiling stm32f10x_rcc.c...
+compiling stm32f10x_rtc.c...
+compiling stm32f10x_sdio.c...
+compiling stm32f10x_spi.c...
+compiling stm32f10x_tim.c...
+compiling stm32f10x_usart.c...
+compiling stm32f10x_wwdg.c...
+assembling cortexm3_macro.s...
+assembling os_cpu_a.asm...
+compiling os_cpu_c.c...
+compiling os_dbg.c...
+compiling os_core.c...
+compiling os_flag.c...
+compiling os_mbox.c...
+compiling os_mem.c...
+compiling os_mutex.c...
+compiling os_q.c...
+compiling os_sem.c...
+compiling os_task.c...
+compiling os_time.c...
+compiling os_tmr.c...
+compiling wizchip_conf.c...
+compiling socket.c...
+compiling spi.c...
+compiling w5500.c...
+compiling dhcp.c...
+compiling dns.c...
+compiling util.c...
+compiling httpd.c...
+..\Internet\HTTP\httpd.c(173): warning:  #1293-D: assignment in condition
+    if((name = (unsigned char*)strstr(uri,param_name)))
+..\Internet\HTTP\httpd.c: 1 warning, 0 errors
+compiling httputil.c...
+..\Internet\HTTP\httputil.c(241): warning:  #167-D: argument of type "uint8_t *" is incompatible with parameter of type "char *"
+                  make_cgi_response(3,gWIZNETINFO.iplocal,tx_buf);                  
+..\Internet\HTTP\httputil.c(173): warning:  #177-D: variable "webpage" was declared but never referenced
+      unsigned char * http_response, * webpage;
+..\Internet\HTTP\httputil.c(279): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "const char *"
+        u = strlen(addr);
+..\Internet\HTTP\httputil.c(327): warning:  #1293-D: assignment in condition
+      if((param = get_http_param_value(http_request->URI,"protocol")))
+..\Internet\HTTP\httputil.c(331): warning:  #1293-D: assignment in condition
+      if((param = get_http_param_value(http_request->URI,"sid")))
+..\Internet\HTTP\httputil.c(335): warning:  #1293-D: assignment in condition
+      if((param = get_http_param_value(http_request->URI,"modaddr")))
+..\Internet\HTTP\httputil.c(339): warning:  #1293-D: assignment in condition
+      if((param = get_http_param_value(http_request->URI,"modlen")))
+..\Internet\HTTP\httputil.c(343): warning:  #1293-D: assignment in condition
+      if((param = get_http_param_value(http_request->URI,"modtim")))
+..\Internet\HTTP\httputil.c(349): warning:  #1293-D: assignment in condition
+      if((param = get_http_param_value(http_request->URI,"ip")))
+..\Internet\HTTP\httputil.c(353): warning:  #1293-D: assignment in condition
+      if((param = get_http_param_value(http_request->URI,"locport")))
+..\Internet\HTTP\httputil.c(357): warning:  #1293-D: assignment in condition
+      if((param = get_http_param_value(http_request->URI,"ipgoal")))
+..\Internet\HTTP\httputil.c(361): warning:  #1293-D: assignment in condition
+      if((param = get_http_param_value(http_request->URI,"portgoal")))
+..\Internet\HTTP\httputil.c(365): warning:  #1293-D: assignment in condition
+      if((param = get_http_param_value(http_request->URI,"sub")))
+..\Internet\HTTP\httputil.c(369): warning:  #1293-D: assignment in condition
+      if((param = get_http_param_value(http_request->URI,"gw")))
+..\Internet\HTTP\httputil.c(374): warning:  #1293-D: assignment in condition
+      if((param = get_http_param_value(http_request->URI,"use4")))
+..\Internet\HTTP\httputil.c(378): warning:  #1293-D: assignment in condition
+      if((param = get_http_param_value(http_request->URI,"baud4")))
+..\Internet\HTTP\httputil.c(382): warning:  #1293-D: assignment in condition
+      if((param = get_http_param_value(http_request->URI,"CANlocID4")))
+..\Internet\HTTP\httputil.c(386): warning:  #1293-D: assignment in condition
+      if((param = get_http_param_value(http_request->URI,"CANresID4")))
+..\Internet\HTTP\httputil.c(390): warning:  #1293-D: assignment in condition
+      if((param = get_http_param_value(http_request->URI,"CANresIDnum4")))
+..\Internet\HTTP\httputil.c(394): warning:  #1293-D: assignment in condition
+      if((param = get_http_param_value(http_request->URI,"datatype4")))
+..\Internet\HTTP\httputil.c(399): warning:  #1293-D: assignment in condition
+      if((param = get_http_param_value(http_request->URI,"use1")))
+..\Internet\HTTP\httputil.c(403): warning:  #1293-D: assignment in condition
+      if((param = get_http_param_value(http_request->URI,"baud1")))
+..\Internet\HTTP\httputil.c(407): warning:  #1293-D: assignment in condition
+      if((param = get_http_param_value(http_request->URI,"databit1")))
+..\Internet\HTTP\httputil.c(411): warning:  #1293-D: assignment in condition
+      if((param = get_http_param_value(http_request->URI,"parity1")))
+..\Internet\HTTP\httputil.c(415): warning:  #1293-D: assignment in condition
+      if((param = get_http_param_value(http_request->URI,"stopbit1")))
+..\Internet\HTTP\httputil.c(419): warning:  #1293-D: assignment in condition
+      if((param = get_http_param_value(http_request->URI,"flow1")))
+..\Internet\HTTP\httputil.c(423): warning:  #1293-D: assignment in condition
+      if((param = get_http_param_value(http_request->URI,"datatype1")))
+..\Internet\HTTP\httputil.c(429): warning:  #1293-D: assignment in condition
+      if((param = get_http_param_value(http_request->URI,"use2")))
+..\Internet\HTTP\httputil.c(433): warning:  #1293-D: assignment in condition
+      if((param = get_http_param_value(http_request->URI,"baud2")))
+..\Internet\HTTP\httputil.c(437): warning:  #1293-D: assignment in condition
+      if((param = get_http_param_value(http_request->URI,"databit2")))
+..\Internet\HTTP\httputil.c(441): warning:  #1293-D: assignment in condition
+      if((param = get_http_param_value(http_request->URI,"parity2")))
+..\Internet\HTTP\httputil.c(445): warning:  #1293-D: assignment in condition
+      if((param = get_http_param_value(http_request->URI,"stopbit2")))
+..\Internet\HTTP\httputil.c(449): warning:  #1293-D: assignment in condition
+      if((param = get_http_param_value(http_request->URI,"datatype2")))
+..\Internet\HTTP\httputil.c(455): warning:  #1293-D: assignment in condition
+      if((param = get_http_param_value(http_request->URI,"use3")))
+..\Internet\HTTP\httputil.c(459): warning:  #1293-D: assignment in condition
+      if((param = get_http_param_value(http_request->URI,"baud3")))
+..\Internet\HTTP\httputil.c(463): warning:  #1293-D: assignment in condition
+      if((param = get_http_param_value(http_request->URI,"databit3")))
+..\Internet\HTTP\httputil.c(467): warning:  #1293-D: assignment in condition
+      if((param = get_http_param_value(http_request->URI,"parity3")))
+..\Internet\HTTP\httputil.c(471): warning:  #1293-D: assignment in condition
+      if((param = get_http_param_value(http_request->URI,"stopbit3")))
+..\Internet\HTTP\httputil.c(475): warning:  #1293-D: assignment in condition
+      if((param = get_http_param_value(http_request->URI,"datatype3")))
+..\Internet\HTTP\httputil.c(481): warning:  #1293-D: assignment in condition
+      if((param = get_http_param_value(http_request->URI,"use3")))
+..\Internet\HTTP\httputil.c(485): warning:  #1293-D: assignment in condition
+      if((param = get_http_param_value(http_request->URI,"baud3")))
+..\Internet\HTTP\httputil.c(489): warning:  #1293-D: assignment in condition
+      if((param = get_http_param_value(http_request->URI,"databit3")))
+..\Internet\HTTP\httputil.c(493): warning:  #1293-D: assignment in condition
+      if((param = get_http_param_value(http_request->URI,"parity3")))
+..\Internet\HTTP\httputil.c(497): warning:  #1293-D: assignment in condition
+      if((param = get_http_param_value(http_request->URI,"stopbit3")))
+..\Internet\HTTP\httputil.c(501): warning:  #1293-D: assignment in condition
+      if((param = get_http_param_value(http_request->URI,"datatype3")))
+..\Internet\HTTP\httputil.c(507): warning:  #1293-D: assignment in condition
+      if((param = get_http_param_value(http_request->URI,"use4")))
+..\Internet\HTTP\httputil.c(511): warning:  #1293-D: assignment in condition
+      if((param = get_http_param_value(http_request->URI,"baud4")))
+..\Internet\HTTP\httputil.c(515): warning:  #1293-D: assignment in condition
+      if((param = get_http_param_value(http_request->URI,"databit4")))
+..\Internet\HTTP\httputil.c(519): warning:  #1293-D: assignment in condition
+      if((param = get_http_param_value(http_request->URI,"parity4")))
+..\Internet\HTTP\httputil.c(523): warning:  #1293-D: assignment in condition
+      if((param = get_http_param_value(http_request->URI,"stopbit4")))
+..\Internet\HTTP\httputil.c(527): warning:  #1293-D: assignment in condition
+      if((param = get_http_param_value(http_request->URI,"datatype4")))
+..\Internet\HTTP\httputil.c(534): warning:  #1293-D: assignment in condition
+      if((param = get_http_param_value(http_request->URI,"tout")))
+..\Internet\HTTP\httputil.c: 52 warnings, 0 errors
+compiling transport.c...
+compiling MQTTConnectClient.c...
+compiling MQTTConnectServer.c...
+compiling MQTTDeserializePublish.c...
+compiling MQTTFormat.c...
+compiling MQTTPacket.c...
+compiling MQTTSerializePublish.c...
+compiling MQTTSubscribeClient.c...
+compiling MQTTSubscribeServer.c...
+compiling MQTTUnsubscribeClient.c...
+compiling MQTTUnsubscribeServer.c...
+linking...
+Program Size: Code=18204 RO-data=812 RW-data=1788 ZI-data=29356  
+FromELF: creating hex file...
+"..\OUTPUT\STM32_DAQ.axf" - 0 Error(s), 62 Warning(s).
+</pre>
+</body>
+</html>
+am = get_http_param_value(http_request->URI,"use2")))
+..\Internet\HTTP\httputil.c(433): warning:  #1293-D: assignment in condition
+      if((param = get_http_param_value(http_request->URI,"baud2")))
+..\Internet\HTTP\httputil.c(437): warning:  #1293-D: assignment in condition
+      if((param = get_http_param_value(http_request->URI,"databit2")))
+..\Internet\HTTP\httputil.c(441): warning:  #1293-D: assignment in condition
+      if((param = get_http_param_value(http_request->URI,"parity2")))
+..\Internet\HTTP\httputil.c(445): warning:  #1293-D: assignment in condition
+      if((param = get_http_param_value(http_request->URI,"stopbit2")))
+..\Internet\HTTP\httputil.c(449): warning:  #1293-D: assignment in condition
+      if((param = get_http_param_value(http_request->URI,"datatype2")))
+..\Internet\HTTP\httputil.c(455): warning:  #1293-D: assignment in condition
+      if((param = get_http_param_value(http_request->URI,"use3")))
+..\Internet\HTTP\httputil.c(459): warning:  #1293-D: assignment in condition
+      if((param = get_http_param_value(http_request->URI,"baud3")))
+..\Internet\HTTP\httputil.c(463): warning:  #1293-D: assignment in condition
+      if((param = get_http_param_value(http_request->URI,"databit3")))
+..\Internet\HTTP\httputil.c(467): warning:  #1293-D: assignment in condition
+      if((param = get_http_param_value(http_request->URI,"parity3")))
+..\Internet\HTTP\httputil.c(471): warning:  #1293-D: assignment in condition
+      if((param = get_http_param_value(http_request->URI,"stopbit3")))
+..\Internet\HTTP\httputil.c(475): warning:  #1293-D: assignment in condition
+      if((param = get_http_param_value(http_request->URI,"datatype3")))
+..\Internet\HTTP\httputil.c(481): warning:  #1293-D: assignment in condition
+      if((param = get_http_param_value(http_request->URI,"use3")))
+..\Internet\HTTP\httputil.c(485): warning:  #1293-D: assignment in condition
+      if((param = get_http_param_value(http_request->URI,"baud3")))
+..\Internet\HTTP\httputil.c(489): warning:  #1293-D: assignment in condition
+      if((param = get_http_param_value(http_request->URI,"databit3")))
+..\Internet\HTTP\httputil.c(493): warning:  #1293-D: assignment in condition
+      if((param = get_http_param_value(http_request->URI,"parity3")))
+..\Internet\HTTP\httputil.c(497): warning:  #1293-D: assignment in condition
+      if((param = get_http_param_value(http_request->URI,"stopbit3")))
+..\Internet\HTTP\httputil.c(501): warning:  #1293-D: assignment in condition
+      if((param = get_http_param_value(http_request->URI,"datatype3")))
+..\Internet\HTTP\httputil.c(507): warning:  #1293-D: assignment in condition
+      if((param = get_http_param_value(http_request->URI,"use4")))
+..\Internet\HTTP\httputil.c(511): warning:  #1293-D: assignment in condition
+      if((param = get_http_param_value(http_request->URI,"baud4")))
+..\Internet\HTTP\httputil.c(515): warning:  #1293-D: assignment in condition
+      if((param = get_http_param_value(http_request->URI,"databit4")))
+..\Internet\HTTP\httputil.c(519): warning:  #1293-D: assignment in condition
+      if((param = get_http_param_value(http_request->URI,"parity4")))
+..\Internet\HTTP\httputil.c(523): warning:  #1293-D: assignment in condition
+      if((param = get_http_param_value(http_request->URI,"stopbit4")))
+..\Internet\HTTP\httputil.c(527): warning:  #1293-D: assignment in condition
+      if((param = get_http_param_value(http_request->URI,"datatype4")))
+..\Internet\HTTP\httputil.c(534): warning:  #1293-D: assignment in condition
+      if((param = get_http_param_value(http_request->URI,"tout")))
+..\Internet\HTTP\httputil.c: 53 warnings, 0 errors
+compiling transport.c...
+..\Framework\platform_cfg.h(161): warning:  #2775-D: white space is required between the macro name "DIGIT_OUTPUT_REG_LIST" and its replacement text
+  {\
+..\MQTT\transport.c: 1 warning, 0 errors
+compiling MQTTConnectClient.c...
+..\Framework\platform_cfg.h(161): warning:  #2775-D: white space is required between the macro name "DIGIT_OUTPUT_REG_LIST" and its replacement text
+  {\
+..\MQTT\MQTTConnectClient.c: 1 warning, 0 errors
+compiling MQTTConnectServer.c...
+..\Framework\platform_cfg.h(161): warning:  #2775-D: white space is required between the macro name "DIGIT_OUTPUT_REG_LIST" and its replacement text
+  {\
+..\MQTT\MQTTConnectServer.c: 1 warning, 0 errors
+compiling MQTTDeserializePublish.c...
+..\Framework\platform_cfg.h(161): warning:  #2775-D: white space is required between the macro name "DIGIT_OUTPUT_REG_LIST" and its replacement text
+  {\
+..\MQTT\MQTTDeserializePublish.c: 1 warning, 0 errors
+compiling MQTTFormat.c...
+..\Framework\platform_cfg.h(161): warning:  #2775-D: white space is required between the macro name "DIGIT_OUTPUT_REG_LIST" and its replacement text
+  {\
+..\MQTT\MQTTFormat.c: 1 warning, 0 errors
+compiling MQTTPacket.c...
+..\Framework\platform_cfg.h(161): warning:  #2775-D: white space is required between the macro name "DIGIT_OUTPUT_REG_LIST" and its replacement text
+  {\
+..\MQTT\MQTTPacket.c: 1 warning, 0 errors
+compiling MQTTSerializePublish.c...
+..\Framework\platform_cfg.h(161): warning:  #2775-D: white space is required between the macro name "DIGIT_OUTPUT_REG_LIST" and its replacement text
+  {\
+..\MQTT\MQTTSerializePublish.c: 1 warning, 0 errors
+compiling MQTTSubscribeClient.c...
+..\Framework\platform_cfg.h(161): warning:  #2775-D: white space is required between the macro name "DIGIT_OUTPUT_REG_LIST" and its replacement text
+  {\
+..\MQTT\MQTTSubscribeClient.c: 1 warning, 0 errors
+compiling MQTTSubscribeServer.c...
+..\Framework\platform_cfg.h(161): warning:  #2775-D: white space is required between the macro name "DIGIT_OUTPUT_REG_LIST" and its replacement text
+  {\
+..\MQTT\MQTTSubscribeServer.c: 1 warning, 0 errors
+compiling MQTTUnsubscribeClient.c...
+..\Framework\platform_cfg.h(161): warning:  #2775-D: white space is required between the macro name "DIGIT_OUTPUT_REG_LIST" and its replacement text
+  {\
+..\MQTT\MQTTUnsubscribeClient.c: 1 warning, 0 errors
+compiling MQTTUnsubscribeServer.c...
+..\Framework\platform_cfg.h(161): warning:  #2775-D: white space is required between the macro name "DIGIT_OUTPUT_REG_LIST" and its replacement text
+  {\
+..\MQTT\MQTTUnsubscribeServer.c: 1 warning, 0 errors
+linking...
+Program Size: Code=18204 RO-data=812 RW-data=1788 ZI-data=29356  
+FromELF: creating hex file...
+"..\OUTPUT\STM32_DAQ.axf" - 0 Error(s), 95 Warning(s).
