@@ -31,8 +31,8 @@
   */
 static void SPI_RCC_Configuration(void)
 {
-RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_SPI1 | RCC_APB2Periph_AFIO, ENABLE);	
-
+    RCC_APB1PeriphClockCmd(RCC_APB1Periph_SPI2, ENABLE);	
+    RCC_APB1PeriphClockCmd(RCC_APB2Periph_AFIO, ENABLE);	
 }
 /**
   * @brief  配置指定SPI的引脚
@@ -42,17 +42,17 @@ static void SPI_GPIO_Configuration(void)
 {
 	GPIO_InitTypeDef GPIO_InitStructure;
 	//PA4->CS,PA5->SCK,PA6->MISO,PA7->MOSI		 					 
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_5 | GPIO_Pin_6 | GPIO_Pin_7;
+	GPIO_InitStructure.GPIO_Pin = SPI2_GPIO_PIN;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
-	GPIO_Init(GPIOA, &GPIO_InitStructure);
-	GPIO_SetBits(GPIOA,GPIO_Pin_5|GPIO_Pin_6|GPIO_Pin_7);
+	GPIO_Init(SPI2_GPIO_PORT, &GPIO_InitStructure);
+	GPIO_SetBits(SPI2_GPIO_PORT,SPI2_GPIO_PIN);
 	//初始化片选输出引脚
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4;
+	GPIO_InitStructure.GPIO_Pin = W5500_CS_PIN;
 	GPIO_InitStructure.GPIO_Speed=GPIO_Speed_50MHz;
 	GPIO_InitStructure.GPIO_Mode=GPIO_Mode_Out_PP;
-	GPIO_Init(GPIOA, &GPIO_InitStructure);
-	GPIO_SetBits(GPIOA, GPIO_Pin_4);
+	GPIO_Init(W5500_CS_PORT, &GPIO_InitStructure);
+	GPIO_SetBits(W5500_CS_PORT, W5500_CS_PIN);
 }
 /**
   * @brief  根据外部SPI设备配置SPI相关参数
@@ -74,9 +74,9 @@ void SPI_Configuration(void)
 	SPI_InitStruct.SPI_NSS = SPI_NSS_Soft;
 	SPI_InitStruct.SPI_FirstBit = SPI_FirstBit_MSB;
 	SPI_InitStruct.SPI_CRCPolynomial = 7;
-	SPI_Init(SPI1,&SPI_InitStruct);
+	SPI_Init(SPI2,&SPI_InitStruct);
 	
-	SPI_Cmd(SPI1, ENABLE);
+	SPI_Cmd(SPI2, ENABLE);
 }
 /**
   * @brief  写1字节数据到SPI总线
@@ -85,10 +85,10 @@ void SPI_Configuration(void)
   */
 void SPI_WriteByte(uint8_t TxData)
 {				 
-	while((SPI1->SR&SPI_I2S_FLAG_TXE)==0);	//等待发送区空		  
-	SPI1->DR=TxData;	 	  									//发送一个byte 
-	while((SPI1->SR&SPI_I2S_FLAG_RXNE)==0); //等待接收完一个byte  
-	SPI1->DR;		
+	while((SPI2->SR&SPI_I2S_FLAG_TXE)==0);	//等待发送区空		  
+	SPI2->DR=TxData;	 	  									//发送一个byte 
+	while((SPI2->SR&SPI_I2S_FLAG_RXNE)==0); //等待接收完一个byte  
+	SPI2->DR;		
 }
 /**
   * @brief  从SPI总线读取1字节数据
@@ -96,10 +96,10 @@ void SPI_WriteByte(uint8_t TxData)
   */
 uint8_t SPI_ReadByte(void)
 {			 
-	while((SPI1->SR&SPI_I2S_FLAG_TXE)==0);	//等待发送区空			  
-	SPI1->DR=0xFF;	 	  										//发送一个空数据产生输入数据的时钟 
-	while((SPI1->SR&SPI_I2S_FLAG_RXNE)==0); //等待接收完一个byte  
-	return SPI1->DR;  						    
+	while((SPI2->SR&SPI_I2S_FLAG_TXE)==0);	//等待发送区空			  
+	SPI2->DR=0xFF;	 	  										//发送一个空数据产生输入数据的时钟 
+	while((SPI2->SR&SPI_I2S_FLAG_RXNE)==0); //等待接收完一个byte  
+	return SPI2->DR;  						    
 }
 /**
   * @brief  进入临界区

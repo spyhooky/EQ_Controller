@@ -36,7 +36,7 @@ enum ADC_Channel
 /***************************功能使能区**********************************/
 /***********************************************************************/
 #define DEBUG_ENABLE   //debug模式下禁止看门狗功能和W5500自动keepalive功能
-//#define W5500_ENABLE                                  //W5500芯片使能，当需要网口进行通讯时该宏定义必须是激活状态
+#define W5500_ENABLE                                  //W5500芯片使能，当需要网口进行通讯时该宏定义必须是激活状态
 
 #ifndef DEBUG_ENABLE
  #define WATCHDOG_ENABLE                            //看门狗宏开关，不需要打开看门狗时需要将此宏屏蔽       
@@ -47,14 +47,14 @@ enum ADC_Channel
 #endif
 
 #ifdef W5500_ENABLE
-	#define TCPIP_ENABLE                                  //TCPIP功能使能
+//	#define TCPIP_ENABLE                                  //TCPIP功能使能
 	#define MBTCP_ENABLE                                  //MBTCP功能使能
-	#define MQTT_ENABLE                                   //MQTT功能使能
-	#define HTTP_ENABLE                                   //HTTP功能使能
+//	#define MQTT_ENABLE                                   //MQTT功能使能
+//	#define HTTP_ENABLE                                   //HTTP功能使能
 #endif
 
 #ifdef W5500_ENABLE
-	#define CJSON_ENABLE
+//	#define CJSON_ENABLE
 #endif
 
 /***********************************************************************/
@@ -93,7 +93,7 @@ enum ADC_Channel
 
 
 /**************** 本地端口号分配 *******************/
-#define PORT_LOCAL        5000U
+#define PORT_LOCAL        502
 
 #define APP_CRC_ADDR                                          0x8024000UL
 
@@ -245,79 +245,52 @@ enum ADC_Channel
 #define CAN_GPIO_APB                    RCC_APB2Periph_GPIOD | RCC_APB2Periph_AFIO
 
 /**************************************** Serve ****************************************/
-/* GPIO Clock */
-#define SPI1_PERIPH_RELATE1             0
-#define SPI1_PERIPH_RELATE2             RCC_APB2Periph_GPIOA | RCC_APB2Periph_GPIOC | RCC_APB2Periph_SPI1 | RCC_APB2Periph_AFIO
-/* SPI1 PIN */
-#define SPI1_GPIO_PORT                  GPIOA
-#define SPI1_GPIO_PIN                   GPIO_Pin_5 | GPIO_Pin_6 | GPIO_Pin_7
-/* W5500 CS */ 
-#define TCP_SLAVE_CS_PORT				GPIOD
-#define TCP_SLAVE_CS_PIN				GPIO_Pin_8
-#define TCP_SLAVE_CS_LOW				GPIO_ResetBits(TCP_SLAVE_CS_PORT, TCP_SLAVE_CS_PIN)
-#define TCP_SLAVE_CS_HIGH				GPIO_SetBits(TCP_SLAVE_CS_PORT, TCP_SLAVE_CS_PIN)
-/* W5500 RST */
-#define TCP_SLAVE_RST_PORT				GPIOB
-#define TCP_SLAVE_RST_PIN 				GPIO_Pin_12
-#define TCP_SLAVE_RST_LOW               GPIO_ResetBits(TCP_SLAVE_RST_PORT, TCP_SLAVE_RST_PIN)
-#define TCP_SLAVE_RST_HIGH              GPIO_SetBits(TCP_SLAVE_RST_PORT, TCP_SLAVE_RST_PIN)
-/* W5500 INT */
-#define TCP_SLAVE_INT_PORT				GPIOD
-#define TCP_SLAVE_INT_PIN				GPIO_Pin_9
+///* GPIO Clock */
+//#define SPI1_PERIPH_RELATE1             0
+//#define SPI1_PERIPH_RELATE2             RCC_APB2Periph_GPIOA | RCC_APB2Periph_GPIOC | RCC_APB2Periph_SPI1 | RCC_APB2Periph_AFIO
+///* SPI1 PIN */
+//#define SPI1_GPIO_PORT                  GPIOA
+//#define SPI1_GPIO_PIN                   GPIO_Pin_5 | GPIO_Pin_6 | GPIO_Pin_7
+///* W5500 CS */ 
+//#define TCP_SLAVE_CS_PORT				GPIOD
+//#define TCP_SLAVE_CS_PIN				GPIO_Pin_8
+//#define TCP_SLAVE_CS_LOW				GPIO_ResetBits(TCP_SLAVE_CS_PORT, TCP_SLAVE_CS_PIN)
+//#define TCP_SLAVE_CS_HIGH				GPIO_SetBits(TCP_SLAVE_CS_PORT, TCP_SLAVE_CS_PIN)
+///* W5500 RST */
+//#define TCP_SLAVE_RST_PORT				GPIOB
+//#define TCP_SLAVE_RST_PIN 				GPIO_Pin_12
+//#define TCP_SLAVE_RST_LOW               GPIO_ResetBits(TCP_SLAVE_RST_PORT, TCP_SLAVE_RST_PIN)
+//#define TCP_SLAVE_RST_HIGH              GPIO_SetBits(TCP_SLAVE_RST_PORT, TCP_SLAVE_RST_PIN)
+///* W5500 INT */
+//#define TCP_SLAVE_INT_PORT				GPIOD
+//#define TCP_SLAVE_INT_PIN				GPIO_Pin_9
 
 /**************************************** SPI1 ****************************************/
 /* GPIO Clock */
-#define RCC_SPI1_RELATE_IO_ENABLE       RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_GPIOC | RCC_APB2Periph_AFIO,ENABLE)
+#define RCC_SPI2_RELATE_IO_ENABLE       RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB | RCC_APB2Periph_GPIOD | RCC_APB2Periph_AFIO,ENABLE)
 /* SPI Clock */
-#define RCC_SPI1_PERIPH_ENABLE          RCC_APB2PeriphClockCmd(RCC_APB2Periph_SPI1,ENABLE)
+#define RCC_SPI2_PERIPH_ENABLE          RCC_APB1PeriphClockCmd(RCC_APB1Periph_SPI2,ENABLE)
 
 /* SPI1 PIN */
-#define SPI1_GPIO_PORT                  GPIOA
-#define SPI1_GPIO_PIN                   GPIO_Pin_5 | GPIO_Pin_6 | GPIO_Pin_7
+#define SPI2_GPIO_PORT                  GPIOB
+#define SPI2_GPIO_PIN                   GPIO_Pin_13 | GPIO_Pin_14 | GPIO_Pin_15
 
 /**************************************** W5500_1 ****************************************/
 /* W5500片选 */
-#define W5500_CS_PORT				    GPIOA
-#define W5500_CS_PIN				    GPIO_Pin_4
+#define W5500_CS_PORT				    GPIOB
+#define W5500_CS_PIN				    GPIO_Pin_12
 #define W5500_CS_LOW				    GPIO_ResetBits(W5500_CS_PORT, W5500_CS_PIN)
 #define W5500_CS_HIGH				    GPIO_SetBits(W5500_CS_PORT, W5500_CS_PIN)
 
 /* W5500复位 */
-#define W5500_RST_PORT				    GPIOC
-#define W5500_RST_PIN 				    GPIO_Pin_5
+#define W5500_RST_PORT				    GPIOD
+#define W5500_RST_PIN 				    GPIO_Pin_8
 #define W5500_RST_ENABLE                GPIO_ResetBits(W5500_RST_PORT, W5500_RST_PIN);
 #define W5500_RST_DISABLE               GPIO_SetBits(W5500_RST_PORT, W5500_RST_PIN);
 
 /* W5500中断 */
-#define W5500_INT_PORT				    GPIOC
-#define W5500_INT_PIN				    GPIO_Pin_4
-
-
-
-/**************************************** SPI2 ****************************************/
-/* GPIO Clock */
-#define SPI2_PERIPH_RELATE1             RCC_APB2Periph_GPIOB
-
-/* SPI2 PIN */
-#define SPI2_GPIO_PORT                  GPIOB
-#define SPI2_GPIO_PIN                   GPIO_Pin_13 | GPIO_Pin_14 | GPIO_Pin_15
-
-/**************************************** W5500_2 ****************************************/
-///* W5500片选 */
-//#define W5500_CS_PORT				    GPIOB
-//#define W5500_CS_PIN				    GPIO_Pin_12
-//#define W5500_CS_LOW				    GPIO_ResetBits(W5500_CS_PORT, W5500_CS_PIN)
-//#define W5500_CS_HIGH				    GPIO_SetBits(W5500_CS_PORT, W5500_CS_PIN)
-
-///* W5500复位 */
-//#define W5500_RST_PORT				    GPIOD
-//#define W5500_RST_PIN 				    GPIO_Pin_3
-//#define W5500_RST_LOW                   GPIO_ResetBits(W5500_RST_PORT, W5500_RST_PIN);
-//#define W5500_RST_HIGH                  GPIO_SetBits(W5500_RST_PORT, W5500_RST_PIN);
-
-///* W5500中断 */
-//#define W5500_INT_PORT				    GPIOA
-//#define W5500_INT_PIN				    GPIO_Pin_1
+#define W5500_INT_PORT				    GPIOD
+#define W5500_INT_PIN				    GPIO_Pin_9
 
 
 typedef union {

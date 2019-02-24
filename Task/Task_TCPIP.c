@@ -268,7 +268,7 @@ void Task_TCPIP(void *p_arg)
 }
 
 
-void TCPIP_DataHandler(u8 chnidx,struct USARTCAN_Recv_t *recv,void *arg)
+void TCPIP_DataHandler(u8 chnidx,USARTCAN_Recv_t *recv,void *arg)
 {
     struct wiz_NetInfo_t *tcpipparm;
     tcpipparm = (struct wiz_NetInfo_t *)arg;

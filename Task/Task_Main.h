@@ -4,24 +4,25 @@
 
 /************设置任务优先级,建议(10-50) *************************/
 /* #define OS_LOWEST_PRIO   63u */
-#define TASK_PRIO_MAIN                           2u
+#define TASK_PRIO_MAIN                          60u
 
-#define TASK_PRIO_MBTCP_SEND                    10u
-#define TASK_PRIO_TCPIP_SEND                    11u
-#define	TASK_PRIO_MQTTPUB                       12u
-#define	TASK_PRIO_MQTTSUB                       13u
+#define TASK_PRIO_PCMSG_RECV                    10u
+#define TASK_PRIO_FREQ_CONVER                   11u
+#define TASK_PRIO_ENCODER                       12u
+#define TASK_PRIO_MBTCP_SEND                    30u
+#define TASK_PRIO_TCPIP_SEND                    31u
+#define	TASK_PRIO_MQTTPUB                       32u
+#define	TASK_PRIO_MQTTSUB                       33u
 #define	TASK_PRIO_MQTT                          9u
 #define TASK_PRIO_TCPIP                         21u
 #define TASK_PRIO_MBTCP                         22u
 #define TASK_PRIO_HTTP                          23u
 
-#define TASK_PRIO_MODBUSRTU                     30u
-#define TASK_PRIO_IO                            31u
-#define TASK_PRIO_FLASH                         32u
-#define TASK_PRIO_LEDR                          40u
-#define TASK_PRIO_LEDG                          41u
+#define TASK_PRIO_MODBUSRTU                     40u
+#define TASK_PRIO_IO                            41u
+#define TASK_PRIO_FLASH                         42u
 
-#define TASK_PRIO_BACKGRD                       60u
+#define TASK_PRIO_BACKGRD                       59u
 
 
 /************设置栈大小（单位为 OS_STK ）************/

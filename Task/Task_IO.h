@@ -11,8 +11,8 @@ void TaskIO_Timer1ms(void);
 u8 Get_LED_Status(void);
 void Blink_LED_Status(u16 mstimer);
 
-#define SET_LED_STATUS(n)     		LED_G(n) 
-#define SET_BAND_TYPE_BRAKE_STATUS(n)     	SET_DIGIT_OUTPUT_STATUS(RELAY4,n)
+#define SET_LED_STATUS(n)					LED_G(n) 
+#define SET_BAND_TYPE_BRAKE_STATUS(s)		SET_DIGIT_OUTPUT_STATUS(RELAY4,s)
 
 
 #endif

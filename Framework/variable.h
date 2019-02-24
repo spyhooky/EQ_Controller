@@ -134,6 +134,7 @@ struct ProtType_t
     Tdef_Prot FrameEndInfo; //最高位表示是否使能，低4位表示字节数，只有使能了字节数才有效
     u8 FrameEnd[8];         //帧结束符字节数
     u8 checksum;          //校验(0-无，1-和，2-crc16)
+    u8 inteval;           //字符间隔时间，单位100us
 };
 
 typedef struct Interface_Info_t
@@ -150,21 +151,22 @@ extern Interface_Info USARTCAN;//
 
 extern wiz_NetInfo gWIZNETINFO;
 extern wiz_NetTimeout gWIZNetTimeout;
+extern const u8 auchCRC16_Hi[256];
+extern const u8 auchCRC16_Low[256];
 
-
-
-struct USARTCAN_Recv_t
+typedef struct USARTCAN_Recv_info
 {
 	u8 newupd;//数据更新标志位
     u16 lenth; //字节数量
     u8 datatype;//数据类型
     u8 databuf[SCI_BUF_MAXLEN];//有效数据
-};
-extern struct USARTCAN_Recv_t USARTCAN_Recv[NUM_UARTCAN];
+}USARTCAN_Recv_t;
+extern USARTCAN_Recv_t USARTCAN_Recv[NUM_UARTCAN];
 
 extern u16 g_u16_TCPIPsendlen;           //tcpip报文发送长度
 
 extern u16 cpu_sr;                        //cpu中断状态
+extern OS_EVENT *mBOX_Uart_Recv[NUM_UARTCHANNEL-1];    //所有串口收到消息后需要发送队列给其他task处理
 
 extern char platform_version[];
 extern char funcTion[];
@@ -174,6 +176,8 @@ extern const u16 RS232_stop[2] ;
 extern const u16 RS232_parity[3] ;
 extern const u16 RS232_FlowCntl[4] ;
 
+u16 Get_Crc16(u8 *puchMsg,u16 usDataLen);
+USARTCAN_Recv_t GET_UsartCAN_Recv_Result(u8 chanel);
 unsigned char AscToHex(unsigned char aChar);
 unsigned char HexToAsc(unsigned char aHex);
 
@@ -183,13 +187,15 @@ typedef struct Driver_Variable
 	u16 AD_Result[Channel_Num];//AD采样数据
 }Driver_Variable_Info;
 extern Driver_Variable_Info Global_Driver;
+float GET_ADC_Result(u8 chanel);
+
 
 typedef struct Framework_Variable
 {
 	u8 DIP_SwitchStatus;   //当前拨码开关状态
 	u32 Digit_InputStatus; //数字开关量状态，0-断开，1-对地闭合
-	u16 CurrentEnvTemp;   //当前环境温度
-    u8  Power_5V;
+	float CurrentEnvTemp;   //当前环境温度
+    float  Power_5V;
 }Framework_Variable_Info;
 extern Framework_Variable_Info Globle_Framework;
 

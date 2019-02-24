@@ -5,6 +5,8 @@ volatile  Tdef_Byte                          _SystemFlag[NUM_UARTCHANNEL];
 #define SystemFlag(n)                        _SystemFlag[n].Byte
 #define g_bit_SCIFrameStart(n)               _SystemFlag[n].Bits.bit0    //串口帧起始
 #define g_bit_SCIFrameEnd(n)                 _SystemFlag[n].Bits.bit1    //串口帧结束
+#define g_bit_SCIFramePreciseStart(n)        _SystemFlag[n].Bits.bit2    //
+
 
 static u16 g_u16_SCISingalFrameRecTime[NUM_UARTCHANNEL];             //串口单帧数据接收时间计时，单位ms
 static u16 g_u16_Message_Length[NUM_UARTCHANNEL];                     //当前已接收到的数据个数
@@ -18,7 +20,8 @@ enum Framestatus_t FrameStatus[NUM_UARTCHANNEL];
 
 void CopyRecData(u8 channel);
 
-void USART_Timer1ms(void)
+
+void USART_Timer100us(void)
 {
     u8 channel;
     
@@ -36,7 +39,7 @@ void USART_Timer1ms(void)
 			g_u16_SCISingalFrameRecTime[channel]=0;
 		}
         
-        if(g_u16_SCISingalFrameRecTime[channel]>=USARTCAN.tout)
+        if(g_u16_SCISingalFrameRecTime[channel]>USARTCAN.UsartProt[channel].inteval)
         {
             if(((USARTCAN.UsartProt[channel].FrameEndInfo.T_byte & FrameEndEn) != FrameEndEn)&&(FrameStatus[channel] == frame_data))
             {
@@ -86,6 +89,7 @@ void CopyRecData(u8 channel)
     memcpy(USARTCAN_Recv[channel].databuf,start,USARTCAN_Recv[channel].lenth);
     memset(l_u8_Receive_Buffer[channel],0,SCI_BUF_MAXLEN);
     USARTCAN_Recv[channel].newupd=ON;
+    OSMboxPost(mBOX_Uart_Recv[channel],(void *)&USARTCAN_Recv[channel].newupd);
 }
 
 void UsartRecieveData(u8 channel,u8 recdata)

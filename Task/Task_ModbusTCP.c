@@ -1,4 +1,5 @@
 #include "Task_ModbusTCP.h"
+#include "Task_PC_Com.h"
 #include "socket.h"	// Just include one header for WIZCHIP
 #include "dhcp.h"
 #include "main.h"
@@ -118,8 +119,17 @@ void Modbus_Server(u8 *aucTCPBuf,u16 usRecBufLen)
             }
             else
             {                
-                memcpy(&aucTCPBuf[9],&TCP_TR_data[(usStartAddr-USARTCAN.addr)*2],usNumber*2);//请求合理
-			
+                //Update_InputSts();
+                //memcpy(&aucTCPBuf[9],&TCP_TR_data[(usStartAddr-USARTCAN.addr)*2],usNumber*2);//请求合理
+                Package_Float(Globle_Framework.Power_5V,&aucTCPBuf[9]);
+                Package_Float(Globle_Framework.CurrentEnvTemp,&aucTCPBuf[13]);
+#if 1
+                aucTCPBuf[17] = Running_Error_Sts(0);
+                aucTCPBuf[18] = Running_Error_Sts(1);
+                aucTCPBuf[19] = Running_Error_Sts(2);
+                aucTCPBuf[20] = Running_Error_Sts(3);
+#endif
+			    
                 aucTCPBuf[8]=(u8)usTxLen;
                 usTxLen += 3;	 
                 aucTCPBuf[4]=(u8)(usTxLen>>8);	 
@@ -459,7 +469,7 @@ void Task_ModbusTCP(void *p_arg)
 }
 
 
-void MBTCP_DataHandler(u8 chnidx,struct USARTCAN_Recv_t *recv,void *arg)
+void MBTCP_DataHandler(u8 chnidx,USARTCAN_Recv_t *recv,void *arg)
 {
     struct wiz_NetInfo_t *mbtcpparm;
     mbtcpparm = (struct wiz_NetInfo_t *)arg;

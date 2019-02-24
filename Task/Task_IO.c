@@ -3,6 +3,9 @@
 //#include "Task_LED.h"
 #include "DrUart.h"
 
+//#define DETECT_ONLY_STARTUP
+
+static u8  DIP_Swtch_Update_En;
 static u16 LED_Blink_time;
 static u8  LED_Blink_End;
 
@@ -32,10 +35,11 @@ static struct DIPType           DigitInput_Sts[DIGIT_INPUT_CHN_NUM];//
 #define Cur_Input_Status(n)		DigitInput_Sts[n].digitstatus.Bits.cur_status
 #define DigitInputTimerEn(n)	DigitInput_Sts[n].digitstatus.Bits.timer_en
 #define INPUT_STS_KEEP_TIME(n)	DigitInput_Sts[n].keep_time
-#define DIGIT_INPUT_FILTER                            100u //拨码开关滤波时间，单位ms
+#define DIGIT_INPUT_FILTER                            100u //数字开关量滤波时间，单位ms
 
 
-
+static u16 timer_test;
+static void DIP_Switch_Detect(void);
 static void DIP_Switch_Mainfunction(void);
 static void INPUT_Check_Mainfunction(void);
 static void LED_MainFunction(void);
@@ -46,25 +50,34 @@ void Blink_LED_Status(u16 timer);
 void TaskIO_Timer1ms(void)
 {
 	u8 i;
+    if(timer_test>=1000)
+    {
+        timer_test = 0;
+        Blink_LED_Status(200);
+    }
+    else
+    {
+        timer_test++;
+    }
 	
 	for(i=0;i<DIP_SWITCH_BITS_NUM;i++)
-	{
+	{//遍历所有拨码开关位
 		if(DIP_TimerEn(i) == ON)
-		{
+		{//若计数器使能，则启动自增
 			DIP_STS_KEEP_TIME(i)++;
 		}
 	}
 
     for(i=0;i<DIGIT_INPUT_CHN_NUM;i++)
-	{
+	{//遍历所有外部开关量输入状态位
 		if(DigitInputTimerEn(i) == ON)
-		{
+		{//若计数器使能，则启动自增
 			INPUT_STS_KEEP_TIME(i)++;
 		}
 	}
     
 	if(LED_Blink_time>0)
-	{
+	{//若LED闪烁时间未到，则继续自减，直到为0
 		LED_Blink_time--;
 		if(LED_Blink_time == 0)
 		{
@@ -75,22 +88,45 @@ void TaskIO_Timer1ms(void)
 
 void Task_IO_Init(void)
 {
+    u8 j;
 	memset(DIP_Switch_Sts,0,sizeof(DIP_Switch_Sts));
     memset(DigitInput_Sts,0,sizeof(DigitInput_Sts));
 	LED_Blink_time = 0;
     LED_Blink_End = OFF;
+    #ifdef DETECT_ONLY_STARTUP
+    DIP_Switch_Detect();
+    DIP_Swtch_Update_En = OFF;
+    #else
+    DIP_Swtch_Update_En = ON;
+    #endif
+    for(j=0;j<DIP_SWITCH_BITS_NUM;j++)
+    {
+        Pre_DIP_Level(j) = 0x01;
+    }
+    for(j=0;j<DIGIT_INPUT_CHN_NUM;j++)
+    {
+        Pre_Input_Level(j) = 0x01;
+    }
 }
 
+/****************************************************************************/
+/*函数名：  Task_IO                                                         */
+/*功能说明：  IO的主函数，调用输入识别函数和输出控制函数                    */        
+/*输入参数：无                                                              */
+/*输出参数：无                                                              */
+/****************************************************************************/
 void Task_IO(void *p_arg)
 {
     
     (void)p_arg;
-    
-    DrGpioInit();
+    Task_IO_Init();
     
     while (1)
     {	
-		DIP_Switch_Mainfunction();
+        if(DIP_Swtch_Update_En == ON)
+        {
+		    DIP_Switch_Mainfunction();
+        }
 		INPUT_Check_Mainfunction();
 		LED_MainFunction();
         OSTimeDlyHMSM(0, 0, 0, 1);
@@ -98,6 +134,12 @@ void Task_IO(void *p_arg)
     
 }
 
+/****************************************************************************/
+/*函数名：  Get_LED_Status                                                  */
+/*功能说明：获取当前LED的状态，0-当前LED为熄灭，1-点亮                      */        
+/*输入参数：无                                                              */
+/*输出参数：无                                                              */
+/****************************************************************************/
 u8 Get_LED_Status(void)
 {
 	u8 sts;
@@ -105,6 +147,12 @@ u8 Get_LED_Status(void)
 	return (sts==ON) ? OFF:ON;
 }
 
+/****************************************************************************/
+/*函数名：  Blink_LED_Status                                                */
+/*功能说明：  控制LED灯闪烁一次，过程为先将LED状态反转，然后保持一段时间    */        
+/*输入参数：mstimer，LED状态反转后保持的时间                                */
+/*输出参数：无                                                              */
+/****************************************************************************/
 void Blink_LED_Status(u16 mstimer)
 {
 	if(Get_LED_Status() == OFF)
@@ -118,6 +166,12 @@ void Blink_LED_Status(u16 mstimer)
 	LED_Blink_time = mstimer;
 }
 
+/********************************************************************************/
+/*函数名：  LED_MainFunction                                                    */
+/*功能说明：  LED控制的主函数，主要用于判断一次LED闪烁是否完成，若时间到则熄灭      */        
+/*输入参数：无                                                                  */
+/*输出参数：无                                                                  */
+/********************************************************************************/
 static void LED_MainFunction(void)
 {
 	if(LED_Blink_End == TRUE)
@@ -127,22 +181,58 @@ static void LED_MainFunction(void)
 	}
 }
 
+/********************************************************************************/
+/*函数名：  DIP_Switch_Detect                                                   */
+/*功能说明：  拨码开关状态识别，上电后只读一次                                    */
+/*输入参数：无                                                                  */
+/*输出参数：无                                                                  */
+/********************************************************************************/
+static void DIP_Switch_Detect(void)
+{
+    u8 i,j,temp;
+    u8 cur_level[DIP_SWITCH_BITS_NUM];
+    memset(cur_level,0,sizeof(cur_level));
+    for(i=0;i<10;i++)
+    {
+        for(j=0;j<DIP_SWITCH_BITS_NUM;j++)
+        {
+            cur_level[j] |= GET_DIP_SWITCH_STATUS(j);//获取当前状态
+        }
+    }
+    
+    Cur_DIP_Status(i) = (cur_level[i]>4) ? 1:0;
+    for(j=0;j<DIP_SWITCH_BITS_NUM;j++)
+    {
+        temp |= Cur_DIP_Status(j)<<j;
+    }
+    Globle_Framework.DIP_SwitchStatus = ~temp;//更新拨码开关值
+}
+
+
+/********************************************************************************/
+/*函数名：  DIP_Switch_Mainfunction                                             */
+/*功能说明：  拨码开关状态识别                                                   */
+/*，判断某个位状态发生改变时开始计时，维持80ms恒定则认为是个有效的切换，并记录      */
+/*输入参数：无                                                                  */
+/*输出参数：无                                                                  */
+/********************************************************************************/
 static void DIP_Switch_Mainfunction(void)
 {
 	u8 i,j;
 	u8 temp=0;
 	u8 cur_level[DIP_SWITCH_BITS_NUM];
-	for(i=0;i<DIP_SWITCH_BITS_NUM;i++)
+    memset(cur_level,0,sizeof(cur_level));
+	for(i=0;i<DIP_SWITCH_BITS_NUM;i++)//8个位依次遍历
 	{
-        cur_level[i] = GET_DIP_SWITCH_STATUS(i);
-		if(Pre_DIP_Level(i) != cur_level[i])
-		{
+        cur_level[i] = GET_DIP_SWITCH_STATUS(i);//获取当前状态
+		if(Pre_DIP_Level(i) != cur_level[i]) //判断当前状态和上次状态是否一致
+		{//不一致的话就启动一个计数器计数
 			DIP_STS_KEEP_TIME(i) = 0u;
 			DIP_TimerEn(i) = ON;
 		}
 		
 		if(DIP_STS_KEEP_TIME(i)>=DIP_SWITCH_FILTER)
-		{
+		{//如果计数器计算达到80ms，说明该状态切换后稳定保持了80ms，认为是一个有效的变化
 			DIP_TimerEn(i) = OFF;
 			DIP_STS_KEEP_TIME(i) = 0u;
 			Cur_DIP_Status(i) = cur_level[i];
@@ -150,43 +240,41 @@ static void DIP_Switch_Mainfunction(void)
 			{
 				temp |= Cur_DIP_Status(j)<<j;
 			}
-			Globle_Framework.DIP_SwitchStatus = ~temp;
+			Globle_Framework.DIP_SwitchStatus = ~temp;//更新拨码开关值
 		}
-		
-	}
-
-	for(i=0;i<DIP_SWITCH_BITS_NUM;i++)
-	{
 		Pre_DIP_Level(i) = cur_level[i];
 	}
 }
 
+/********************************************************************************/
+/*函数名：  InputGPIO_Configuration                                             */
+/*功能说明：外部输入的开关状态识别                                              */
+/*，判断某个位状态发生改变时开始计时，维持100ms恒定则认为是个有效的切换，并记录 */
+/*输入参数：无                                                                  */
+/*输出参数：无                                                                  */
+/********************************************************************************/
 static void INPUT_Check_Mainfunction(void)
 {
     u8 i;
     u8 cur_level[DIGIT_INPUT_CHN_NUM];
     memset(cur_level,0,sizeof(cur_level));
-    for(i=0;i<DIGIT_INPUT_CHN_NUM;i++)
+    for(i=0;i<DIGIT_INPUT_CHN_NUM;i++)//所有输入口按位依次遍历
     {
-        cur_level[i] = GET_DIGIT_INPUT_STATUS(i);
-        if(Pre_Input_Level(i) != cur_level[i])
-        {
+        cur_level[i] = GET_DIGIT_INPUT_STATUS(i);//获取当前状态
+        if(Pre_Input_Level(i) != cur_level[i])//判断当前状态和上次状态是否一致
+        {//不一致的话就启动一个计数器计数
             INPUT_STS_KEEP_TIME(i) = 0u;
             DigitInputTimerEn(i) = ON;
         }
         
         if(INPUT_STS_KEEP_TIME(i) >= DIGIT_INPUT_FILTER)
-        {
+        {//如果计数器计算达到100ms，说明该状态切换后稳定保持了100ms，认为是一个有效的变化
             DigitInputTimerEn(i) = OFF;
             INPUT_STS_KEEP_TIME(i) = 0u;
             Cur_Input_Status(i) = cur_level[i];
+            //更新该输入口状态值
             Globle_Framework.Digit_InputStatus = (cur_level[i]==0)? ((1<<i)|Globle_Framework.Digit_InputStatus):((~(1<<i))&Globle_Framework.Digit_InputStatus);
         }
-        
-    }
-
-    for(i=0;i<DIGIT_INPUT_CHN_NUM;i++)
-    {
         Pre_Input_Level(i) = cur_level[i];
     }
 }

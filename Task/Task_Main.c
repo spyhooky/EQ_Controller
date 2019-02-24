@@ -4,25 +4,31 @@
 #include "Task_MQTT.h"
 #include "Task_HTTP.h"
 #include "Task_IO.h"
+#include "Task_PC_Com.h"
+
 //#include "Task_LED.h"
 #include "transport.h"
 
 #define STKSIZE_IO                     	 STK_SIZE_64
-#define STKSIZE_LEDR                     STK_SIZE_32
-#define STKSIZE_LEDG                     STK_SIZE_32
+#define STKSIZE_PCMSG_RECV               STK_SIZE_1024
+#define STKSIZE_FREQ_CONVER              STK_SIZE_1024
+#define STKSIZE_ENCODER                  STK_SIZE_256
 #define STKSIZE_TCPIP                    STK_SIZE_512
 #define STKSIZE_MBTCP                    STK_SIZE_256
 #define STKSIZE_MQTT                     STK_SIZE_1024                   
 #define STKSIZE_HTTP                     STK_SIZE_512
 #define STKSIZE_BACKGRD                  STK_SIZE_1024
 
+
+
 typedef  void (*FunVoidType)(void);
 #define ApplicationMsp          0x8008000 
 #define ApplicationVect         (ApplicationMsp+4)
 
 OS_STK STK_IO[STKSIZE_IO];
-OS_STK STK_ledR[STKSIZE_LEDR];
-OS_STK STK_ledG[STKSIZE_LEDG];
+OS_STK STK_PCMSG_RECV[STKSIZE_PCMSG_RECV];
+OS_STK STK_FREQ_CONVER[STKSIZE_FREQ_CONVER];
+OS_STK STK_ENCODER[STKSIZE_ENCODER];
 #ifdef TCPIP_ENABLE
 OS_STK STK_TCPIP[STKSIZE_TCPIP];
 #endif
@@ -61,45 +67,99 @@ void Task_BackGround(void *p_arg);
 // }
 // #pragma arm section
 
+/****************************************************************************/
+/*函数名：  Task_Main                                                       */
+/*功能说明：ucos启动后运行的第一个task，可以理解为初始化的task，主要用于创建其他*/
+/*          task或初始化相关代码                                             */
+/*输入参数：p_arg，本项目上该参数为空                                         */
+/*输出参数：无                                                              */
+/***************************************************************************/
+void Config_DrCommon(void)
+{
+    //RCC_DeInit();
+    
+    //NVIC_DeInit();
+    
+    ReadFlashCfg();//读FLASH数据
+    PERIPH_CLOCK_IO_ALL_ENABLE;//使能IO相关的时钟域
+    DrGpioInit();
+	DrAdc();//初始化AD寄存器
+    DrTimer_Init();//初始化定时器
+    DrUsart_Init();//初始化uart模块
+    DrCAN_Init(); //初始化CAN
+    #ifdef W5500_ENABLE
+        W5500_SPI_Config();//W5500 SPI初始化
+        Ethernet_Init();//以太网初始化
+    #endif
+    
+    /* 独立看门狗，时间=64/40k*312=500ms */
+    
+}
+
+
+/****************************************************************************/
+/*函数名：  Task_Main                                                       */
+/*功能说明：ucos启动后运行的第一个task，可以理解为初始化的task，主要用于创建其他*/
+/*          task或初始化相关代码                                             */
+/*输入参数：p_arg，本项目上该参数为空                                         */
+/*输出参数：无                                                              */
+/***************************************************************************/
+
 void Task_Main(void *p_arg)
 {
     
     (void)p_arg;
+    Config_DrCommon();
 
+    //创建IO的task，传入的参数为项目配置信息
 	OSTaskCreate(Task_IO, (void *)&gWIZNETINFO, (OS_STK*)&STK_IO[STKSIZE_IO-1], TASK_PRIO_IO);
-	//OSTaskCreate(Task_LedR, (void *)&gWIZNETINFO, (OS_STK*)&STK_ledR[STKSIZE_LEDR-1], TASK_PRIO_LEDR);
-    //OSTaskCreate(Task_LedG, (void *)0, (OS_STK*)&STK_ledG[STKSIZE_LEDG-1], TASK_PRIO_LEDG);//LED任务创建
+	//创建和PC通讯的task，传入的参数为项目配置信息
+    OSTaskCreate(Task_PC_Message_Recv, (void *)&gWIZNETINFO, (OS_STK*)&STK_PCMSG_RECV[STKSIZE_PCMSG_RECV-1], TASK_PRIO_PCMSG_RECV);
+    //创建变频器铜须的task，传入的参数为项目配置信息
+    //OSTaskCreate(Task_Freq_Convert, (void *)&gWIZNETINFO, (OS_STK*)&STK_FREQ_CONVER[STKSIZE_FREQ_CONVERT-1], TASK_PRIO_FREQ_CONVERT);
+    //创建IO的task，传入的参数为项目配置信息
+    //OSTaskCreate(Task_Encoder, (void *)&gWIZNETINFO, (OS_STK*)&STK_ENCODER[STKSIZE_ENCODER-1], TASK_PRIO_ENCODER);
     
     #ifdef TCPIP_ENABLE
     if((gWIZNETINFO.session_mode==S_tcpip_client)||(gWIZNETINFO.session_mode==S_tcpip_server))
     {
-        OSTaskCreate(Task_TCPIP, (void *)&gWIZNETINFO, (OS_STK*)&STK_TCPIP[STKSIZE_TCPIP-1], TASK_PRIO_TCPIP);//创建TCPIP的任务
+        OSTaskCreate(Task_TCPIP, (void *)&gWIZNETINFO, (OS_STK*)&STK_TCPIP[STKSIZE_TCPIP-1], TASK_PRIO_TCPIP);//创建TCPIP的任务，传入的参数为项目配置
     }
     #endif
     #ifdef MBTCP_ENABLE
     if((gWIZNETINFO.session_mode==S_mb_client)||(gWIZNETINFO.session_mode==S_mb_server))
     {
-        OSTaskCreate(Task_ModbusTCP, (void *)&gWIZNETINFO, (OS_STK*)&STK_MBTCP[STKSIZE_MBTCP-1], TASK_PRIO_MBTCP);//创建MODBUS TCP任务
+        OSTaskCreate(Task_ModbusTCP, (void *)&gWIZNETINFO, (OS_STK*)&STK_MBTCP[STKSIZE_MBTCP-1], TASK_PRIO_MBTCP);//创建MODBUS TCP任务，传入的参数为项目配置
     }
     #endif
     
     #ifdef MQTT_ENABLE
     if(gWIZNETINFO.session_mode==S_mqtt)
     {
-        OSTaskCreate(MQTT_task, (void *)&gWIZNETINFO, &STK_MQTT[STKSIZE_MQTT-1], TASK_PRIO_MQTT); //创建MQTT
+        OSTaskCreate(MQTT_task, (void *)&gWIZNETINFO, &STK_MQTT[STKSIZE_MQTT-1], TASK_PRIO_MQTT); //创建MQTT，传入的参数为项目配置
     }
     #endif
     
     #ifdef HTTP_ENABLE
-    OSTaskCreate(Task_HTTP, (void *)&gWIZNETINFO, (OS_STK*)&STK_HTTP[STKSIZE_HTTP-1], TASK_PRIO_HTTP);//创建网页通讯任务
+    OSTaskCreate(Task_HTTP, (void *)&gWIZNETINFO, (OS_STK*)&STK_HTTP[STKSIZE_HTTP-1], TASK_PRIO_HTTP);//创建网页通讯任务，传入的参数为项目配置
  	#endif
     
-    OSTaskCreate(Task_BackGround, (void *)&gWIZNETINFO, (OS_STK*)&STK_BACKGRD[STKSIZE_BACKGRD-1], TASK_PRIO_BACKGRD);//创建后台task，用于轮询查状态的，如判断串口或CAN是否收到新帧
+    OSTaskCreate(Task_BackGround, (void *)&gWIZNETINFO, (OS_STK*)&STK_BACKGRD[STKSIZE_BACKGRD-1], TASK_PRIO_BACKGRD);//创建后台task，用于轮询查状态的，对时间要求不是非常高的功能，可放在此task内执行
     
-    OSTaskSuspend(TASK_PRIO_MAIN);
+    //OSTaskSuspend(TASK_PRIO_MAIN);//挂起该task
+    while (1)
+    {
+        //最低优先级，可理解为传统裸机程序main里的while，始终循环执行，永不退出，其他task和定时器均能抢占该程序
+    }
 }
 
-
+/****************************************************************************/
+/*函数名：  Task_BackGround                                                  */
+/*功能说明：该task配置成1ms周期的程序，*/
+/*          task或初始化相关代码                                             */
+/*输入参数：p_arg，项目相关配置参数                                         */
+/*输出参数：无                                                              */
+/***************************************************************************/
 void Task_BackGround(void *p_arg)
 {
     #ifdef WATCHDOG_ENABLE
@@ -107,28 +167,34 @@ void Task_BackGround(void *p_arg)
         IWDG_SetPrescaler(IWDG_Prescaler_256);//时钟分频40k/256=156hz（6.4ms）
         IWDG_SetReload(468);//看门狗超时时间为3s 不能大于0xfff（4095） 781为5s
         IWDG_ReloadCounter();
-        IWDG_Enable();
+        IWDG_Enable();//软件看门狗使能
     #endif
 
     while(1)
     {
-        IWDG_ReloadCounter();
-        W5500_StatusDetect();
-		UART_CAN_Handler(p_arg);
-		ReadADCAverageValue(Background_Timer,CYCLE_READ_ADC_VALUE);
-		Calc_CurrentTemp(Background_Timer,CYCLE_CALC_ENV_TEMP);
-        Calc_Power_5V(Background_Timer,CYCLE_CALC_POWER_VOL);
+        IWDG_ReloadCounter();//喂狗
+        W5500_StatusDetect();//W5500状态监测
+		//UART_CAN_Handler(p_arg);//暂时不使用该功能
+		
 		/******************APPLICATION START******************/
         
-		
+		ReadADCAverageValue(Background_Timer,CYCLE_READ_ADC_VALUE);//AD采样值均值计算
+		Calc_CurrentTemp(Background_Timer,CYCLE_CALC_ENV_TEMP);//计算当前温度值
+        Calc_Power_5V(Background_Timer,CYCLE_CALC_POWER_VOL);//计算当前5V电压值
 		
 		/******************APPLICATION END******************/
-        OSTimeDlyHMSM(0, 0, 0, CYCLE_BACKGROUND);//必不可少，否则优先级低的任务得不到运行
+        OSTimeDlyHMSM(0, 0, 0, CYCLE_BACKGROUND);//必不可少，否则优先级低的任务得不到运行，时间为1ms
 		Background_Timer++;
     }
 }
 
-//以太网数据转串口或CAN
+/****************************************************************************/
+/*函数名：  ETH2Usartcan_send                                                  */
+/*功能说明：以太网数据转串口或CAN*/
+/*输入参数：无                                                              */
+/*输出参数：无                                                              */
+/***************************************************************************/
+//该函数暂时不使用
 void ETH2Usartcan_send(u8 uartcan_chn,u8 *databuf,u16 lenth)
 {
     u16 canid;
@@ -223,7 +289,13 @@ void ETH2Usartcan_send(u8 uartcan_chn,u8 *databuf,u16 lenth)
     //LED_BLINK_ONCE(S_NORMAL);
 }
 
-//读flash区数据，顺序必须和地址配置表的一致，否则会出现错序
+
+/****************************************************************************/
+/*函数名：  ReadFlashCfg                                                    */
+/*功能说明：读flash区数据，顺序必须和地址配置表的一致，否则会出现错序           */
+/*输入参数：无                                                              */
+/*输出参数：无                                                              */
+/***************************************************************************/
 void ReadFlashCfg(void)
 {
     struct EthernetCfg_t *readdata;
@@ -327,6 +399,12 @@ void dylms(unsigned int u)
 			for(x=0;x<10000;x++);
 }
 
+/****************************************************************************/
+/*函数名：  HTTP_DataHandler                                                 */
+/*功能说明：WEB数据处理                                                      */
+/*输入参数：p_arg，本项目上该参数为空                                         */
+/*输出参数：无                                                               */
+/****************************************************************************/
 /**********************************/
 void HTTP_DataHandler(void)
 {
@@ -413,6 +491,7 @@ void HTTP_DataHandler(void)
     f_GenSoftwareReset();//flash更新后启动复位，按照新的配置运行
 }
 
+//软件复位
 void f_GenSoftwareReset(void)
 {
     __set_FAULTMASK(1);

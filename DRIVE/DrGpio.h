@@ -13,8 +13,8 @@ typedef struct IO_REG_GROUP_t
 {
     IO_REG_Init Input_Init[DIGIT_INPUT_CHN_NUM];
     u8 (*_INPUT_STS) (GPIO_TypeDef* port, u16 pin);
-    u8 (*_SET_STS) (GPIO_TypeDef* port, u16 pin);
-    u8 (*_RESET_STS) (GPIO_TypeDef* port, u16 pin);
+    void (*_SET_STS) (GPIO_TypeDef* port, u16 pin);
+    void (*_RESET_STS) (GPIO_TypeDef* port, u16 pin);
 }IO_REG_GROUP;
 
 #define DIP_SWITCH_REG_PORT(n)          DIP_SWITCH_REG.Input_Init[n].GPIO_PORT
@@ -27,8 +27,8 @@ typedef struct IO_REG_GROUP_t
 
 #define DIGIT_OUTPUT_REG_PORT(n)        DIGIT_OUTPUT_REG.Input_Init[n].GPIO_PORT
 #define DIGIT_OUTPUT_REG_PIN(n)         DIGIT_OUTPUT_REG.Input_Init[n].GPIO_PIN
-#define SET_DIGIT_OUTPUT_STATUS(n,m)    \
-    { if(m==0) {DIGIT_OUTPUT_REG._RESET_STS(DIGIT_OUTPUT_REG_PORT(n),DIGIT_OUTPUT_REG_PIN(n));}\
+#define SET_DIGIT_OUTPUT_STATUS(n,s)    \
+    { if(s==0) {DIGIT_OUTPUT_REG._RESET_STS(DIGIT_OUTPUT_REG_PORT(n),DIGIT_OUTPUT_REG_PIN(n));}\
         else {DIGIT_OUTPUT_REG._SET_STS(DIGIT_OUTPUT_REG_PORT(n),DIGIT_OUTPUT_REG_PIN(n)); }\
 
 

@@ -84,7 +84,7 @@ extern struct mqtt_recv_t mqtt_recv_msg;
 
 void MQTT_Timer1ms(void);
 void MQTT_task(void *p_arg);
-void MQTT_DataHandler(u8 chnidx,struct USARTCAN_Recv_t *recv);
+void MQTT_DataHandler(u8 chnidx,USARTCAN_Recv_t *recv);
 void MQTT_PublishMsg(struct MQTT_Topic_Info_t* Pmsg);
 
 #endif

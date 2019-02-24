@@ -3,7 +3,7 @@
 
 
 
-/* ¶Áflash */
+/* flash²Á³öº¯Êý */
 unsigned char FlashErase(unsigned long l_u32StartAddr, unsigned char l_u32PageNum)
 {
     

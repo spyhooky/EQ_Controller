@@ -15,7 +15,7 @@ void UART4_Send_Data(unsigned char *send_buff,unsigned int length);
 void UART5_Send_Data(unsigned char *send_buff,unsigned int length);
 
 void DrUsart_Init(void);
-void USART_Timer1ms(void);
+void USART_Timer100us(void);
 
 #endif
 

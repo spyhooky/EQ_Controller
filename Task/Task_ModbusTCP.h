@@ -6,6 +6,6 @@
 
 void MBTCP_Timer1ms(void);
 void Task_ModbusTCP(void *p_arg);
-void MBTCP_DataHandler(u8 chnidx,struct USARTCAN_Recv_t *recv,void *arg);
+void MBTCP_DataHandler(u8 chnidx,USARTCAN_Recv_t *recv,void *arg);
 #endif
 

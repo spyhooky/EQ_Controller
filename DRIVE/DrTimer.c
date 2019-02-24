@@ -15,6 +15,7 @@ void TIM2_IRQ(void)/* 100uS */
     
 //    unsigned char l_u8i = 0;
 	Timer_100us_Application();
+    USART_Timer100us();
 
     /* 100uS */
     if (g_u16Timer100usDelayCount > 0)
@@ -80,7 +81,7 @@ void TIM2_Config(void)/* 100us */
     RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
     TIM_TimeBaseStructure.TIM_Period = 19;/* 20ºÍ360 100us*/
     TIM_TimeBaseStructure.TIM_Prescaler = 359;
-    TIM_TimeBaseStructure.TIM_ClockDivision = 0;
+    TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;
     TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
     TIM_TimeBaseInit(TIM2, &TIM_TimeBaseStructure);
     TIM_ITConfig(TIM2, TIM_IT_Update|TIM_IT_Trigger, ENABLE);
@@ -104,8 +105,8 @@ void TIM3_Config(void)/* 1ms */
     TIM_DeInit(TIM3);
     RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3, ENABLE);
     TIM_TimeBaseStructure.TIM_Period = 1;/* 2ºÍ18000 1ms*/
-    TIM_TimeBaseStructure.TIM_Prescaler = 35999;
-    TIM_TimeBaseStructure.TIM_ClockDivision = 0;
+    TIM_TimeBaseStructure.TIM_Prescaler = 1799;
+    TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;
     TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
     TIM_TimeBaseInit(TIM3, &TIM_TimeBaseStructure);
     TIM_ITConfig(TIM3, TIM_IT_Update|TIM_IT_Trigger, ENABLE);

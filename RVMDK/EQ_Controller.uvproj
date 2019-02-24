@@ -429,11 +429,6 @@
               <FilePath>..\Task\Task_IO.c</FilePath>
             </File>
             <File>
-              <FileName>Task_LED.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Task\Task_LED.c</FilePath>
-            </File>
-            <File>
               <FileName>Task_Main.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Task\Task_Main.c</FilePath>
@@ -457,6 +452,11 @@
               <FileName>Task_HTTP.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Task\Task_HTTP.c</FilePath>
+            </File>
+            <File>
+              <FileName>Task_PC_Com.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Task\Task_PC_Com.c</FilePath>
             </File>
           </Files>
         </Group>

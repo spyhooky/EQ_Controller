@@ -50,8 +50,6 @@
 
 
 void Task_Main(void *p_arg);
-void Config_DrCommon(void);
-
 	
 
 #ifdef __cplusplus

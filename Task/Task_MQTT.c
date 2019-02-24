@@ -713,7 +713,7 @@ void MQTTSub_task(void *p_arg)
     }
 }
 
-void MQTT_DataHandler(u8 chnidx,struct USARTCAN_Recv_t *recv)
+void MQTT_DataHandler(u8 chnidx,USARTCAN_Recv_t *recv)
 {
     
     #ifdef CJSON_ENABLE

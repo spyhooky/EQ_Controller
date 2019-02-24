@@ -362,7 +362,7 @@
               <MiscControls>--c99</MiscControls>
               <Define>STM32F10X_CL,USE_STDPERIPH_DRIVER</Define>
               <Undefine></Undefine>
-              <IncludePath>..\uCOSII\CONFIG;..\uCOSII\PORT;..\uCOSII\CORE;..\FWLIB\inc;..\CMSIS;..\DRIVE;..\USER;..\Task;..\Internet;..\Ethernet;..\Ethernet\W5500;..\Internet;..\Internet\HTTP;..\Internet\DNS;..\Internet\DHCP;..\MQTT</IncludePath>
+              <IncludePath>..\uCOSII\CONFIG;..\uCOSII\PORT;..\uCOSII\CORE;..\FWLIB\inc;..\CMSIS;..\DRIVE;..\USER;..\Task;..\Internet;..\Ethernet;..\Ethernet\W5500;..\Internet;..\Internet\HTTP;..\Internet\DNS;..\Internet\DHCP;..\MQTT;..\Framework</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -427,11 +427,6 @@
               <FileName>Task_IO.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Task\Task_IO.c</FilePath>
-            </File>
-            <File>
-              <FileName>Task_LED.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Task\Task_LED.c</FilePath>
             </File>
             <File>
               <FileName>Task_Main.c</FileName>
