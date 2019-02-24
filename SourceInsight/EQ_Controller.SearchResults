@@ -1,4 +1,8 @@
----- Framework_Timer1ms Matches (3 in 3 files) ----
-TIM3_IRQ in DrTimer.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\DRIVE) : 	Framework_Timer1ms();
-framework.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\Framework) line 28 : void Framework_Timer1ms(void)
-framework.h (D:\Develop\李总\Code\设备控制器\EQ_Controller\Framework) line 7 : void Framework_Timer1ms(void);
+---- Get_Crc16 Matches (7 in 3 files) ----
+Error_Code in Task_PC_Com.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\Task) :     CrcCheck = Get_Crc16(RespondToPC.databuf,RespondToPC.datalen-2);
+Node_Frame_Parse in Task_PC_Com.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\Task) :                 CrcCheck = Get_Crc16(data,len-2);
+Node_Frame_Parse in Task_PC_Com.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\Task) :                     CrcCheck = Get_Crc16(RespondToPC.databuf,index);
+Node_Frame_Parse in Task_PC_Com.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\Task) :                 CrcCheck = Get_Crc16(data,len-2);
+Node_Frame_Parse in Task_PC_Com.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\Task) :                     CrcCheck = Get_Crc16(RespondToPC.databuf,index);
+variable.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\Framework) line 186 : u16 Get_Crc16(u8 *puchMsg,u16 usDataLen) 
+variable.h (D:\Develop\李总\Code\设备控制器\EQ_Controller\Framework) line 179 : u16 Get_Crc16(u8 *puchMsg,u16 usDataLen);

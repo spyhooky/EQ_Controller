@@ -1,19 +1,7 @@
 #ifndef __TASK_PC_MSG_RECV_H
 #define __TASK_PC_MSG_RECV_H
 
-typedef union {
-    u8 bytetype;
-    struct {
-        u8  bit0              :1;
-        u8  bit1              :1;
-        u8  bit2              :1;
-    	u8  bit3              :1;
-        u8  bit4              :1;
-    	u8  bit5              :1;
-        u8  bit6              :1;
-    	u8  bit7              :1;
-    }Bits;
-}digitstatus;
+
 extern volatile digitstatus    	_Running_Error_Sts[4];//
 #define Running_Error_Sts(n)    _Running_Error_Sts[n].bytetype
 #define Suspende_Reset  		_Running_Error_Sts[0].Bits.bit0 //吊杆复位
@@ -34,6 +22,7 @@ extern volatile digitstatus    	_Running_Error_Sts[4];//
 
 void Task_PC_Message_Recv(void *p_arg);
 void Update_InputSts(void);
+void Uart_Transmit(u8 chn,u8 *buf, u16 lenth);
 
 
 

@@ -3,11 +3,13 @@
 //#include "Task_LED.h"
 #include "DrUart.h"
 
-//#define DETECT_ONLY_STARTUP
+#define DETECT_ONLY_STARTUP
 
 static u8  DIP_Swtch_Update_En;
 static u16 LED_Blink_time;
 static u8  LED_Blink_End;
+volatile digitstatus    	Relay_Output_Sts;//
+
 
 struct DIPType
 {
@@ -37,11 +39,14 @@ static struct DIPType           DigitInput_Sts[DIGIT_INPUT_CHN_NUM];//
 #define INPUT_STS_KEEP_TIME(n)	DigitInput_Sts[n].keep_time
 #define DIGIT_INPUT_FILTER                            100u //数字开关量滤波时间，单位ms
 
+/**********仅仅测试串口时使用************/
+static u16 en_test=0;//该值写成1时，默认500ms周期向外部发送数据
+/****************************************/
 
-static u16 timer_test;
 static void DIP_Switch_Detect(void);
 static void DIP_Switch_Mainfunction(void);
 static void INPUT_Check_Mainfunction(void);
+static void Output_MainFunction(void);
 static void LED_MainFunction(void);
 
 u8 Get_LED_Status(void);
@@ -50,15 +55,6 @@ void Blink_LED_Status(u16 timer);
 void TaskIO_Timer1ms(void)
 {
 	u8 i;
-    if(timer_test>=1000)
-    {
-        timer_test = 0;
-        Blink_LED_Status(200);
-    }
-    else
-    {
-        timer_test++;
-    }
 	
 	for(i=0;i<DIP_SWITCH_BITS_NUM;i++)
 	{//遍历所有拨码开关位
@@ -107,6 +103,20 @@ void Task_IO_Init(void)
     {
         Pre_Input_Level(j) = 0x01;
     }
+    //Relay_Output_Sts=0;
+}
+
+static void Output_MainFunction(void)
+{
+    if(Band_Type_Brake_Out == ON)
+    {
+        RELAY_1_OUT(ON);
+    }
+    else
+    {
+        RELAY_1_OUT(OFF);
+    }
+
 }
 
 /****************************************************************************/
@@ -117,19 +127,35 @@ void Task_IO_Init(void)
 /****************************************************************************/
 void Task_IO(void *p_arg)
 {
-    
+    static u16 testcnt;
     (void)p_arg;
     Task_IO_Init();
-    
+    u8 data[5] ={0x11,0x22,0x33,0x44,0x55};
     while (1)
     {	
+        if(en_test==1)
+        {
+            if(testcnt>=500)
+            {
+                testcnt = 0;
+                Blink_LED_Status(200);
+                Uart_Transmit(2,&data,5);
+            }
+            else
+            {
+                testcnt++;
+            }
+        }
+        
         if(DIP_Swtch_Update_En == ON)
         {
 		    DIP_Switch_Mainfunction();
         }
 		INPUT_Check_Mainfunction();
 		LED_MainFunction();
+        Output_MainFunction();
         OSTimeDlyHMSM(0, 0, 0, 1);
+        
     }
     
 }
@@ -196,13 +222,14 @@ static void DIP_Switch_Detect(void)
     {
         for(j=0;j<DIP_SWITCH_BITS_NUM;j++)
         {
-            cur_level[j] |= GET_DIP_SWITCH_STATUS(j);//获取当前状态
+            cur_level[j] += GET_DIP_SWITCH_STATUS(j);//获取当前状态
         }
     }
     
-    Cur_DIP_Status(i) = (cur_level[i]>4) ? 1:0;
+    temp = 0;
     for(j=0;j<DIP_SWITCH_BITS_NUM;j++)
     {
+        Cur_DIP_Status(j) = (cur_level[j]>4) ? 1:0;
         temp |= Cur_DIP_Status(j)<<j;
     }
     Globle_Framework.DIP_SwitchStatus = ~temp;//更新拨码开关值

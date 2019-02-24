@@ -102,7 +102,7 @@ uint8_t SPI_ReadByte(void)
 	return SPI2->DR;  						    
 }
 /**
-  * @brief  进入临界区
+  * @brief  进入临界区 
   * @retval None
   */
 void SPI_CrisEnter(void)

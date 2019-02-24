@@ -147,8 +147,8 @@ static void OutputGPIO_Configuration(void)
 
     for(i=0;i<DIGIT_OUTPUT_NUM;i++)
     {
-        GPIO_InitStructure.GPIO_Pin =DIP_SWITCH_REG_PIN(i);
-	    GPIO_Init(DIP_SWITCH_REG_PORT(i), &GPIO_InitStructure);
+        GPIO_InitStructure.GPIO_Pin =DIGIT_OUTPUT_REG_PIN(i);
+	    GPIO_Init(DIGIT_OUTPUT_REG_PORT(i), &GPIO_InitStructure);
     }
 }
 

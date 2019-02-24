@@ -1,6 +1,7 @@
 #include "main.h"
 
 #include "Task_PC_Com.h"
+#include "Task_IO.h"
 
 #ifdef __TASK_PC_MSG_RECV_H
 
@@ -24,7 +25,7 @@ enum Error_Type{
     Error_Func,Error_Check,Error_Timeout
 };
 
-#define UART_PC_MESSAGE_CHN                RS232_1
+#define UART_PC_MESSAGE_CHN                RS485_2
 
 OS_EVENT *mBOX_PC_Message_Send;
 
@@ -41,16 +42,29 @@ volatile digitstatus    	_Running_Error_Sts[4];//
 INT8U err;
 
 
-static void Error_Code(u8 err)
+static void Postive_Responde(u8 func)
 {
     u16 CrcCheck;
     RespondToPC.datalen = 4;
     RespondToPC.databuf[0] = Globle_Framework.DIP_SwitchStatus;
-    RespondToPC.databuf[1] = 0x80 | err;
+    RespondToPC.databuf[1] = func;
     CrcCheck = Get_Crc16(RespondToPC.databuf,RespondToPC.datalen-2);
-    RespondToPC.databuf[2] = CrcCheck>>8;
-    RespondToPC.databuf[3] = CrcCheck%256;
+    RespondToPC.databuf[2] = CrcCheck%256;
+    RespondToPC.databuf[3] = CrcCheck>>8;
 }
+
+static void Negtive_Responde(u8 err)
+{
+    u16 CrcCheck;
+    RespondToPC.datalen = 4;
+    RespondToPC.databuf[0] = Globle_Framework.DIP_SwitchStatus;
+    RespondToPC.databuf[1] = 0x80;
+    RespondToPC.databuf[2] = err;
+    CrcCheck = Get_Crc16(RespondToPC.databuf,RespondToPC.datalen-2);
+    RespondToPC.databuf[3] = CrcCheck%256;
+    RespondToPC.databuf[4] = CrcCheck>>8;
+}
+
 
 void Update_InputSts(void)
 {
@@ -110,97 +124,105 @@ void Node_Frame_Parse(u8 *data, u16 len)
     u16 CrcCheck;
     u16 index;
     index = 0;
-    switch(data[1])
+    volatile u8 aaa[4];
+    if(Globle_Framework.DIP_SwitchStatus == data[0])
     {
-        case Polling:
-            if(len == 4U)
-            {
-                CrcCheck = Get_Crc16(data,len-2);
-                if(((CrcCheck>>8) == data[2])&&(CrcCheck%256 == data[3]))
+        switch(data[1])
+        {
+            case Polling:
+                if(len == 4U)
                 {
-                    Update_InputSts();
-                    RespondToPC.datalen = 17;
-                    RespondToPC.databuf[index++] = data[0];
-                    RespondToPC.databuf[index++] = data[1];
-                    RespondToPC.databuf[index++] = 12u;
-                    Package_Float(Globle_Framework.Power_5V,&RespondToPC.databuf[index]);
-                    index += 4;
-                    Package_Float(Globle_Framework.CurrentEnvTemp,&RespondToPC.databuf[index]);
-                    index += 4;
-                    RespondToPC.databuf[index++] = Running_Error_Sts(0);
-                    RespondToPC.databuf[index++] = Running_Error_Sts(1);
-                    RespondToPC.databuf[index++] = Running_Error_Sts(2);
-                    RespondToPC.databuf[index++] = Running_Error_Sts(3);
-                    CrcCheck = Get_Crc16(RespondToPC.databuf,index);
-                    RespondToPC.databuf[index++] = CrcCheck>>8;
-                    RespondToPC.databuf[index++] = CrcCheck%256;
+                    CrcCheck = Get_Crc16(data,len-2);
+                    if(((CrcCheck>>8) == data[3])&&(CrcCheck%256 == data[2]))
+                    {
+                        RespondToPC.datalen = 17;
+                        RespondToPC.databuf[index++] = data[0];
+                        RespondToPC.databuf[index++] = data[1];
+                        RespondToPC.databuf[index++] = 12u;
+                        Package_Float(Globle_Framework.Power_5V,&RespondToPC.databuf[index]);
+                        index += 4;
+                        Package_Float(Globle_Framework.CurrentEnvTemp,&RespondToPC.databuf[index]);
+                        index += 4;
+                        RespondToPC.databuf[index++] = _Running_Error_Sts[0].bytetype;
+                        RespondToPC.databuf[index++] = _Running_Error_Sts[1].bytetype;
+                        RespondToPC.databuf[index++] = _Running_Error_Sts[2].bytetype;
+                        RespondToPC.databuf[index++] = _Running_Error_Sts[3].bytetype;
+                        CrcCheck = Get_Crc16(RespondToPC.databuf,index);
+                        RespondToPC.databuf[index++] = CrcCheck%256;
+                        RespondToPC.databuf[index++] = CrcCheck>>8;
+                    }
+                    else
+                    {
+                        Negtive_Responde(Error_Check);
+                    }
                 }
                 else
                 {
-                    Error_Code(Error_Check);
+                    Negtive_Responde(Error_Timeout);
                 }
-            }
-            else
-            {
-                Error_Code(Error_Timeout);
-            }
 
-        break;
-        case Rope_Wire_F:
+            break;
+            case Rope_Wire_F:
+                Band_Type_Brake_Out = 1;
+                Postive_Responde(Rope_Wire_F);
+            break;
+            case Suspender_Min_F:
 
-        break;
-        case Suspender_Min_F:
-
-        break;
-        case Suspender_Emergency_Stop_F:
-            // 当前用于调试，若上位机未铜须成功，启用modbus RTU进行调试
-            if(len >= 4U)
-            {
-                CrcCheck = Get_Crc16(data,len-2);
-                if(((CrcCheck>>8) == data[6])&&(CrcCheck%256 == data[7]))
+            break;
+            case Suspender_Emergency_Stop_F:
+                // 当前用于调试，若上位机未铜须成功，启用modbus RTU进行调试
+                if(len >= 4U)
                 {
-                    Update_InputSts();
-                    RespondToPC.datalen = 17;
-                    RespondToPC.databuf[index++] = data[0];
-                    RespondToPC.databuf[index++] = 3;//data[1];
-                    RespondToPC.databuf[index++] = 12u;
-                    Package_Float(Globle_Framework.Power_5V,&RespondToPC.databuf[index]);
-                    index += 4;
-                    Package_Float(Globle_Framework.CurrentEnvTemp,&RespondToPC.databuf[index]);
-                    index += 4;
-                    RespondToPC.databuf[index++] = Running_Error_Sts(0);
-                    RespondToPC.databuf[index++] = Running_Error_Sts(1);
-                    RespondToPC.databuf[index++] = Running_Error_Sts(2);
-                    RespondToPC.databuf[index++] = Running_Error_Sts(3);
-                    CrcCheck = Get_Crc16(RespondToPC.databuf,index);
-                    RespondToPC.databuf[index++] = CrcCheck>>8;
-                    RespondToPC.databuf[index++] = CrcCheck%256;
+                    CrcCheck = Get_Crc16(data,len-2);
+                    if(((CrcCheck>>8) == data[6])&&(CrcCheck%256 == data[7]))
+                    {
+                        RespondToPC.datalen = 17;
+                        RespondToPC.databuf[index++] = data[0];
+                        RespondToPC.databuf[index++] = 3;//data[1];
+                        RespondToPC.databuf[index++] = 12u;
+                        Package_Float(Globle_Framework.Power_5V,&RespondToPC.databuf[index]);
+                        index += 4;
+                        Package_Float(Globle_Framework.CurrentEnvTemp,&RespondToPC.databuf[index]);
+                        index += 4;
+                        RespondToPC.databuf[index++] = _Running_Error_Sts[0].bytetype;
+                        RespondToPC.databuf[index++] = _Running_Error_Sts[1].bytetype;
+                        RespondToPC.databuf[index++] = _Running_Error_Sts[2].bytetype;
+                        RespondToPC.databuf[index++] = _Running_Error_Sts[3].bytetype;
+                        CrcCheck = Get_Crc16(RespondToPC.databuf,index);
+                        RespondToPC.databuf[index++] = CrcCheck>>8;
+                        RespondToPC.databuf[index++] = CrcCheck%256;
+                    }
+                    else
+                    {
+                        Negtive_Responde(Error_Check);
+                    }
                 }
                 else
                 {
-                    Error_Code(Error_Check);
+                    Negtive_Responde(Error_Timeout);
                 }
-            }
-            else
-            {
-                Error_Code(Error_Timeout);
-            }
-        break;
-        case Suspender_Target_F:
+            break;
+            case Suspender_Target_F:
 
-        break;
-        case ParaDownload_Independent:
+            break;
+            case ParaDownload_Independent:
 
-        break;
-        case Read_Common_Para:
+            break;
+            case Read_Common_Para:
 
-        break;
-        case Read_Independent_Para:
+            break;
+            case Read_Independent_Para:
 
-        break;
-        default:
-            Error_Code(Error_Func);
-        break;
+            break;
+            default:
+                Negtive_Responde(Error_Func);
+            break;
+        
+        }
+    }
+    else
+    {
+        RespondToPC.datalen = 0;
     }
 }
 
@@ -210,6 +232,7 @@ void Task_PC_Meg_Analysis(void)
     u16 i;
     USARTCAN_Recv_t recvmsg;
     recvmsg = GET_UsartCAN_Recv_Result(UART_PC_MESSAGE_CHN);
+    Update_InputSts();
     if(recvmsg.lenth >= 4U )//数据长度大于3个字节，认为数据个数有效
     {
         if(recvmsg.databuf[0] == BROADCAST)
@@ -227,7 +250,7 @@ void Task_PC_Meg_Analysis(void)
     }
     else
     {
-        
+        Negtive_Responde(Error_Timeout);
     }
 }
 
@@ -248,6 +271,7 @@ void Task_PC_Message_Recv(void *p_arg)
         {
             Task_PC_Meg_Analysis();
         }
+        //memset(USARTCAN_Recv[UART_PC_MESSAGE_CHN].databuf,0,sizeof(USARTCAN_Recv[UART_PC_MESSAGE_CHN].databuf));
         Uart_Transmit(UART_PC_MESSAGE_CHN,RespondToPC.databuf,RespondToPC.datalen);
         //OSMboxPost(mBOX_PC_Message_Send,(void *)&RespondToPC);//启动发送
         //OSTimeDlyHMSM(0, 0, 0, 1);

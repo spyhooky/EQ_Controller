@@ -76,6 +76,20 @@ struct EthernetCfg_t
     u8  to_thres;                         //串口通讯中帧内相邻字符间隔超时时间
 };
 
+typedef union {
+    u8 bytetype;
+    struct {
+        u8  bit0              :1;
+        u8  bit1              :1;
+        u8  bit2              :1;
+    	u8  bit3              :1;
+        u8  bit4              :1;
+    	u8  bit5              :1;
+        u8  bit6              :1;
+    	u8  bit7              :1;
+    }Bits;
+}digitstatus;
+
 
 enum UsartType{//串口配置数组各元素的定义，有增加向时请在下边第一行往后增加
     EnUart=0,uartBaudrate,Databits,Chkbits,Stopbits,Flowctrl,uartDatatype,

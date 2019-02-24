@@ -105,7 +105,7 @@ void TIM3_Config(void)/* 1ms */
     TIM_DeInit(TIM3);
     RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3, ENABLE);
     TIM_TimeBaseStructure.TIM_Period = 1;/* 2ºÍ18000 1ms*/
-    TIM_TimeBaseStructure.TIM_Prescaler = 1799;
+    TIM_TimeBaseStructure.TIM_Prescaler = 17999;
     TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;
     TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
     TIM_TimeBaseInit(TIM3, &TIM_TimeBaseStructure);

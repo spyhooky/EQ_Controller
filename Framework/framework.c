@@ -56,9 +56,9 @@ void Uart_Transmit(u8 chn,u8 *buf, u16 lenth)
     switch(chn)
     {
         case RS232_1:USART1_Send_Data(buf,lenth);break;
-        case RS485_1:UART4_Send_Data(buf,lenth);break;
-        case RS485_2:USART2_Send_Data(buf,lenth);break;
-        case RS485_3:USART3_Send_Data(buf,lenth);break;
+        case RS485_1:USART2_Send_Data(buf,lenth);break;
+        case RS485_2:USART3_Send_Data(buf,lenth);break;
+        case RS485_3:UART4_Send_Data(buf,lenth);break;
         case RS485_4:UART5_Send_Data(buf,lenth);break;
         default:break;
     }

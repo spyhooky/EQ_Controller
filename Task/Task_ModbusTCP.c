@@ -119,15 +119,15 @@ void Modbus_Server(u8 *aucTCPBuf,u16 usRecBufLen)
             }
             else
             {                
-                //Update_InputSts();
+                Update_InputSts();
                 //memcpy(&aucTCPBuf[9],&TCP_TR_data[(usStartAddr-USARTCAN.addr)*2],usNumber*2);//«Î«Û∫œ¿Ì
                 Package_Float(Globle_Framework.Power_5V,&aucTCPBuf[9]);
                 Package_Float(Globle_Framework.CurrentEnvTemp,&aucTCPBuf[13]);
 #if 1
-                aucTCPBuf[17] = Running_Error_Sts(0);
-                aucTCPBuf[18] = Running_Error_Sts(1);
-                aucTCPBuf[19] = Running_Error_Sts(2);
-                aucTCPBuf[20] = Running_Error_Sts(3);
+                aucTCPBuf[17] = _Running_Error_Sts[0].bytetype;
+                aucTCPBuf[18] = _Running_Error_Sts[1].bytetype;
+                aucTCPBuf[19] = _Running_Error_Sts[2].bytetype;
+                aucTCPBuf[20] = _Running_Error_Sts[3].bytetype;
 #endif
 			    
                 aucTCPBuf[8]=(u8)usTxLen;
