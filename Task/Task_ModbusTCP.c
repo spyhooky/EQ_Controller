@@ -36,6 +36,10 @@ void MBTCP_Send_task(void *arg);
 
 void MBTCP_Init(void)
 {
+    #ifdef W5500_ENABLE
+        W5500_SPI_Config();//W5500 SPI初始化
+        Ethernet_Init();//以太网初始化
+    #endif
     EV_MBTCPsendbuf = OSMboxCreate((void*)0);
     MBTCP_Count = 0x0001;
     usartcan_chn = 0;

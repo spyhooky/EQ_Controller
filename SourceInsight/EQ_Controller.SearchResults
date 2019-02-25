@@ -1,8 +1,15 @@
----- Get_Crc16 Matches (7 in 3 files) ----
-Error_Code in Task_PC_Com.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\Task) :     CrcCheck = Get_Crc16(RespondToPC.databuf,RespondToPC.datalen-2);
-Node_Frame_Parse in Task_PC_Com.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\Task) :                 CrcCheck = Get_Crc16(data,len-2);
-Node_Frame_Parse in Task_PC_Com.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\Task) :                     CrcCheck = Get_Crc16(RespondToPC.databuf,index);
-Node_Frame_Parse in Task_PC_Com.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\Task) :                 CrcCheck = Get_Crc16(data,len-2);
-Node_Frame_Parse in Task_PC_Com.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\Task) :                     CrcCheck = Get_Crc16(RespondToPC.databuf,index);
-variable.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\Framework) line 186 : u16 Get_Crc16(u8 *puchMsg,u16 usDataLen) 
-variable.h (D:\Develop\李总\Code\设备控制器\EQ_Controller\Framework) line 179 : u16 Get_Crc16(u8 *puchMsg,u16 usDataLen);
+---- Running_Error_Sts Matches (14 in 4 files) ----
+Task_IO.h (D:\Develop\李总\Code\设备控制器\EQ_Controller\Task) line 18 : #define Running_Error_Sts(n)    Relay_Output_Sts.bytetype
+Modbus_Server in Task_ModbusTCP.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\Task) :                 aucTCPBuf[17] = Running_Error_Sts(0);
+Modbus_Server in Task_ModbusTCP.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\Task) :                 aucTCPBuf[18] = Running_Error_Sts(1);
+Modbus_Server in Task_ModbusTCP.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\Task) :                 aucTCPBuf[19] = Running_Error_Sts(2);
+Modbus_Server in Task_ModbusTCP.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\Task) :                 aucTCPBuf[20] = Running_Error_Sts(3);
+Node_Frame_Parse in Task_PC_Com.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\Task) :                         RespondToPC.databuf[index++] = Running_Error_Sts(0);
+Node_Frame_Parse in Task_PC_Com.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\Task) :                         RespondToPC.databuf[index++] = Running_Error_Sts(1);
+Node_Frame_Parse in Task_PC_Com.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\Task) :                         RespondToPC.databuf[index++] = Running_Error_Sts(2);
+Node_Frame_Parse in Task_PC_Com.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\Task) :                         RespondToPC.databuf[index++] = Running_Error_Sts(3);
+Node_Frame_Parse in Task_PC_Com.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\Task) :                         RespondToPC.databuf[index++] = Running_Error_Sts(0);
+Node_Frame_Parse in Task_PC_Com.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\Task) :                         RespondToPC.databuf[index++] = Running_Error_Sts(1);
+Node_Frame_Parse in Task_PC_Com.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\Task) :                         RespondToPC.databuf[index++] = Running_Error_Sts(2);
+Node_Frame_Parse in Task_PC_Com.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\Task) :                         RespondToPC.databuf[index++] = Running_Error_Sts(3);
+Task_PC_Com.h (D:\Develop\李总\Code\设备控制器\EQ_Controller\Task) line 6 : #define Running_Error_Sts(n)    _Running_Error_Sts[n].bytetype

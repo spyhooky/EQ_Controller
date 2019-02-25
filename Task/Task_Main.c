@@ -87,11 +87,7 @@ void Config_DrCommon(void)
     DrTimer_Init();//初始化定时器
     DrUsart_Init();//初始化uart模块
     DrCAN_Init(); //初始化CAN
-    #ifdef W5500_ENABLE
-        W5500_SPI_Config();//W5500 SPI初始化
-        Ethernet_Init();//以太网初始化
-    #endif
-    
+        
     /* 独立看门狗，时间=64/40k*312=500ms */
     
 }

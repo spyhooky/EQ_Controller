@@ -42,7 +42,7 @@ enum ADC_Channel
  #define WATCHDOG_ENABLE                            //看门狗宏开关，不需要打开看门狗时需要将此宏屏蔽       
 #endif 
 
-#if (defined STM32F10X_HD) && (defined STM32F10X_CL)
+#if (defined STM32F10X_HD) || (defined STM32F10X_CL)
 #define UART_DMA_ENABLE                               //串口DMA使能
 #endif
 
