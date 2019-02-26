@@ -25,8 +25,6 @@ enum Error_Type{
     Error_Func,Error_Check,Error_Timeout
 };
 
-//定义串口通道
-#define UART_PC_MESSAGE_CHN                RS485_2
 
 OS_EVENT *mBOX_PC_Message_Send;
 

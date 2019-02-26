@@ -1,15 +1,6 @@
----- Running_Error_Sts Matches (14 in 4 files) ----
-Task_IO.h (D:\Develop\李总\Code\设备控制器\EQ_Controller\Task) line 18 : #define Running_Error_Sts(n)    Relay_Output_Sts.bytetype
-Modbus_Server in Task_ModbusTCP.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\Task) :                 aucTCPBuf[17] = Running_Error_Sts(0);
-Modbus_Server in Task_ModbusTCP.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\Task) :                 aucTCPBuf[18] = Running_Error_Sts(1);
-Modbus_Server in Task_ModbusTCP.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\Task) :                 aucTCPBuf[19] = Running_Error_Sts(2);
-Modbus_Server in Task_ModbusTCP.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\Task) :                 aucTCPBuf[20] = Running_Error_Sts(3);
-Node_Frame_Parse in Task_PC_Com.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\Task) :                         RespondToPC.databuf[index++] = Running_Error_Sts(0);
-Node_Frame_Parse in Task_PC_Com.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\Task) :                         RespondToPC.databuf[index++] = Running_Error_Sts(1);
-Node_Frame_Parse in Task_PC_Com.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\Task) :                         RespondToPC.databuf[index++] = Running_Error_Sts(2);
-Node_Frame_Parse in Task_PC_Com.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\Task) :                         RespondToPC.databuf[index++] = Running_Error_Sts(3);
-Node_Frame_Parse in Task_PC_Com.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\Task) :                         RespondToPC.databuf[index++] = Running_Error_Sts(0);
-Node_Frame_Parse in Task_PC_Com.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\Task) :                         RespondToPC.databuf[index++] = Running_Error_Sts(1);
-Node_Frame_Parse in Task_PC_Com.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\Task) :                         RespondToPC.databuf[index++] = Running_Error_Sts(2);
-Node_Frame_Parse in Task_PC_Com.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\Task) :                         RespondToPC.databuf[index++] = Running_Error_Sts(3);
-Task_PC_Com.h (D:\Develop\李总\Code\设备控制器\EQ_Controller\Task) line 6 : #define Running_Error_Sts(n)    _Running_Error_Sts[n].bytetype
+---- Ethernet_Init Matches (5 in 4 files) ----
+DrEthernet.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\DRIVE) line 8 : void Ethernet_Init(void)
+W5500_StatusDetect in DrEthernet.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\DRIVE) :             Ethernet_Init();//��ؽӿ�ע���Լ��������д���
+DrEthernet.h (D:\Develop\李总\Code\设备控制器\EQ_Controller\DRIVE) line 6 : void Ethernet_Init(void);
+proc_http in httputil.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\Internet\HTTP) :                 Ethernet_Init();       //��ʼ������
+Config_DrCommon in Task_Main.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\Task) :     Ethernet_Init();//以太网初始化    

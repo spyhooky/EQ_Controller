@@ -5,6 +5,7 @@
 
 void Timer_100us_Application(void)
 {
+    TaskIO_Timer100us();
 	//application function
 }
 

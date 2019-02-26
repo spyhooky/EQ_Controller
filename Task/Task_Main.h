@@ -9,20 +9,21 @@
 #define TASK_PRIO_PCMSG_RECV                    10u
 #define TASK_PRIO_FREQ_CONVER                   11u
 #define TASK_PRIO_ENCODER                       12u
-#define TASK_PRIO_MBTCP_SEND                    30u
-#define TASK_PRIO_TCPIP_SEND                    31u
-#define	TASK_PRIO_MQTTPUB                       32u
-#define	TASK_PRIO_MQTTSUB                       33u
-#define	TASK_PRIO_MQTT                          9u
-#define TASK_PRIO_TCPIP                         21u
-#define TASK_PRIO_MBTCP                         22u
-#define TASK_PRIO_HTTP                          23u
 
 #define TASK_PRIO_MODBUSRTU                     40u
 #define TASK_PRIO_IO                            41u
 #define TASK_PRIO_FLASH                         42u
+#define TASK_PRIO_BACKGRD                       49u
 
-#define TASK_PRIO_BACKGRD                       59u
+#define TASK_PRIO_MBTCP_SEND                    50u
+#define TASK_PRIO_TCPIP_SEND                    51u
+#define	TASK_PRIO_MQTTPUB                       52u
+#define	TASK_PRIO_MQTTSUB                       53u
+#define	TASK_PRIO_MQTT                          54u
+#define TASK_PRIO_TCPIP                         55u
+#define TASK_PRIO_MBTCP                         56u
+#define TASK_PRIO_HTTP                          57u
+#define TASK_PRIO_ETHERNET                      58u
 
 
 /************设置栈大小（单位为 OS_STK ）************/
@@ -44,6 +45,9 @@
 #define CYCLE_READ_ADC_VALUE                    (100U*CYCLE_BACKGROUND)
 #define CYCLE_CALC_ENV_TEMP                     (1000U*CYCLE_BACKGROUND)
 #define CYCLE_CALC_POWER_VOL                    (1000U*CYCLE_BACKGROUND)
+
+
+#define DETECT_CYCLE                            50u
 
 void Task_Main(void *p_arg);
 void ETH2Usartcan_send(u8 uartcan_chn,u8 *databuf,u16 lenth);

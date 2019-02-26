@@ -18,6 +18,7 @@
 #define STKSIZE_MQTT                     STK_SIZE_1024                   
 #define STKSIZE_HTTP                     STK_SIZE_512
 #define STKSIZE_BACKGRD                  STK_SIZE_1024
+#define STKSIZE_ETHERNET                 STK_SIZE_32
 
 
 
@@ -29,6 +30,10 @@ OS_STK STK_IO[STKSIZE_IO];
 OS_STK STK_PCMSG_RECV[STKSIZE_PCMSG_RECV];
 OS_STK STK_FREQ_CONVER[STKSIZE_FREQ_CONVER];
 OS_STK STK_ENCODER[STKSIZE_ENCODER];
+
+#ifdef W5500_ENABLE
+OS_STK STK_ETHERNET[STKSIZE_ETHERNET];
+#endif
 #ifdef TCPIP_ENABLE
 OS_STK STK_TCPIP[STKSIZE_TCPIP];
 #endif
@@ -44,10 +49,13 @@ OS_STK STK_HTTP[STKSIZE_HTTP];
 
 OS_STK STK_BACKGRD[STKSIZE_BACKGRD];
 
-static uint16_t Background_Timer;
+static u16 Background_Timer;
+static u16 DetectTimer_W5500; //用于检测W5500状态
 
 void f_GenSoftwareReset(void);
 void Task_BackGround(void *p_arg);
+void Task_Ethernet(void *p_arg);
+
 
 // #pragma arm section code=".ARM.__at_0x08000000"
 // void f_JumpAppl(void)
@@ -105,6 +113,7 @@ void Task_Main(void *p_arg)
 {
     
     (void)p_arg;
+    u8 Ethernet_Init_Flag = FALSE;
     Config_DrCommon();
 
     //创建IO的task，传入的参数为项目配置信息
@@ -113,41 +122,57 @@ void Task_Main(void *p_arg)
     OSTaskCreate(Task_PC_Message_Recv, (void *)&gWIZNETINFO, (OS_STK*)&STK_PCMSG_RECV[STKSIZE_PCMSG_RECV-1], TASK_PRIO_PCMSG_RECV);
     //创建变频器铜须的task，传入的参数为项目配置信息
     //OSTaskCreate(Task_Freq_Convert, (void *)&gWIZNETINFO, (OS_STK*)&STK_FREQ_CONVER[STKSIZE_FREQ_CONVERT-1], TASK_PRIO_FREQ_CONVERT);
-    //创建IO的task，传入的参数为项目配置信息
+    //创建编码器的task，传入的参数为项目配置信息
     //OSTaskCreate(Task_Encoder, (void *)&gWIZNETINFO, (OS_STK*)&STK_ENCODER[STKSIZE_ENCODER-1], TASK_PRIO_ENCODER);
-    
-    #ifdef TCPIP_ENABLE
-    if((gWIZNETINFO.session_mode==S_tcpip_client)||(gWIZNETINFO.session_mode==S_tcpip_server))
-    {
-        OSTaskCreate(Task_TCPIP, (void *)&gWIZNETINFO, (OS_STK*)&STK_TCPIP[STKSIZE_TCPIP-1], TASK_PRIO_TCPIP);//创建TCPIP的任务，传入的参数为项目配置
-    }
-    #endif
-    #ifdef MBTCP_ENABLE
-    if((gWIZNETINFO.session_mode==S_mb_client)||(gWIZNETINFO.session_mode==S_mb_server))
-    {
-        OSTaskCreate(Task_ModbusTCP, (void *)&gWIZNETINFO, (OS_STK*)&STK_MBTCP[STKSIZE_MBTCP-1], TASK_PRIO_MBTCP);//创建MODBUS TCP任务，传入的参数为项目配置
-    }
-    #endif
-    
-    #ifdef MQTT_ENABLE
-    if(gWIZNETINFO.session_mode==S_mqtt)
-    {
-        OSTaskCreate(MQTT_task, (void *)&gWIZNETINFO, &STK_MQTT[STKSIZE_MQTT-1], TASK_PRIO_MQTT); //创建MQTT，传入的参数为项目配置
-    }
-    #endif
-    
-    #ifdef HTTP_ENABLE
-    OSTaskCreate(Task_HTTP, (void *)&gWIZNETINFO, (OS_STK*)&STK_HTTP[STKSIZE_HTTP-1], TASK_PRIO_HTTP);//创建网页通讯任务，传入的参数为项目配置
- 	#endif
-    
     OSTaskCreate(Task_BackGround, (void *)&gWIZNETINFO, (OS_STK*)&STK_BACKGRD[STKSIZE_BACKGRD-1], TASK_PRIO_BACKGRD);//创建后台task，用于轮询查状态的，对时间要求不是非常高的功能，可放在此task内执行
-    
+       
     //OSTaskSuspend(TASK_PRIO_MAIN);//挂起该task
     while (1)
     {
+        #ifdef W5500_ENABLE
+        if(Ethernet_Init_Flag == FALSE)
+        {
+            W5500_SPI_Config();//W5500 SPI初始化
+            Ethernet_Init();//以太网初始化
+            #ifdef TCPIP_ENABLE
+            if((gWIZNETINFO.session_mode==S_tcpip_client)||(gWIZNETINFO.session_mode==S_tcpip_server))
+            {
+                OSTaskCreate(Task_TCPIP, (void *)&gWIZNETINFO, (OS_STK*)&STK_TCPIP[STKSIZE_TCPIP-1], TASK_PRIO_TCPIP);//创建TCPIP的任务，传入的参数为项目配置
+            }
+            #endif
+            #ifdef MBTCP_ENABLE
+            if((gWIZNETINFO.session_mode==S_mb_client)||(gWIZNETINFO.session_mode==S_mb_server))
+            {
+                OSTaskCreate(Task_ModbusTCP, (void *)&gWIZNETINFO, (OS_STK*)&STK_MBTCP[STKSIZE_MBTCP-1], TASK_PRIO_MBTCP);//创建MODBUS TCP任务，传入的参数为项目配置
+            }
+            #endif
+            
+            #ifdef MQTT_ENABLE
+            if(gWIZNETINFO.session_mode==S_mqtt)
+            {
+                OSTaskCreate(MQTT_task, (void *)&gWIZNETINFO, &STK_MQTT[STKSIZE_MQTT-1], TASK_PRIO_MQTT); //创建MQTT，传入的参数为项目配置
+            }
+            #endif
+            
+            #ifdef HTTP_ENABLE
+            OSTaskCreate(Task_HTTP, (void *)&gWIZNETINFO, (OS_STK*)&STK_HTTP[STKSIZE_HTTP-1], TASK_PRIO_HTTP);//创建网页通讯任务，传入的参数为项目配置
+         	#endif
+            Ethernet_Init_Flag = TRUE;
+        }
+        else
+        {
+            if(DetectTimer_W5500 >= DETECT_CYCLE)
+            {
+                DetectTimer_W5500 = 0;
+                W5500_StatusDetect();//W5500状态监测
+            }
+        }
+        #endif
         //最低优先级，可理解为传统裸机程序main里的while，始终循环执行，永不退出，其他task和定时器均能抢占该程序
+        
     }
 }
+
 
 /****************************************************************************/
 /*函数名：  Task_BackGround                                                  */
@@ -169,7 +194,7 @@ void Task_BackGround(void *p_arg)
     while(1)
     {
         IWDG_ReloadCounter();//喂狗
-        W5500_StatusDetect();//W5500状态监测
+        
 		//UART_CAN_Handler(p_arg);//暂时不使用该功能
 		
 		/******************APPLICATION START******************/
@@ -181,6 +206,7 @@ void Task_BackGround(void *p_arg)
 		/******************APPLICATION END******************/
         OSTimeDlyHMSM(0, 0, 0, CYCLE_BACKGROUND);//必不可少，否则优先级低的任务得不到运行，时间为1ms
 		Background_Timer++;
+        DetectTimer_W5500++;
     }
 }
 

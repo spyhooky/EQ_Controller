@@ -5,6 +5,8 @@
 #include "main.h"
 #include "httputil.h"
 
+#ifdef HTTP_ENABLE
+
 #define STRUCT_OFFSET(stru_name, element) (unsigned long)&((struct stru_name*)0)->element
 
 
@@ -24,6 +26,6 @@ void Task_HTTP(void *p_arg)
     
 }
 
-
+#endif
 
 

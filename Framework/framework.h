@@ -10,6 +10,7 @@ void Calc_CurrentTemp(u16 sch_timer,u16 sch_cycle);
 void Calc_Power_5V(u16 sch_timer,u16 sch_cycle);
 void UART_CAN_Handler(void *p_arg);
 void Package_Float(float data,u8 *buf);
+void Uart_Transmit(u8 chn,u8 *buf, u16 lenth);
 
 
 

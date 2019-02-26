@@ -8,6 +8,9 @@
 
 /* -------------------------------- web --------------------------------------*/
 #include "httputil.h"
+
+#ifdef MBTCP_ENABLE
+
 #define MBDATA_BUF_SIZE                  280//mb操作的读最大为127个字，单帧最大字节数不可能超过该值，不建议再增大
 
 #define TCPSEND_IDLE                         0u
@@ -36,10 +39,6 @@ void MBTCP_Send_task(void *arg);
 
 void MBTCP_Init(void)
 {
-    #ifdef W5500_ENABLE
-        W5500_SPI_Config();//W5500 SPI初始化
-        Ethernet_Init();//以太网初始化
-    #endif
     EV_MBTCPsendbuf = OSMboxCreate((void*)0);
     MBTCP_Count = 0x0001;
     usartcan_chn = 0;
@@ -552,7 +551,7 @@ void MBTCP_Send_task(void *arg)
 
 
 
-
+#endif
 
 
 

@@ -75,6 +75,7 @@ void DrAdc(void)
  ADC_RegularChannelConfig(ADC1, ADC_Channel_14, 4, ADC_SampleTime_55Cycles5);
  ADC_RegularChannelConfig(ADC1, ADC_Channel_0, 5, ADC_SampleTime_55Cycles5);
  ADC_RegularChannelConfig(ADC1, ADC_Channel_16, 6, ADC_SampleTime_55Cycles5);
+ //ADC_RegularChannelConfig(ADC1, ADC_Channel_17, 7, ADC_SampleTime_55Cycles5);
  ADC_TempSensorVrefintCmd(ENABLE); 
   
  ADC_DMACmd(ADC1, ENABLE);

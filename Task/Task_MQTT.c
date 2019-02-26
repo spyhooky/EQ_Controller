@@ -8,6 +8,7 @@
 #include "socket.h"
 //#include "Task_LED.h"
 
+#ifdef MQTT_ENABLE
 
 #define STKSIZE_MQTTSUB                  STK_SIZE_512
 #define STKSIZE_MQTTPUB                  STK_SIZE_1024
@@ -849,4 +850,7 @@ void MQTTPub_task(void *p_arg)
 		}
     }
 }
+
+#endif
+
 

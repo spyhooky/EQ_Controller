@@ -41,7 +41,8 @@ static struct DIPType           DigitInput_Sts[DIGIT_INPUT_CHN_NUM];//
 
 /**********仅仅测试串口时使用************/
 static u16 en_test=0;//该值写成1时，默认500ms周期向外部发送数据
-static u16 chn_test=0;//0-232通道，2-485通道，靠近编码器的485，板子中间的那个插件，用一个独立隔离DCDC的
+static u16 chn_test=2;//0-232通道，2-485通道，靠近编码器的485，板子中间的那个插件，用一个独立隔离DCDC的
+static u16 testcnt;
 /****************************************/
 
 static void DIP_Switch_Detect(void);
@@ -52,6 +53,12 @@ static void LED_MainFunction(void);
 
 u8 Get_LED_Status(void);
 void Blink_LED_Status(u16 timer);
+
+void TaskIO_Timer100us(void)
+{
+    testcnt++;
+}
+
 
 void TaskIO_Timer1ms(void)
 {
@@ -128,7 +135,6 @@ static void Output_MainFunction(void)
 /****************************************************************************/
 void Task_IO(void *p_arg)
 {
-    static u16 testcnt;
     (void)p_arg;
     Task_IO_Init();
     u8 data[5] ={0x11,0x22,0x33,0x44,0x55};
@@ -136,15 +142,15 @@ void Task_IO(void *p_arg)
     {	
         if(en_test==1)
         {
-            if(testcnt>=500)
+            if(testcnt>=5000)
             {
                 testcnt = 0;
                 Blink_LED_Status(200);
-                Uart_Transmit(chn_test,&data,5);
+                Uart_Transmit(chn_test,data,5);
             }
             else
             {
-                testcnt++;
+                //testcnt++;
             }
         }
         

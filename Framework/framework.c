@@ -43,6 +43,7 @@ void Calc_CurrentTemp(u16 sch_timer,u16 sch_cycle)
 {
     float temp;
     temp = (1.42 - GET_ADC_Result(TempSensor)*3.3/4096)*1000/4.35 + 25;
+    //temp = (1.42 - (GET_ADC_Result(TempSensor)*3.3/4096)/(GET_ADC_Result(VrefInit)*3.3/1.2/4096))*1000/4.35 + 25;
 	Globle_Framework.CurrentEnvTemp =  temp;
 }
 

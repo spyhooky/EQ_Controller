@@ -2,7 +2,7 @@
 #include "spi.h"
 #include "httputil.h"
 #include "wizchip_conf.h"
-
+#include "ucos_ii.h"
 
 
 void Ethernet_Init(void)
@@ -48,6 +48,7 @@ void Ethernet_Init(void)
 #endif
             while(1);
         }
+        OSTimeDlyHMSM(0, 0, 0, 50);
     }
     while(tmp == PHY_LINK_OFF);
 		

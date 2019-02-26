@@ -8,6 +8,9 @@
 
 /* -------------------------------- web --------------------------------------*/
 #include "httputil.h"
+
+#ifdef TCPIP_ENABLE
+
 #define TCPIPDATA_BUF_SIZE                       1024
 
 
@@ -330,7 +333,7 @@ void TCPIP_Send_task(void *arg)
 
 
 
-
+#endif
 
 
 

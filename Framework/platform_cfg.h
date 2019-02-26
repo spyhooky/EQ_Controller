@@ -28,7 +28,7 @@
 /****************** ADC ***********************/
 enum ADC_Channel
 {
-	ADChannel1=0,ADChannel2,ADChannel3,ADChannel4,Power_5V,TempSensor,
+	ADChannel1=0,ADChannel2,ADChannel3,ADChannel4,Power_5V,TempSensor,//VrefInit,
 	Channel_Num
 };
 
@@ -47,9 +47,9 @@ enum ADC_Channel
 #endif
 
 #ifdef W5500_ENABLE
-//	#define TCPIP_ENABLE                                  //TCPIP功能使能
+	#define TCPIP_ENABLE                                  //TCPIP功能使能
 	#define MBTCP_ENABLE                                  //MBTCP功能使能
-//	#define MQTT_ENABLE                                   //MQTT功能使能
+	#define MQTT_ENABLE                                   //MQTT功能使能
 //	#define HTTP_ENABLE                                   //HTTP功能使能
 #endif
 
