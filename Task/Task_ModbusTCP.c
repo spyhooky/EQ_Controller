@@ -122,7 +122,6 @@ void Modbus_Server(u8 *aucTCPBuf,u16 usRecBufLen)
             }
             else
             {                
-                Update_InputSts();
                 //memcpy(&aucTCPBuf[9],&TCP_TR_data[(usStartAddr-USARTCAN.addr)*2],usNumber*2);//ÇëÇóºÏÀí
                 Package_Float(Globle_Framework.Power_5V,&aucTCPBuf[9]);
                 Package_Float(Globle_Framework.CurrentEnvTemp,&aucTCPBuf[13]);
@@ -245,6 +244,7 @@ void Task_ModbusTCP(void *p_arg)
     
     mbtcpparm = (struct wiz_NetInfo_t *)p_arg;
     MBTCP_Init();
+    mbtcpparm->stationID = Globle_Framework.DIP_SwitchStatus;
 
     if(mbtcpparm->session_mode == S_mb_server)
     {

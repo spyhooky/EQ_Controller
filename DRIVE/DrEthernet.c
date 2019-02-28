@@ -4,6 +4,25 @@
 #include "wizchip_conf.h"
 #include "ucos_ii.h"
 
+void ReUpdate_IP_Address(wiz_NetInfo* net_cfg,u8 sid )
+{
+    if(sid<=1)
+    {
+        net_cfg->iplocal[3] = 1;//最后一个字节为地址号为1或0时，默认最后一个字节为1
+    }
+    else if(sid<254)
+    {
+        net_cfg->iplocal[3] = sid+1;//最后一个字节为地址号加1
+    }
+    else
+    {
+        net_cfg->iplocal[2] += 1;//倒数第2个字节为地址号加1
+        net_cfg->iplocal[3] = sid +4;//88.254对应89.2
+    }
+    net_cfg->mac[3] = net_cfg->iplocal[1];
+    net_cfg->mac[4] = net_cfg->iplocal[2];
+    net_cfg->mac[5] = net_cfg->iplocal[3];
+}
 
 void Ethernet_Init(void)
 {
@@ -53,7 +72,7 @@ void Ethernet_Init(void)
     while(tmp == PHY_LINK_OFF);
 		
 		
-		
+	ReUpdate_IP_Address(&gWIZNETINFO,Globle_Framework.DIP_SwitchStatus);
     ctlnetwork(CN_SET_NETINFO, (void *)&gWIZNETINFO);
     
 

@@ -4,12 +4,7 @@
 #include "Task_IO.h"
 
 #ifdef __TASK_PC_MSG_RECV_H
-
-enum Frame_Type{
-    BROADCAST=0,NODE_FRAME
-};
-
-
+#define BROADCAST                                0U
 #define GET_BIT_STATUS(m,n)     {return (m>>n)&0x01}
 
 
@@ -34,12 +29,20 @@ typedef struct PC_Message_info
     u16 datalen;
 }PC_Message_t;
 
-static u8 PC_message[400];
 static PC_Message_t RespondToPC;
 volatile digitstatus    	_Running_Error_Sts[4];//
 
 INT8U err;
 
+static void Update_InputSts(void);
+static void Postive_Responde(u8 func);
+
+
+
+void PC_COM_Timer100ms(void)
+{
+    Update_InputSts();
+}
 
 static void Postive_Responde(u8 func)
 {
@@ -55,7 +58,7 @@ static void Postive_Responde(u8 func)
 static void Negtive_Responde(u8 err)
 {
     u16 CrcCheck;
-    RespondToPC.datalen = 4;
+    RespondToPC.datalen = 5;
     RespondToPC.databuf[0] = Globle_Framework.DIP_SwitchStatus;
     RespondToPC.databuf[1] = 0x80;
     RespondToPC.databuf[2] = err;
@@ -65,7 +68,7 @@ static void Negtive_Responde(u8 err)
 }
 
 
-void Update_InputSts(void)
+static void Update_InputSts(void)
 {
     Suspende_Reset = (Globle_Framework.Digit_InputStatus>>0)&0x01;
     Limit_Up_Signal = (Globle_Framework.Digit_InputStatus>>1)&0x01;
@@ -80,6 +83,8 @@ void Update_InputSts(void)
     Temp_Low = (Globle_Framework.CurrentEnvTemp<-40)?1:0;
     Voltage_High = (Globle_Framework.Power_5V>6)?1:0;
     Voltage_Low = (Globle_Framework.Power_5V<4)?1:0;
+
+    Band_Type_Brake_Out = Band_Type_Brake;
 }
 
 
@@ -231,20 +236,15 @@ void Task_PC_Meg_Analysis(void)
     u16 i;
     USARTCAN_Recv_t recvmsg;
     recvmsg = GET_UsartCAN_Recv_Result(UART_PC_MESSAGE_CHN);
-    Update_InputSts();
     if(recvmsg.lenth >= 4U )//数据长度大于3个字节，认为数据个数有效
     {
         if(recvmsg.databuf[0] == BROADCAST)
         {
             Broadcast_Frame_Parse(recvmsg.databuf,recvmsg.lenth);
         }
-        else if(recvmsg.databuf[0] == NODE_FRAME)
-        {
-            Node_Frame_Parse(recvmsg.databuf,recvmsg.lenth);
-        }
         else
         {
-
+            Node_Frame_Parse(recvmsg.databuf,recvmsg.lenth);
         }
     }
     else

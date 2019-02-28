@@ -1,6 +1,2 @@
----- Ethernet_Init Matches (5 in 4 files) ----
-DrEthernet.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\DRIVE) line 8 : void Ethernet_Init(void)
-W5500_StatusDetect in DrEthernet.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\DRIVE) :             Ethernet_Init();//��ؽӿ�ע���Լ��������д���
-DrEthernet.h (D:\Develop\李总\Code\设备控制器\EQ_Controller\DRIVE) line 6 : void Ethernet_Init(void);
-proc_http in httputil.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\Internet\HTTP) :                 Ethernet_Init();       //��ʼ������
-Config_DrCommon in Task_Main.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\Task) :     Ethernet_Init();//以太网初始化    
+---- PC_message Matches (1 in 1 files) ----
+Task_PC_Com.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\Task) line 37 : static u8 PC_message[400];

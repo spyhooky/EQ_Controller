@@ -12,7 +12,7 @@ const  u32   APPL_CRC __attribute__((at(APP_CRC_ADDR)))={0xA1A2A3A4};
 wiz_NetInfo gWIZNETINFO = { 
                             .session_mode = S_mb_server,//以太网工作模式
                             .conn_status = OFF,//socket连接状态
-                            .stationID = 1,//modbus站地址，或MQTT时对应的本节点ID
+                            .stationID = 1,//modbus站地址，或MQTT时对应的本节点ID，本项目的节点号使用拨码开关识别，配置值不起作用
                             .mbtcp_addr = 0x0,//mb配置的起始地址
                             .polltime = 1000,//做mb client时向server周期发送读请求
                             .tcpsocket = SOCK_MQTT,//socket 
@@ -35,11 +35,11 @@ wiz_NetTimeout gWIZNetTimeout =
 
                            
 Interface_Info USARTCAN = { 
-                            .Usart[RS232_1] = {1,6, 0, 0, 0, 0,0}, //RS232  // USER 19200 8 ODD 1 CTS 
-                            .Usart[RS485_1] =   {1,6, 0, 0, 0, 0,0},
-							.Usart[RS485_2] =   {1,6, 0, 0, 0, 0,0},
-							.Usart[RS485_3] =   {1,6, 0, 0, 0, 0,0},
-							.Usart[RS485_4] =   {1,6, 0, 0, 0, 0,0},
+                            .Usart[RS232_1] = {1,2, 0, 0, 0, 0,0}, //RS232  // USER 19200 8 ODD 1 CTS 
+                            .Usart[RS485_1] =   {1,2, 0, 0, 0, 0,0},
+							.Usart[RS485_2] =   {1,2, 0, 0, 0, 0,0},
+							.Usart[RS485_3] =   {1,2, 0, 0, 0, 0,0},
+							.Usart[RS485_4] =   {1,2, 0, 0, 0, 0,0},
                             .UsartProt[RS232_1]=
                             {
                                 .FrameStartInfo = 0,//FrameStartEn|byte_1,  //本配置为0时则为无协议，所有数据均为有效数据，当字节间时间超过配置时间后认为是完整一帧

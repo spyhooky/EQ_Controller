@@ -24,7 +24,7 @@ extern volatile digitstatus    	_Running_Error_Sts[4];//#define Running_Error_St
 
 
 void Task_PC_Message_Recv(void *p_arg);
-void Update_InputSts(void);
+void PC_COM_Timer100ms(void);
 
 
 

@@ -28,10 +28,28 @@ void Framework_Init(void)
 void Framework_Timer1ms(void)
 {
 	TaskIO_Timer1ms();
+    #ifdef MQTT_ENABLE
 	MQTT_Timer1ms();
+    #endif
+    #ifdef MBTCP_ENABLE
     MBTCP_Timer1ms();
+    #endif
+    #ifdef TCPIP_ENABLE
     TCPIP_Timer1ms();
+    #endif
 }
+
+/****************************************************************************/
+/*函数名：  Framework_Timer1ms                                              */
+/*功能说明：1ms定时器的服务函数，每1ms执行一次                                */
+/*输入参数：无                                                              */
+/*输出参数：无                                                              */
+/***************************************************************************/
+void Framework_Timer100ms(void)
+{
+    PC_COM_Timer100ms();
+}
+
 
 /****************************************************************************/
 /*函数名：  Calc_CurrentTemp                                                 */
@@ -77,6 +95,7 @@ void Package_Float(float data,u8 *buf)
 
 
 //此函数暂时不使用
+#ifdef W5500_ENABLE
 void UART_CAN_Handler(void *p_arg)
 {
 	struct wiz_NetInfo_t * Ethparm;
@@ -92,15 +111,21 @@ void UART_CAN_Handler(void *p_arg)
 				USARTCAN_Recv[i].newupd=OFF;
 				if(Ethparm->session_mode==S_mqtt)
 				{
+                    #ifdef MQTT_ENABLE
 					MQTT_DataHandler(i,&USARTCAN_Recv[i]);
+                    #endif
 				}
 				else if((Ethparm->session_mode==S_tcpip_client)||(Ethparm->session_mode==S_tcpip_server))
 				{
+                    #ifdef TCPIP_ENABLE
 					TCPIP_DataHandler(i,&USARTCAN_Recv[i],p_arg);
+                    #endif
 				}
 				else if((Ethparm->session_mode==S_mb_client)||(Ethparm->session_mode==S_mb_server))
 				{
+                    #ifdef MBTCP_ENABLE
 					MBTCP_DataHandler(i,&USARTCAN_Recv[i],p_arg);
+                    #endif
 				}
 				else
 				{
@@ -111,6 +136,7 @@ void UART_CAN_Handler(void *p_arg)
 		}
 	}
 }
+#endif
 
 
 #endif

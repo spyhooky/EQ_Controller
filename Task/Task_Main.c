@@ -50,7 +50,11 @@ OS_STK STK_HTTP[STKSIZE_HTTP];
 OS_STK STK_BACKGRD[STKSIZE_BACKGRD];
 
 static u16 Background_Timer;
+
+#ifdef W5500_ENABLE
 static u16 DetectTimer_W5500; //用于检测W5500状态
+#endif
+
 
 void f_GenSoftwareReset(void);
 void Task_BackGround(void *p_arg);
@@ -206,7 +210,9 @@ void Task_BackGround(void *p_arg)
 		/******************APPLICATION END******************/
         OSTimeDlyHMSM(0, 0, 0, CYCLE_BACKGROUND);//必不可少，否则优先级低的任务得不到运行，时间为1ms
 		Background_Timer++;
+        #ifdef W5500_ENABLE
         DetectTimer_W5500++;
+        #endif
     }
 }
 

@@ -47,14 +47,14 @@ enum ADC_Channel
 #endif
 
 #ifdef W5500_ENABLE
-	#define TCPIP_ENABLE                                  //TCPIP功能使能
+//	#define TCPIP_ENABLE                                  //TCPIP功能使能
 	#define MBTCP_ENABLE                                  //MBTCP功能使能
-	#define MQTT_ENABLE                                   //MQTT功能使能
+//	#define MQTT_ENABLE                                   //MQTT功能使能
 //	#define HTTP_ENABLE                                   //HTTP功能使能
 #endif
 
 #ifdef W5500_ENABLE
-//	#define CJSON_ENABLE
+	#define CJSON_ENABLE
 #endif
 
 /***********************************************************************/

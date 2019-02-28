@@ -47,7 +47,7 @@ void TIM4_IRQ(void)/* 100ms */
 
 //    unsigned char l_u8i = 0;
 	Timer_100ms_Application();
-
+    Framework_Timer100ms();
     
 }
 

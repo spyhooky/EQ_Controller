@@ -8,6 +8,15 @@
 #include "socket.h"
 //#include "Task_LED.h"
 
+struct MQTT_CFG_Connect_t MQTT_CFG_Connect=
+{
+    .UserName = {""},
+    .PassWard = {""},
+    .Client_id = MQTTString_initializer,
+    .con_qos = 0,
+    .kpalivespace = 8//KEEPALIVE jjj
+};
+
 #ifdef MQTT_ENABLE
 
 #define STKSIZE_MQTTSUB                  STK_SIZE_512
@@ -91,14 +100,7 @@ u8 *mqttMsg[TOPIC_NUMMAX] ;//消息内容
 struct MQTT_Topic_Info_t MQTT_SubInfo[TOPIC_NUMMAX];//订阅主题信息
 struct mqtt_recv_t mqtt_recv_msg;//接收主题信息
 
-struct MQTT_CFG_Connect_t MQTT_CFG_Connect=
-{
-    .UserName = {""},
-    .PassWard = {""},
-    .Client_id = MQTTString_initializer,
-    .con_qos = 0,
-    .kpalivespace = 8//KEEPALIVE jjj
-};
+
 struct PublishReq_Block_t *PublishReq_Block[N_PUBQUEUE];//发布请求
 OS_EVENT *PublishQueue;//消息队列
 
