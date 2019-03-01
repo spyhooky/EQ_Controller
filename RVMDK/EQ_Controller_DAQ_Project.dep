@@ -1067,7 +1067,7 @@ I (..\DRIVE\DrAdc.h)(0x5C6908D9)
 I (..\DRIVE\DrEthernet.h)(0x59A7A1A1)
 I (..\Task\Task_Main.h)(0x5C755306)
 F (..\DRIVE\DrSpi.h)(0x59A7A1A1)()
-F (..\DRIVE\DrEthernet.c)(0x5C77E9E6)(-c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I..\uCOSII\CONFIG -I..\uCOSII\PORT -I..\uCOSII\CORE -I..\FWLIB\inc -I..\CMSIS -I..\DRIVE -I..\USER -I..\Task -I..\Internet -I..\Ethernet -I..\Ethernet\W5500 -I..\Internet -I..\Internet\HTTP -I..\Internet\DNS -I..\Internet\DHCP -I..\MQTT -I..\Framework --c99-I "C:\Program Files (x86)\Keil\ARM\RV31\INC"-I "C:\Program Files (x86)\Keil\ARM\CMSIS\Include"-I "C:\Program Files (x86)\Keil\ARM\Inc\ST\STM32F10x"-DSTM32F10X_CL -DUSE_STDPERIPH_DRIVER-o ..\output\drethernet.o --omf_browse ..\output\drethernet.crf --depend ..\output\drethernet.d)
+F (..\DRIVE\DrEthernet.c)(0x5C77EC9B)(-c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I..\uCOSII\CONFIG -I..\uCOSII\PORT -I..\uCOSII\CORE -I..\FWLIB\inc -I..\CMSIS -I..\DRIVE -I..\USER -I..\Task -I..\Internet -I..\Ethernet -I..\Ethernet\W5500 -I..\Internet -I..\Internet\HTTP -I..\Internet\DNS -I..\Internet\DHCP -I..\MQTT -I..\Framework --c99-I "C:\Program Files (x86)\Keil\ARM\RV31\INC"-I "C:\Program Files (x86)\Keil\ARM\CMSIS\Include"-I "C:\Program Files (x86)\Keil\ARM\Inc\ST\STM32F10x"-DSTM32F10X_CL -DUSE_STDPERIPH_DRIVER-o ..\output\drethernet.o --omf_browse ..\output\drethernet.crf --depend ..\output\drethernet.d)
 I (..\Framework\main.h)(0x5C7019B4)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\stdio.h)(0x51C7C554)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\stdlib.h)(0x51C7C554)
@@ -1135,7 +1135,7 @@ I (..\Internet\HTTP\httputil.h)(0x59A7A1A2)
 I (..\Ethernet\socket.h)(0x59A7A1A1)
 I (..\Internet\HTTP\util.h)(0x59A7A1A2)
 I (..\Internet\HTTP\httpd.h)(0x59A7A1A2)
-F (..\DRIVE\DrUart.c)(0x5C712213)(-c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I..\uCOSII\CONFIG -I..\uCOSII\PORT -I..\uCOSII\CORE -I..\FWLIB\inc -I..\CMSIS -I..\DRIVE -I..\USER -I..\Task -I..\Internet -I..\Ethernet -I..\Ethernet\W5500 -I..\Internet -I..\Internet\HTTP -I..\Internet\DNS -I..\Internet\DHCP -I..\MQTT -I..\Framework --c99-I "C:\Program Files (x86)\Keil\ARM\RV31\INC"-I "C:\Program Files (x86)\Keil\ARM\CMSIS\Include"-I "C:\Program Files (x86)\Keil\ARM\Inc\ST\STM32F10x"-DSTM32F10X_CL -DUSE_STDPERIPH_DRIVER-o ..\output\druart.o --omf_browse ..\output\druart.crf --depend ..\output\druart.d)
+F (..\DRIVE\DrUart.c)(0x5C7948EB)(-c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I..\uCOSII\CONFIG -I..\uCOSII\PORT -I..\uCOSII\CORE -I..\FWLIB\inc -I..\CMSIS -I..\DRIVE -I..\USER -I..\Task -I..\Internet -I..\Ethernet -I..\Ethernet\W5500 -I..\Internet -I..\Internet\HTTP -I..\Internet\DNS -I..\Internet\DHCP -I..\MQTT -I..\Framework --c99-I "C:\Program Files (x86)\Keil\ARM\RV31\INC"-I "C:\Program Files (x86)\Keil\ARM\CMSIS\Include"-I "C:\Program Files (x86)\Keil\ARM\Inc\ST\STM32F10x"-DSTM32F10X_CL -DUSE_STDPERIPH_DRIVER-o ..\output\druart.o --omf_browse ..\output\druart.crf --depend ..\output\druart.d)
 I (..\Framework\main.h)(0x5C7019B4)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\stdio.h)(0x51C7C554)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\stdlib.h)(0x51C7C554)

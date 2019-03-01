@@ -6,7 +6,7 @@
 
 void ReUpdate_IP_Address(wiz_NetInfo* net_cfg,u8 sid )
 {
-    if(sid<=1)
+    if(sid<1)
     {
         net_cfg->iplocal[3] = 1;//最后一个字节为地址号为1或0时，默认最后一个字节为1
     }

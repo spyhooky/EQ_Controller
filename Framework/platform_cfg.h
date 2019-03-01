@@ -43,7 +43,7 @@ enum ADC_Channel
 #endif 
 
 #if (defined STM32F10X_HD) || (defined STM32F10X_CL)
-#define UART_DMA_ENABLE                               //串口DMA使能
+//#define UART_DMA_ENABLE                               //串口DMA使能
 #endif
 
 #ifdef W5500_ENABLE

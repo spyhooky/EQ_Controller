@@ -6,12 +6,15 @@ volatile  Tdef_Byte                          _SystemFlag[NUM_UARTCHANNEL];
 #define g_bit_SCIFrameStart(n)               _SystemFlag[n].Bits.bit0    //串口帧起始
 #define g_bit_SCIFrameEnd(n)                 _SystemFlag[n].Bits.bit1    //串口帧结束
 #define g_bit_SCIFramePreciseStart(n)        _SystemFlag[n].Bits.bit2    //
+#define g_bit_SCI_DMA_Send(n)                _SystemFlag[n].Bits.bit3    //DMA发送中标志
+
 
 
 static u16 g_u16_SCISingalFrameRecTime[NUM_UARTCHANNEL];             //串口单帧数据接收时间计时，单位ms
 static u16 g_u16_Message_Length[NUM_UARTCHANNEL];                     //当前已接收到的数据个数
 static u8 l_u8_Receive_Buffer[NUM_UARTCHANNEL][SCI_BUF_MAXLEN];          //用于保存串口接收到的数据
 static u16 byteidx_faramend[NUM_UARTCHANNEL];//帧结束的字节序号
+static u16 l_DMA_SendTime[NUM_UARTCHANNEL];
 
 enum Framestatus_t{
   frame_idle=0,frame_head,frame_data,frame_end,frame_chk  
@@ -27,6 +30,23 @@ void USART_Timer100us(void)
     
 	for(channel=0;channel<NUM_UARTCHANNEL;channel++)
 	{
+        if(g_bit_SCI_DMA_Send(channel) == ON)
+        {
+            if(++l_DMA_SendTime[channel] >=100)
+            {
+                g_bit_SCI_DMA_Send(channel) = OFF;
+                l_DMA_SendTime[channel] = 0;
+                DMA_Cmd(DMA1_Channel2, DISABLE);
+                DMA_ClearITPendingBit(DMA1_IT_GL2 | DMA1_IT_TC2 | DMA1_IT_HT2 | DMA1_IT_TE2);
+                USART3_485_RX_ENABLE;
+            }
+            
+        }
+        else
+        {
+            l_DMA_SendTime[channel] = 0;
+        }
+    
 		if(FrameStatus[channel] != frame_idle)
 		{
 			if(g_u16_SCISingalFrameRecTime[channel]<=0xfff0)
@@ -256,7 +276,7 @@ void DMA1_Channel7_IRQHandler(void)
 {
     DMA_ClearITPendingBit(DMA1_IT_GL7 | DMA1_IT_TC7 | DMA1_IT_HT7 | DMA1_IT_TE7);
     DMA_Cmd(DMA1_Channel7, DISABLE);
-    
+    g_bit_SCI_DMA_Send(RS485_1) = OFF;
     USART_ITConfig(USART2, USART_IT_TC, ENABLE);
 }
 
@@ -271,7 +291,7 @@ void DMA1_Channel2_IRQHandler(void)
 {
     DMA_ClearITPendingBit(DMA1_IT_GL2 | DMA1_IT_TC2 | DMA1_IT_HT2 | DMA1_IT_TE2);
     DMA_Cmd(DMA1_Channel2, DISABLE);
-    
+    g_bit_SCI_DMA_Send(RS485_2) = OFF;
     USART_ITConfig(USART3, USART_IT_TC, ENABLE);
 }
 
@@ -286,7 +306,7 @@ void DMA2_Channel5_IRQHandler(void)
 {
     DMA_ClearITPendingBit(DMA2_IT_GL5 | DMA2_IT_TC5 | DMA2_IT_HT5 | DMA2_IT_TE5);
     DMA_Cmd(DMA2_Channel5, DISABLE);
-    
+    g_bit_SCI_DMA_Send(RS485_3) = OFF;
     USART_ITConfig(UART4, USART_IT_TC, ENABLE);
 }
 #endif
@@ -462,9 +482,6 @@ void DrUSART2_Init(void)
     GPIO_Init(USART2_EN_PORT, &GPIO_InitStructure);
 
     USART2_485_RX_ENABLE;  	//485接收使能
-    
-    databits=' ';
-    USART2_Send_Data(&databits,1);
 }
 
 void DrUSART3_Init(void)
@@ -562,9 +579,7 @@ void DrUSART3_Init(void)
     GPIO_Init(USART3_EN_PORT, &GPIO_InitStructure);
 
     USART2_485_RX_ENABLE;  	//485接收使能
-    
-    databits=' ';
-    USART3_Send_Data(&databits,1);
+
 }
 
 void DrUART4_Init(void)
@@ -666,9 +681,6 @@ void DrUART4_Init(void)
     GPIO_Init(UART4_EN_PORT, &GPIO_InitStructure);
 
     UART4_485_RX_ENABLE;  	//485接收使能
-    
-    databits=' ';
-    UART4_Send_Data(&databits,1);
 }
 
 void DrUART5_Init(void)
@@ -734,6 +746,7 @@ void USART1_Send_Data(unsigned char *send_buff,unsigned int length)
     unsigned int i = 0;
 //  USART1_485_TX_ENABLE;  	//485发送使能
 //  delay_us(300);  	//稍作延时，注意延时的长短根据波特率来定，波特率越小，延时应该越长
+  USART_ClearFlag(USART1, USART_FLAG_TC);
   for(i = 0;i < length;i ++)
   {  	  
   	USART1->DR = send_buff[i];
@@ -746,6 +759,8 @@ void USART1_Send_Data(unsigned char *send_buff,unsigned int length)
 void USART2_Send_Data(unsigned char *send_buff,unsigned int length)
 {
 	USART2_485_TX_ENABLE;
+    g_bit_SCI_DMA_Send(RS485_1) = ON;
+    USART_ClearFlag(USART2, USART_FLAG_TC);
 #ifdef UART_DMA_ENABLE
     DMA1_Channel7_HW_Start(send_buff,length);
 #else
@@ -762,6 +777,8 @@ void USART2_Send_Data(unsigned char *send_buff,unsigned int length)
 void USART3_Send_Data(unsigned char *send_buff,unsigned int length)
 {
 	USART3_485_TX_ENABLE;
+    g_bit_SCI_DMA_Send(RS485_2) = ON;
+    USART_ClearFlag(USART3, USART_FLAG_TC);
 #ifdef UART_DMA_ENABLE
     DMA1_Channel2_HW_Start(send_buff,length);
 #else
@@ -779,6 +796,8 @@ void UART4_Send_Data(unsigned char *send_buff,unsigned int length)
 {
     unsigned int i = 0;
     UART4_485_TX_ENABLE;
+    g_bit_SCI_DMA_Send(RS485_3) = ON;
+    USART_ClearFlag(UART4, USART_FLAG_TC);
 #ifdef UART_DMA_ENABLE
     DMA2_Channel5_HW_Start(send_buff,length);
 #else
@@ -795,12 +814,15 @@ void UART5_Send_Data(unsigned char *send_buff,unsigned int length)
 {
 	unsigned int i = 0;
 	UART5_485_TX_ENABLE;  	//485发送使能
+	g_bit_SCI_DMA_Send(RS485_4) = ON;
+	USART_ClearFlag(UART5, USART_FLAG_TC);
 //  delay_us(300);  	//稍作延时，注意延时的长短根据波特率来定，波特率越小，延时应该越长
   for(i = 0;i < length;i ++)
   {  	  
   	UART5->DR = send_buff[i];
   	while((UART5->SR&0X40)==0);  
   }
+  g_bit_SCI_DMA_Send(RS485_4) = ON;
 //  delay_us(50);   	//稍作延时，注意延时的长短根据波特率来定，波特率越小，延时应该越长
 	UART5_485_RX_ENABLE;    	//485接收使能
 }
@@ -818,7 +840,7 @@ void DrUsart_Init(void)
     }
 	if(USARTCAN.Usart[RS485_1][EnUart]==ON)
     {
-		DrUSART3_Init();
+		DrUSART2_Init();
 	}
     if(USARTCAN.Usart[RS485_2][EnUart]==ON)
     {
