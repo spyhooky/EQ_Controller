@@ -9,19 +9,6 @@
 //#include "Task_LED.h"
 #include "transport.h"
 
-#define STKSIZE_IO                     	 STK_SIZE_64
-#define STKSIZE_PCMSG_RECV               STK_SIZE_1024
-#define STKSIZE_FREQ_CONVER              STK_SIZE_1024
-#define STKSIZE_ENCODER                  STK_SIZE_256
-#define STKSIZE_TCPIP                    STK_SIZE_512
-#define STKSIZE_MBTCP                    STK_SIZE_256
-#define STKSIZE_MQTT                     STK_SIZE_1024                   
-#define STKSIZE_HTTP                     STK_SIZE_512
-#define STKSIZE_BACKGRD                  STK_SIZE_1024
-#define STKSIZE_ETHERNET                 STK_SIZE_32
-
-
-
 typedef  void (*FunVoidType)(void);
 #define ApplicationMsp          0x8008000 
 #define ApplicationVect         (ApplicationMsp+4)
@@ -31,9 +18,6 @@ OS_STK STK_PCMSG_RECV[STKSIZE_PCMSG_RECV];
 OS_STK STK_FREQ_CONVER[STKSIZE_FREQ_CONVER];
 OS_STK STK_ENCODER[STKSIZE_ENCODER];
 
-#ifdef W5500_ENABLE
-OS_STK STK_ETHERNET[STKSIZE_ETHERNET];
-#endif
 #ifdef TCPIP_ENABLE
 OS_STK STK_TCPIP[STKSIZE_TCPIP];
 #endif
@@ -58,7 +42,6 @@ static u16 DetectTimer_W5500; //ÓÃÓÚ¼ì²âW5500×´Ì¬
 
 void f_GenSoftwareReset(void);
 void Task_BackGround(void *p_arg);
-void Task_Ethernet(void *p_arg);
 
 
 // #pragma arm section code=".ARM.__at_0x08000000"

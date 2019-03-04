@@ -15,8 +15,8 @@ void Blink_LED_Status(u16 mstimer);
 #define SET_LED_STATUS(n)					LED_G(n) 
 #define SET_BAND_TYPE_BRAKE_STATUS(s)		SET_DIGIT_OUTPUT_STATUS(RELAY1,s)
 
-extern volatile digitstatus    	Relay_Output_Sts;//
-#define Running_Error_Sts(n)    Relay_Output_Sts.bytetype
+extern volatile BitStatus    	Relay_Output_Sts;//
+#define Running_Error_Sts(n)    Relay_Output_Sts.Byte
 #define Band_Type_Brake_Out  	Relay_Output_Sts.Bits.bit0 //抱闸延时输出
 
 #if 0

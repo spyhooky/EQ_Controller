@@ -183,7 +183,7 @@ USARTCAN_Recv_t GET_UsartCAN_Recv_Result(u8 chanel)
 //puchMsg:要校验的数组 
 //usDataLen:数组长度 
 //======================================================================
-u16 Get_Crc16(u8 *puchMsg,u16 usDataLen) 
+u16 Get_rtuCrc16(u8 *puchMsg,u16 usDataLen) 
 { 
     u8 uchCRCHi=0xFF; 		//高CRC 字节初始化 
     u8 uchCRCLo=0xFF; 		//低CRC 字节初始化  

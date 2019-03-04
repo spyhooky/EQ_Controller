@@ -8,14 +8,14 @@
 static u8  DIP_Swtch_Update_En;
 static u16 LED_Blink_time;
 static u8  LED_Blink_End;
-volatile digitstatus    	Relay_Output_Sts;//
+volatile BitStatus    	Relay_Output_Sts;//
 
 
 struct DIPType
 {
   union 
   {
-    u8 bytetype;
+    u8 Byte;
     struct {
   		u8  pre_level              :1;
   		u8  cur_status             :1;

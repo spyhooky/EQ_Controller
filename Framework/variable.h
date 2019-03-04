@@ -77,7 +77,7 @@ struct EthernetCfg_t
 };
 
 typedef union {
-    u8 bytetype;
+    u8 Byte;
     struct {
         u8  bit0              :1;
         u8  bit1              :1;
@@ -88,7 +88,7 @@ typedef union {
         u8  bit6              :1;
     	u8  bit7              :1;
     }Bits;
-}digitstatus;
+}BitStatus;
 
 
 enum UsartType{//串口配置数组各元素的定义，有增加向时请在下边第一行往后增加
@@ -190,7 +190,7 @@ extern const u16 RS232_stop[2] ;
 extern const u16 RS232_parity[3] ;
 extern const u16 RS232_FlowCntl[4] ;
 
-u16 Get_Crc16(u8 *puchMsg,u16 usDataLen);
+u16 Get_rtuCrc16(u8 *puchMsg,u16 usDataLen);
 USARTCAN_Recv_t GET_UsartCAN_Recv_Result(u8 chanel);
 unsigned char AscToHex(unsigned char aChar);
 unsigned char HexToAsc(unsigned char aHex);

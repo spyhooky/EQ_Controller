@@ -4,6 +4,8 @@
 #include "Task_ModbusTCp.h"
 #include "Task_MQTT.h"
 #include "Task_IO.h"
+#include "Task_MB_RTU_Master.h"
+
 //#include "Task_LED.h"
 
 #ifdef FRAMEWORK_H
@@ -28,6 +30,7 @@ void Framework_Init(void)
 void Framework_Timer1ms(void)
 {
 	TaskIO_Timer1ms();
+    RTU_Timer1ms_Handler();
     #ifdef MQTT_ENABLE
 	MQTT_Timer1ms();
     #endif

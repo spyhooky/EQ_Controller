@@ -1,31 +1,6 @@
 #ifndef __TASK_MAIN_H
 #define __TASK_MAIN_H
 
-
-/************设置任务优先级,建议(10-50) *************************/
-/* #define OS_LOWEST_PRIO   63u */
-#define TASK_PRIO_MAIN                          60u
-
-#define TASK_PRIO_PCMSG_RECV                    10u
-#define TASK_PRIO_FREQ_CONVER                   11u
-#define TASK_PRIO_ENCODER                       12u
-
-#define TASK_PRIO_MODBUSRTU                     40u
-#define TASK_PRIO_IO                            41u
-#define TASK_PRIO_FLASH                         42u
-#define TASK_PRIO_BACKGRD                       49u
-
-#define TASK_PRIO_MBTCP_SEND                    50u
-#define TASK_PRIO_TCPIP_SEND                    51u
-#define	TASK_PRIO_MQTTPUB                       52u
-#define	TASK_PRIO_MQTTSUB                       53u
-#define	TASK_PRIO_MQTT                          54u
-#define TASK_PRIO_TCPIP                         55u
-#define TASK_PRIO_MBTCP                         56u
-#define TASK_PRIO_HTTP                          57u
-#define TASK_PRIO_ETHERNET                      58u
-
-
 /************设置栈大小（单位为 OS_STK ）************/
 #define STK_SIZE_32                             32u
 #define STK_SIZE_64                             64u
@@ -40,6 +15,42 @@
 #define STK_SIZE_2048                           2048u
 #define STK_SIZE_3072                           3072u
 #define STK_SIZE_4096                           4096u
+
+
+/************设置任务优先级,建议(10-50) *************************/
+/* #define OS_LOWEST_PRIO   63u */
+#define TASK_PRIO_MAIN                          60u
+
+#define TASK_PRIO_PCMSG_RECV                    10u
+#define TASK_PRIO_FREQ_CONVER                   11u
+#define TASK_PRIO_ENCODER                       12u
+
+#define TASK_PRIO_MODBUSRTU                     40u
+#define TASK_PRIO_IO                            41u
+#define TASK_PRIO_FLASH                         42u
+#define TASK_PRIO_PC_MSG_UPD                    43u
+#define TASK_PRIO_BACKGRD                       49u
+
+#define TASK_PRIO_MBTCP_SEND                    50u
+#define TASK_PRIO_TCPIP_SEND                    51u
+#define	TASK_PRIO_MQTTPUB                       52u
+#define	TASK_PRIO_MQTTSUB                       53u
+#define	TASK_PRIO_MQTT                          54u
+#define TASK_PRIO_TCPIP                         55u
+#define TASK_PRIO_MBTCP                         56u
+#define TASK_PRIO_HTTP                          57u
+
+/************设置Task栈大小（单位为 OS_STK ）************/
+#define STKSIZE_IO                     	 STK_SIZE_64
+#define STKSIZE_PCMSG_RECV               STK_SIZE_1024
+#define STKSIZE_FREQ_CONVER              STK_SIZE_1024
+#define STKSIZE_ENCODER                  STK_SIZE_256
+#define STKSIZE_TCPIP                    STK_SIZE_512
+#define STKSIZE_MBTCP                    STK_SIZE_256
+#define STKSIZE_MQTT                     STK_SIZE_1024                   
+#define STKSIZE_HTTP                     STK_SIZE_512
+#define STKSIZE_BACKGRD                  STK_SIZE_1024
+#define STKSIZE_PC_MSG_UPD               STK_SIZE_32
 
 #define CYCLE_BACKGROUND                        1u
 #define CYCLE_READ_ADC_VALUE                    (100U*CYCLE_BACKGROUND)
