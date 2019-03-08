@@ -1,5 +1,5 @@
 #include "main.h" 
-//#include "Task_LED.h"
+#include "Task_MB_RTU_Master.h"
 
 volatile  Tdef_Byte                          _SystemFlag[NUM_UARTCHANNEL];
 #define SystemFlag(n)                        _SystemFlag[n].Byte
@@ -221,6 +221,7 @@ void UsartRecieveData(u8 channel,u8 recdata)
 
 void USART1_IRQ(u8 data)/*  */
 {
+    UART_RTU_Recv(data);
     UsartRecieveData(RS232_1,data);
 	USART1_RecieveData(data);
 }
@@ -741,7 +742,7 @@ void DrUART5_Init(void)
 }
 
 
-void USART1_Send_Data(unsigned char *send_buff,unsigned int length)
+void USART1_Send_Data(u8 *send_buff,u16 length)
 {
     unsigned int i = 0;
 //  USART1_485_TX_ENABLE;  	//485发送使能
@@ -756,9 +757,10 @@ void USART1_Send_Data(unsigned char *send_buff,unsigned int length)
 //  USART1_485_RX_ENABLE;    	//485接收使能
 }
 
-void USART2_Send_Data(unsigned char *send_buff,unsigned int length)
+void USART2_Send_Data(u8 *send_buff,u16 length)
 {
 	USART2_485_TX_ENABLE;
+    Delay_us(7);
     g_bit_SCI_DMA_Send(RS485_1) = ON;
     USART_ClearFlag(USART2, USART_FLAG_TC);
 #ifdef UART_DMA_ENABLE
@@ -770,13 +772,15 @@ void USART2_Send_Data(unsigned char *send_buff,unsigned int length)
         USART2->DR = send_buff[i];
         while((USART2->SR&0X40)==0);  
     }
+    Delay_us(1);
 	USART2_485_RX_ENABLE;
 #endif
 }
 
-void USART3_Send_Data(unsigned char *send_buff,unsigned int length)
+void USART3_Send_Data(u8 *send_buff,u16 length)
 {
 	USART3_485_TX_ENABLE;
+    Delay_us(7);
     g_bit_SCI_DMA_Send(RS485_2) = ON;
     USART_ClearFlag(USART3, USART_FLAG_TC);
 #ifdef UART_DMA_ENABLE
@@ -788,14 +792,16 @@ void USART3_Send_Data(unsigned char *send_buff,unsigned int length)
         USART3->DR = send_buff[i];
         while((USART3->SR&0X40)==0);  
     }
+    Delay_us(1);
 	USART3_485_RX_ENABLE;
 #endif
 }
 
-void UART4_Send_Data(unsigned char *send_buff,unsigned int length)
+void UART4_Send_Data(u8 *send_buff,u16 length)
 {
     unsigned int i = 0;
     UART4_485_TX_ENABLE;
+    Delay_us(7);
     g_bit_SCI_DMA_Send(RS485_3) = ON;
     USART_ClearFlag(UART4, USART_FLAG_TC);
 #ifdef UART_DMA_ENABLE
@@ -806,14 +812,16 @@ void UART4_Send_Data(unsigned char *send_buff,unsigned int length)
   	UART4->DR = send_buff[i];
   	while((UART4->SR&0X40)==0);  
   }
+  Delay_us(1);
   UART4_485_RX_ENABLE;
 #endif
 }
 
-void UART5_Send_Data(unsigned char *send_buff,unsigned int length)
+void UART5_Send_Data(u8 *send_buff,u16 length)
 {
 	unsigned int i = 0;
 	UART5_485_TX_ENABLE;  	//485发送使能
+	Delay_us(7);
 	g_bit_SCI_DMA_Send(RS485_4) = ON;
 	USART_ClearFlag(UART5, USART_FLAG_TC);
 //  delay_us(300);  	//稍作延时，注意延时的长短根据波特率来定，波特率越小，延时应该越长
@@ -824,6 +832,7 @@ void UART5_Send_Data(unsigned char *send_buff,unsigned int length)
   }
   g_bit_SCI_DMA_Send(RS485_4) = ON;
 //  delay_us(50);   	//稍作延时，注意延时的长短根据波特率来定，波特率越小，延时应该越长
+  Delay_us(1);
 	UART5_485_RX_ENABLE;    	//485接收使能
 }
 

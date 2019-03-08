@@ -1,6 +1,7 @@
 #include "main.h"
 #include "Task_TCPIP.h"
-#include "Task_ModbusTCp.h"
+#include "Task_ModbusTCP.h"
+#include "Task_MB_RTU_Master.h"
 #include "Task_MQTT.h"
 #include "Task_HTTP.h"
 #include "Task_IO.h"
@@ -17,6 +18,8 @@ OS_STK STK_IO[STKSIZE_IO];
 OS_STK STK_PCMSG_RECV[STKSIZE_PCMSG_RECV];
 OS_STK STK_FREQ_CONVER[STKSIZE_FREQ_CONVER];
 OS_STK STK_ENCODER[STKSIZE_ENCODER];
+OS_STK STK_MBRTU_M[STKSIZE_MBRTU_M];
+
 
 #ifdef TCPIP_ENABLE
 OS_STK STK_TCPIP[STKSIZE_TCPIP];
@@ -107,6 +110,8 @@ void Task_Main(void *p_arg)
 	OSTaskCreate(Task_IO, (void *)&gWIZNETINFO, (OS_STK*)&STK_IO[STKSIZE_IO-1], TASK_PRIO_IO);
 	//创建和PC通讯的task，传入的参数为项目配置信息
     OSTaskCreate(Task_PC_Message_Recv, (void *)&gWIZNETINFO, (OS_STK*)&STK_PCMSG_RECV[STKSIZE_PCMSG_RECV-1], TASK_PRIO_PCMSG_RECV);
+    //创建和PC通讯的task，传入的参数为项目配置信息
+    //OSTaskCreate(Task_MBRTU_Master, (void *)&gWIZNETINFO, (OS_STK*)&STK_MBRTU_M[STKSIZE_MBRTU_M-1], TASK_PRIO_MBRTU_M);
     //创建变频器铜须的task，传入的参数为项目配置信息
     //OSTaskCreate(Task_Freq_Convert, (void *)&gWIZNETINFO, (OS_STK*)&STK_FREQ_CONVER[STKSIZE_FREQ_CONVERT-1], TASK_PRIO_FREQ_CONVERT);
     //创建编码器的task，传入的参数为项目配置信息

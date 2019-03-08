@@ -138,8 +138,8 @@ void Package_RespData(u8 *data)
     RespondToPC.databuf[index++] = Polling_Frame_Respond.Running_Error_Sts[4].Byte;
     RespondToPC.databuf[index++] = Polling_Frame_Respond.Running_Error_Sts[5].Byte;
     CrcCheck = Get_rtuCrc16(RespondToPC.databuf,index);
-    RespondToPC.databuf[index++] = CrcCheck>>8;
     RespondToPC.databuf[index++] = CrcCheck%256;
+    RespondToPC.databuf[index++] = CrcCheck>>8;
 }
 
 void Broadcast_Frame_Parse(u8 *data, u16 len)
@@ -185,7 +185,7 @@ void Node_Frame_Parse(u8 *data, u16 len)
     volatile u8 aaa[4];
     if(Globle_Framework.DIP_SwitchStatus == data[0])
     {
-        switch(data[1])
+        switch(data[1])//功能码
         {
             case Polling:
                 if(len == 4U)
@@ -214,7 +214,7 @@ void Node_Frame_Parse(u8 *data, u16 len)
 
             break;
             case Suspender_Emergency_Stop_F:
-                // 当前用于调试，若上位机未铜须成功，启用modbus RTU进行调试
+                // 当前用于调试，若上位机未通讯成功，启用modbus RTU进行调试，后边将会删除
                 if(len >= 4U)
                 {
                     CrcCheck = Get_rtuCrc16(data,len-2);

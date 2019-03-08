@@ -4,7 +4,7 @@
 #include "stm32f10x.h"
 #include <math.h>
 
-
+void Delay_us(u32 n);
 void Framework_Timer1ms(void);
 void Framework_Timer100ms(void);
 void Calc_CurrentTemp(u16 sch_timer,u16 sch_cycle);

@@ -458,6 +458,11 @@
               <FileType>1</FileType>
               <FilePath>..\Task\Task_PC_Com.c</FilePath>
             </File>
+            <File>
+              <FileName>Task_MB_RTU_Master.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Task\Task_MB_RTU_Master.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

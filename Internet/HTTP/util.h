@@ -7,7 +7,6 @@
 #ifndef _UTIL_H
 #define _UTIL_H
 
-void Delay_us(unsigned char time_us);
 void Delay_ms(unsigned int time_ms);
 
 
