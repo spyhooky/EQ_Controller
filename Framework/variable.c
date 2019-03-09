@@ -35,7 +35,7 @@ wiz_NetTimeout gWIZNetTimeout =
 
                            
 Interface_Info USARTCAN = { 
-                            .Usart[RS232_1] = {1,2, 0, 0, 0, 0,0}, //RS232  // USER 19200 8 ODD 1 CTS 
+                            .Usart[RS232_1] = {1,2, 0, 0, 0, 0,0}, //RS232  // En baudrate databit checkbit stopbit flowcontrol 
                             .Usart[RS485_1] =   {1,2, 0, 0, 0, 0,0},
 							.Usart[RS485_2] =   {1,2, 0, 0, 0, 0,0},
 							.Usart[RS485_3] =   {1,2, 0, 0, 0, 0,0},

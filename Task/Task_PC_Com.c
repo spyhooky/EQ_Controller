@@ -182,7 +182,6 @@ void Node_Frame_Parse(u8 *data, u16 len)
     u16 CrcCheck;
     u16 index;
     index = 0;
-    volatile u8 aaa[4];
     if(Globle_Framework.DIP_SwitchStatus == data[0])
     {
         switch(data[1])//功能码
@@ -261,6 +260,7 @@ void Task_PC_Meg_Analysis(void)
 {
     u16 i;
     USARTCAN_Recv_t recvmsg;
+    RespondToPC.datalen = 0;
     recvmsg = GET_UsartCAN_Recv_Result(UART_PC_MESSAGE_CHN);
     if(recvmsg.lenth >= 4U )//数据长度大于3个字节，认为数据个数有效
     {
@@ -296,8 +296,12 @@ void Task_PC_Message_Recv(void *p_arg)
         {
             Task_PC_Meg_Analysis();
         }
+
+        if(RespondToPC.datalen > 0)
+        {
+            Uart_Transmit(UART_PC_MESSAGE_CHN,RespondToPC.databuf,RespondToPC.datalen);
+        }
         //memset(USARTCAN_Recv[UART_PC_MESSAGE_CHN].databuf,0,sizeof(USARTCAN_Recv[UART_PC_MESSAGE_CHN].databuf));
-        Uart_Transmit(UART_PC_MESSAGE_CHN,RespondToPC.databuf,RespondToPC.datalen);
         //OSMboxPost(mBOX_PC_Message_Send,(void *)&RespondToPC);//启动发送
         //OSTimeDlyHMSM(0, 0, 0, 1);
     }

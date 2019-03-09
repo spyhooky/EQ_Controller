@@ -1,2 +1,37 @@
----- PC_message Matches (1 in 1 files) ----
-Task_PC_Com.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\Task) line 37 : static u8 PC_message[400];
+---- datalen Matches (36 in 6 files) ----
+make_basic_config_setting_json_callback in httputil.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\Internet\HTTP) : 				gWIZNETINFO.mbtcp_addr,USARTCAN.datalen,gWIZNETINFO.polltime,
+app_addr_ in httputil.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\Internet\HTTP) :             USARTCAN.datalen = num;
+ReadFlashCfg in Task_Main.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\Task) :     USARTCAN.datalen = readdata->mbtcp_datalen;
+HTTP_DataHandler in Task_Main.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\Task) :     flashdata.mbtcp_datalen=USARTCAN.datalen;
+Modbus_Server in Task_ModbusTCP.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\Task) :             else if((usStartAddr+usNumber)>(USARTCAN.addr+(USARTCAN.datalen*NUM_UARTCAN)))//����һ���ֳ�����Χ
+Modbus_Server in Task_ModbusTCP.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\Task) :             else if((usStartAddr+usNumber)>(USARTCAN.addr+(USARTCAN.datalen*NUM_UARTCAN)))//
+Modbus_Server in Task_ModbusTCP.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\Task) :             else if((usStartAddr+usNumber)>(USARTCAN.addr+(USARTCAN.datalen*NUM_UARTCAN)))
+Modbus_Server in Task_ModbusTCP.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\Task) :                     if((usStartAddr-USARTCAN.addr)%USARTCAN.datalen==0)//ֻ��������ʼ��ַ��˿ڶ�Ӧ��ƫ�Ƶ�ַ��ʼ�����򱨴�
+Modbus_Server in Task_ModbusTCP.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\Task) :                         chn=(usStartAddr-USARTCAN.addr)/USARTCAN.datalen;
+Task_ModbusTCP in Task_ModbusTCP.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\Task) :                                     aucTCPBuf[8] = ((USARTCAN.addr+(USARTCAN.datalen*usartcan_chn)) >> 8) & 0XFF;
+Task_ModbusTCP in Task_ModbusTCP.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\Task) :                                     aucTCPBuf[9] =  (USARTCAN.addr+(USARTCAN.datalen*usartcan_chn)) & 0XFF;
+Task_ModbusTCP in Task_ModbusTCP.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\Task) :                         aucTCPBuf[8] = ((USARTCAN.addr+(USARTCAN.datalen*usartcan_chn)) >> 8) & 0XFF;
+Task_ModbusTCP in Task_ModbusTCP.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\Task) :                         aucTCPBuf[9] =  (USARTCAN.addr+(USARTCAN.datalen*usartcan_chn)) & 0XFF;
+Task_ModbusTCP in Task_ModbusTCP.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\Task) :                         aucTCPBuf[10] = (USARTCAN.datalen >> 8) & 0XFF;
+Task_ModbusTCP in Task_ModbusTCP.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\Task) :                         aucTCPBuf[11] =	USARTCAN.datalen & 0XFF;
+MBTCP_DataHandler in Task_ModbusTCP.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\Task) :     data_off=USARTCAN.datalen * 2 * chnidx;
+MBTCP_DataHandler in Task_ModbusTCP.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\Task) :         aucTCPBuf[4] = ((USARTCAN.datalen * 2 + 7) >> 8) & 0XFF;
+MBTCP_DataHandler in Task_ModbusTCP.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\Task) :         aucTCPBuf[5] = (USARTCAN.datalen * 2 + 7) & 0XFF;
+MBTCP_DataHandler in Task_ModbusTCP.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\Task) :         aucTCPBuf[8] = ((USARTCAN.addr+(USARTCAN.datalen*chnidx)) >> 8) & 0XFF;
+MBTCP_DataHandler in Task_ModbusTCP.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\Task) :         aucTCPBuf[9] =  (USARTCAN.addr+(USARTCAN.datalen*chnidx)) & 0XFF;
+MBTCP_DataHandler in Task_ModbusTCP.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\Task) :         aucTCPBuf[10] = (USARTCAN.datalen >> 8) & 0XFF;
+MBTCP_DataHandler in Task_ModbusTCP.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\Task) :         aucTCPBuf[11] =	USARTCAN.datalen & 0XFF;
+MBTCP_DataHandler in Task_ModbusTCP.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\Task) :         aucTCPBuf[12] = (USARTCAN.datalen * 2) & 0XFF;
+MBTCP_DataHandler in Task_ModbusTCP.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\Task) :         TCP_TR_data[(USARTCAN.datalen * 2 * chnidx)+1]=0;//Ϊ��ʵ��˫��ͨѶ�ҹ���ַ���˴��������⴦��������־λǿ���������Ϊֻ��дһ�Σ���Ӱ�칦�ܵ�ʶ��
+MBTCP_DataHandler in Task_ModbusTCP.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\Task) :         memcpy(&aucTCPBuf[13],&TCP_TR_data[USARTCAN.datalen * 2 * chnidx],recv->lenth+4);
+PC_Message_info in Task_PC_Com.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\Task) :     u16 datalen;
+Postive_Responde in Task_PC_Com.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\Task) :     RespondToPC.datalen = 4;
+Postive_Responde in Task_PC_Com.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\Task) :     CrcCheck = Get_rtuCrc16(RespondToPC.databuf,RespondToPC.datalen-2);
+Negtive_Responde in Task_PC_Com.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\Task) :     RespondToPC.datalen = 5;
+Negtive_Responde in Task_PC_Com.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\Task) :     CrcCheck = Get_rtuCrc16(RespondToPC.databuf,RespondToPC.datalen-2);
+Package_RespData in Task_PC_Com.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\Task) :     RespondToPC.datalen = 17;
+Node_Frame_Parse in Task_PC_Com.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\Task) :         RespondToPC.datalen = 0;
+Task_PC_Message_Recv in Task_PC_Com.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\Task) :         if(RespondToPC.datalen > 0)
+Task_PC_Message_Recv in Task_PC_Com.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\Task) :             Uart_Transmit(UART_PC_MESSAGE_CHN,RespondToPC.databuf,RespondToPC.datalen);
+variable.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\Framework) line 89 :                             .datalen=50,//串口或CAN的每个通道传输数据的字长度
+Interface_Info_t in variable.h (D:\Develop\李总\Code\设备控制器\EQ_Controller\Framework) :     u32   datalen;//每个通道mb的长度，实际长度为此值-2，因为有两个字为协议内容，一个为标志位，第二个为字节数量

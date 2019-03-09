@@ -117,10 +117,18 @@ void Task_Main(void *p_arg)
     //创建编码器的task，传入的参数为项目配置信息
     //OSTaskCreate(Task_Encoder, (void *)&gWIZNETINFO, (OS_STK*)&STK_ENCODER[STKSIZE_ENCODER-1], TASK_PRIO_ENCODER);
     OSTaskCreate(Task_BackGround, (void *)&gWIZNETINFO, (OS_STK*)&STK_BACKGRD[STKSIZE_BACKGRD-1], TASK_PRIO_BACKGRD);//创建后台task，用于轮询查状态的，对时间要求不是非常高的功能，可放在此task内执行
-       
+
+    #ifdef WATCHDOG_ENABLE
+        IWDG_WriteAccessCmd(IWDG_WriteAccess_Enable);
+        IWDG_SetPrescaler(IWDG_Prescaler_256);//时钟分频40k/256=156hz（6.4ms）
+        IWDG_SetReload(468);//看门狗超时时间为3s 不能大于0xfff（4095） 781为5s
+        IWDG_ReloadCounter();
+        IWDG_Enable();//软件看门狗使能
+    #endif   
     //OSTaskSuspend(TASK_PRIO_MAIN);//挂起该task
     while (1)
     {
+        IWDG_ReloadCounter();//喂狗
         #ifdef W5500_ENABLE
         if(Ethernet_Init_Flag == FALSE)
         {
@@ -175,18 +183,10 @@ void Task_Main(void *p_arg)
 /***************************************************************************/
 void Task_BackGround(void *p_arg)
 {
-    #ifdef WATCHDOG_ENABLE
-        IWDG_WriteAccessCmd(IWDG_WriteAccess_Enable);
-        IWDG_SetPrescaler(IWDG_Prescaler_256);//时钟分频40k/256=156hz（6.4ms）
-        IWDG_SetReload(468);//看门狗超时时间为3s 不能大于0xfff（4095） 781为5s
-        IWDG_ReloadCounter();
-        IWDG_Enable();//软件看门狗使能
-    #endif
+    
 
     while(1)
-    {
-        IWDG_ReloadCounter();//喂狗
-        
+    {    
 		//UART_CAN_Handler(p_arg);//暂时不使用该功能
 		
 		/******************APPLICATION START******************/
