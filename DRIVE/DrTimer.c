@@ -76,6 +76,12 @@ void TIM2_Config(void)/* 100us */
     
     TIM_TimeBaseInitTypeDef     TIM_TimeBaseStructure;
     NVIC_InitTypeDef            NVIC_InitStructure;
+    
+    NVIC_InitStructure.NVIC_IRQChannel = TIM2_IRQn;
+    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;  
+    NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+    NVIC_Init(&NVIC_InitStructure);
 
     TIM_DeInit(TIM2);
     RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
@@ -87,11 +93,7 @@ void TIM2_Config(void)/* 100us */
     TIM_ITConfig(TIM2, TIM_IT_Update|TIM_IT_Trigger, ENABLE);
     TIM_Cmd(TIM2, ENABLE); //使能定时器   
 
-    NVIC_InitStructure.NVIC_IRQChannel = TIM2_IRQn;
-    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
-    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;  
-    NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-    NVIC_Init(&NVIC_InitStructure);
+    
 
 }
 
@@ -101,6 +103,12 @@ void TIM3_Config(void)/* 1ms */
     
     TIM_TimeBaseInitTypeDef     TIM_TimeBaseStructure;
     NVIC_InitTypeDef            NVIC_InitStructure;
+    
+    NVIC_InitStructure.NVIC_IRQChannel = TIM3_IRQn;
+    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;  
+    NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+    NVIC_Init(&NVIC_InitStructure);
 
     TIM_DeInit(TIM3);
     RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3, ENABLE);
@@ -112,11 +120,7 @@ void TIM3_Config(void)/* 1ms */
     TIM_ITConfig(TIM3, TIM_IT_Update|TIM_IT_Trigger, ENABLE);
     TIM_Cmd(TIM3, ENABLE); //使能定时器   
 
-    NVIC_InitStructure.NVIC_IRQChannel = TIM3_IRQn;
-    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
-    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;  
-    NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-    NVIC_Init(&NVIC_InitStructure);
+    
 
 }
 
@@ -128,6 +132,12 @@ void TIM4_Config(void)/* 100ms */
     TIM_TimeBaseInitTypeDef     TIM_TimeBaseStructure;
     NVIC_InitTypeDef            NVIC_InitStructure;		
   
+    NVIC_InitStructure.NVIC_IRQChannel = TIM4_IRQn;
+    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 4;  
+    NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+    NVIC_Init(&NVIC_InitStructure); 
+    
     TIM_DeInit(TIM4);
     RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM4, ENABLE);
     TIM_TimeBaseStructure.TIM_Period = 199;  /* 200和18000 1ms*/
@@ -137,12 +147,6 @@ void TIM4_Config(void)/* 100ms */
     TIM_TimeBaseInit(TIM4, &TIM_TimeBaseStructure);
     TIM_ITConfig(TIM4,TIM_IT_Update|TIM_IT_Trigger,ENABLE);
     TIM_Cmd(TIM4, ENABLE);
-    
-    NVIC_InitStructure.NVIC_IRQChannel = TIM4_IRQn;
-    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
-    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 4;  
-    NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-    NVIC_Init(&NVIC_InitStructure); 
 
 }
 

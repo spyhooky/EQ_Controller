@@ -4,7 +4,7 @@
 #include "variable.h"
 
 //定义串口通道
-#define UART_PC_MESSAGE_CHN                RS485_2
+#define UART_PC_MESSAGE_CHN                RS485_1
 
 
 

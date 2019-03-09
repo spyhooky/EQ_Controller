@@ -105,13 +105,13 @@ void Task_Main(void *p_arg)
     (void)p_arg;
     u8 Ethernet_Init_Flag = FALSE;
     Config_DrCommon();
-
+    Framework_Init();
     //创建IO的task，传入的参数为项目配置信息
 	OSTaskCreate(Task_IO, (void *)&gWIZNETINFO, (OS_STK*)&STK_IO[STKSIZE_IO-1], TASK_PRIO_IO);
 	//创建和PC通讯的task，传入的参数为项目配置信息
     OSTaskCreate(Task_PC_Message_Recv, (void *)&gWIZNETINFO, (OS_STK*)&STK_PCMSG_RECV[STKSIZE_PCMSG_RECV-1], TASK_PRIO_PCMSG_RECV);
     //创建和PC通讯的task，传入的参数为项目配置信息
-    //OSTaskCreate(Task_MBRTU_Master, (void *)&gWIZNETINFO, (OS_STK*)&STK_MBRTU_M[STKSIZE_MBRTU_M-1], TASK_PRIO_MBRTU_M);
+    OSTaskCreate(Task_MBRTU_Master, (void *)&gWIZNETINFO, (OS_STK*)&STK_MBRTU_M[STKSIZE_MBRTU_M-1], TASK_PRIO_MBRTU_M);
     //创建变频器铜须的task，传入的参数为项目配置信息
     //OSTaskCreate(Task_Freq_Convert, (void *)&gWIZNETINFO, (OS_STK*)&STK_FREQ_CONVER[STKSIZE_FREQ_CONVERT-1], TASK_PRIO_FREQ_CONVERT);
     //创建编码器的task，传入的参数为项目配置信息
@@ -314,10 +314,10 @@ void ETH2Usartcan_send(u8 uartcan_chn,u8 *databuf,u16 lenth)
 /***************************************************************************/
 void ReadFlashCfg(void)
 {
-    struct EthernetCfg_t *readdata;
-    u8 flashdata[sizeof(struct EthernetCfg_t)];
-    FlashReadData(CONFIG_BASEADDR,flashdata,sizeof(struct EthernetCfg_t));
-    readdata = (struct EthernetCfg_t *)&flashdata;
+    struct EqController_Cfg_t *readdata;
+    u8 flashdata[sizeof(struct EqController_Cfg_t)];
+    FlashReadData(CONFIG_BASEADDR,flashdata,sizeof(struct EqController_Cfg_t));
+    readdata = (struct EqController_Cfg_t *)&flashdata;
     
     if((readdata->cfgflag[0]==0xAA)&&(readdata->cfgflag[1]==0x55)&&(readdata->cfgflag[2]==0xAA)&&(readdata->cfgflag[3]==0x55))
     {
@@ -402,7 +402,7 @@ void ReadFlashCfg(void)
     USARTCAN.Usart[RS485_4][uartDatatype] = readdata->rs485_4_datatype;
     //预留11
     
-    USARTCAN.tout = readdata->to_thres;
+    //USARTCAN.tout = readdata->to_thres;
     //预留12
 }
 
@@ -424,7 +424,7 @@ void dylms(unsigned int u)
 /**********************************/
 void HTTP_DataHandler(void)
 {
-    struct EthernetCfg_t flashdata;
+    struct EqController_Cfg_t flashdata;
     flashdata.cfgflag[0] = 0xAA;
     flashdata.cfgflag[1] = 0x55;
     flashdata.cfgflag[2] = 0xAA;
@@ -496,7 +496,7 @@ void HTTP_DataHandler(void)
     flashdata.rs485_4_datatype = USARTCAN.Usart[RS485_4][uartDatatype];
     //预留11
     
-    flashdata.to_thres = USARTCAN.tout;
+    //flashdata.to_thres = USARTCAN.tout;
     //预留12
     
     OS_ENTER_CRITICAL();

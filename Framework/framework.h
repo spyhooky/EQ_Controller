@@ -4,6 +4,14 @@
 #include "stm32f10x.h"
 #include <math.h>
 
+typedef struct UartOpFuncTyp
+{
+	void (*_send)  (u8 *sendbuf, u16 lenth);
+	void (*_recv)  (u8 data);
+}UartOpFunc_t;
+extern UartOpFunc_t UartOpFunc[NUM_UARTCHANNEL];
+
+void Framework_Init(void);
 void Delay_us(u32 n);
 void Framework_Timer1ms(void);
 void Framework_Timer100ms(void);

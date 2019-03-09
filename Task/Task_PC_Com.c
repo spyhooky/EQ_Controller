@@ -40,6 +40,10 @@ static void Update_Running_ErrorSts(void);
 static void Postive_Responde(u8 func);
 static void Task_PC_Message_Update(void *p_arg);
 
+static void PC_COM_Init(void)
+{
+    
+}
 
 void PC_COM_Timer100ms(void)
 {
@@ -287,7 +291,8 @@ void Task_PC_Message_Recv(void *p_arg)
     u8 *recvmsg;
     //ethparm = (struct wiz_NetInfo_t *)p_arg;
     OSTaskCreate(Task_PC_Message_Update, (void *)p_arg, (OS_STK*)&STK_PC_MSG_UPD[STKSIZE_PC_MSG_UPD-1], TASK_PRIO_PC_MSG_UPD);
-    mBOX_Uart_Recv[UART_PC_MESSAGE_CHN] = OSMboxCreate((void *)0);
+    
+    PC_COM_Init();
     
     while (1)
     {
@@ -299,7 +304,7 @@ void Task_PC_Message_Recv(void *p_arg)
 
         if(RespondToPC.datalen > 0)
         {
-            Uart_Transmit(UART_PC_MESSAGE_CHN,RespondToPC.databuf,RespondToPC.datalen);
+            UartOpFunc[UART_PC_MESSAGE_CHN]._send(RespondToPC.databuf,RespondToPC.datalen);
         }
         //memset(USARTCAN_Recv[UART_PC_MESSAGE_CHN].databuf,0,sizeof(USARTCAN_Recv[UART_PC_MESSAGE_CHN].databuf));
         //OSMboxPost(mBOX_PC_Message_Send,(void *)&RespondToPC);//Æô¶¯·¢ËÍ

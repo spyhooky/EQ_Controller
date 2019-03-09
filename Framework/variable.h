@@ -12,7 +12,7 @@ enum SessionMode//以太网工作模式
 };
 
 
-struct EthernetCfg_t
+struct EqController_Cfg_t
 {
     u8  cfgflag[4];                       //存放固定的0xAA55AA55，用于识别flash数据是否有效
     u8  session_mode;                     //以太网模式模式
@@ -44,6 +44,7 @@ struct EthernetCfg_t
     u8  rs232_1_stopbit;                  //RS232C-1接口停止位
     u8  rs232_1_flowctrl;                 //RS232C-1接口流控
     u8  rs232_1_datatype;                 //RS232C-1数据格式
+    u8  rs232_1_tout;                     //RS232C-1超时时间
     u8  reserve7[1];
     u8  rs485_1_en;                         //RS485接口使能
     u8  rs485_1_baudrate;                   //RS485接口波特率
@@ -51,6 +52,7 @@ struct EthernetCfg_t
     u8  rs485_1_chkbit;                     //RS485接口校验位
     u8  rs485_1_stopbit;                    //RS485接口停止位
     u8  rs485_1_datatype;                   //RS485数据格式
+    u8  rs485_1_tout;                       //RS485-1超时时间
     u8  reserve8[1];
     u8  rs485_2_en;                         //RS485接口使能
     u8  rs485_2_baudrate;                   //RS485接口波特率
@@ -58,6 +60,7 @@ struct EthernetCfg_t
     u8  rs485_2_chkbit;                     //RS485接口校验位
     u8  rs485_2_stopbit;                    //RS485接口停止位
     u8  rs485_2_datatype;                   //RS485数据格式
+    u8  rs485_2_tout;                       //RS485-2超时时间
     u8  reserve9[1];
 	u8  rs485_3_en;                         //RS485接口使能
     u8  rs485_3_baudrate;                   //RS485接口波特率
@@ -65,6 +68,7 @@ struct EthernetCfg_t
     u8  rs485_3_chkbit;                     //RS485接口校验位
     u8  rs485_3_stopbit;                    //RS485接口停止位
     u8  rs485_3_datatype;                   //RS485数据格式
+    u8  rs485_3_tout;                       //RS485-3超时时间
     u8  reserve10[1];
     u8  rs485_4_en;                         //RS485接口使能
     u8  rs485_4_baudrate;                   //RS485接口波特率
@@ -72,6 +76,7 @@ struct EthernetCfg_t
     u8  rs485_4_chkbit;                     //RS485接口校验位
     u8  rs485_4_stopbit;                    //RS485接口停止位
     u8  rs485_4_datatype;                   //RS485数据格式
+    u8  rs485_4_tout;                       //RS485-4超时时间
     u8  reserve11[1];
     u8  to_thres;                         //串口通讯中帧内相邻字符间隔超时时间
 };
@@ -92,7 +97,7 @@ typedef union {
 
 
 enum UsartType{//串口配置数组各元素的定义，有增加向时请在下边第一行往后增加
-    EnUart=0,uartBaudrate,Databits,Chkbits,Stopbits,Flowctrl,uartDatatype,
+    EnUart=0,uartBaudrate,Databits,Chkbits,Stopbits,Flowctrl,uartDatatype,tmout,
     uartcfgnum
 };
 
@@ -159,7 +164,6 @@ typedef struct Interface_Info_t
     u32   addr;//modbus起始地址
     u32   datalen;//每个通道mb的长度，实际长度为此值-2，因为有两个字为协议内容，一个为标志位，第二个为字节数量
     u8  sid;//站地址
-    u8  tout;//串口通讯帧超时时间
 }Interface_Info;
 extern Interface_Info USARTCAN;//
 
@@ -180,7 +184,7 @@ extern USARTCAN_Recv_t USARTCAN_Recv[NUM_UARTCAN];
 extern u16 g_u16_TCPIPsendlen;           //tcpip报文发送长度
 
 extern u16 cpu_sr;                        //cpu中断状态
-extern OS_EVENT *mBOX_Uart_Recv[NUM_UARTCHANNEL-1];    //所有串口收到消息后需要发送队列给其他task处理
+extern OS_EVENT *mBOX_Uart_Recv[NUM_UARTCHANNEL];    //所有串口收到消息后需要发送队列给其他task处理
 
 extern char platform_version[];
 extern char funcTion[];

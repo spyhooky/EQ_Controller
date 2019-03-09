@@ -10,6 +10,10 @@
 
 #ifdef FRAMEWORK_H
 
+UartOpFunc_t UartOpFunc[NUM_UARTCHANNEL];
+
+static void UartFrame_Timeout_Calc(void);
+
 /****************************************************************************/
 /*函数名：  Framework_Init                                                  */
 /*功能说明：framework里变量的初始化                                          */
@@ -18,8 +22,36 @@
 /***************************************************************************/
 void Framework_Init(void)
 {
-	
+    u8 i;
+	UartOpFunc[RS232_1]._send = USART1_Send_Data;
+    UartOpFunc[RS485_1]._send = USART3_Send_Data;
+    UartOpFunc[RS485_2]._send = USART2_Send_Data;
+    UartOpFunc[RS485_3]._send = UART4_Send_Data;
+    UartOpFunc[RS485_4]._send = UART5_Send_Data;
+
+    for(i=0;i<NUM_UARTCHANNEL;i++)
+    {
+        mBOX_Uart_Recv[i] = OSMboxCreate((void *)0);
+    }   
+
+    UartFrame_Timeout_Calc();
 }
+
+static void UartFrame_Timeout_Calc(void)
+{
+    u8 i;
+    float temp;//5个字节传输所需的时间，单位10ns
+    for(i=0;i<NUM_UARTCHANNEL;i++)
+    {
+        temp = 100000 * 5*1/RS232_baud[USARTCAN.Usart[i][uartBaudrate]]*10;
+        USARTCAN.Usart[i][tmout] = (u8) ((temp + 5)/10);
+        if(USARTCAN.Usart[i][tmout] < 6)
+        {
+            USARTCAN.Usart[i][tmout] = 6;
+        }
+    }
+}
+
 
 /****************************************************************************/
 /*函数名：  Delay_us                                                  */

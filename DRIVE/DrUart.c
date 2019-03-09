@@ -116,6 +116,10 @@ void UsartRecieveData(u8 channel,u8 recdata)
 {
 	u8 Temp=0;
 	Temp = (u8) recdata;
+    if(UartOpFunc[channel]._recv != NULL)
+    {
+        UartOpFunc[channel]._recv(recdata);
+    }
     g_u16_SCISingalFrameRecTime[channel]=0;
 	if(FrameStatus[channel] == frame_idle)
 	{
@@ -221,21 +225,20 @@ void UsartRecieveData(u8 channel,u8 recdata)
 
 void USART1_IRQ(u8 data)/*  */
 {
-    UART_RTU_Recv(data);
     UsartRecieveData(RS232_1,data);
 	USART1_RecieveData(data);
 }
 
 void USART2_IRQ(u8 data)/*  */
 {
-    UsartRecieveData(RS485_1,data);
-	USART2_RecieveData(data);
+    UsartRecieveData(RS485_2,data);
+	USART3_RecieveData(data);
 }
 
 void USART3_IRQ(u8 data)/*  */
 {
-    UsartRecieveData(RS485_2,data);
-	USART3_RecieveData(data);
+    UsartRecieveData(RS485_1,data);
+	USART2_RecieveData(data);
 }
 
 void UART4_IRQ(u8 data)/*  */
@@ -311,7 +314,6 @@ void DMA2_Channel5_IRQHandler(void)
     USART_ITConfig(UART4, USART_IT_TC, ENABLE);
 }
 #endif
-
 
 
 void DrUSART1_Init(void)
@@ -760,10 +762,10 @@ void USART1_Send_Data(u8 *send_buff,u16 length)
 void USART2_Send_Data(u8 *send_buff,u16 length)
 {
 	USART2_485_TX_ENABLE;
-    Delay_us(7);
-    g_bit_SCI_DMA_Send(RS485_1) = ON;
+    //Delay_us(7);
     USART_ClearFlag(USART2, USART_FLAG_TC);
 #ifdef UART_DMA_ENABLE
+    g_bit_SCI_DMA_Send(RS485_1) = ON;
     DMA1_Channel7_HW_Start(send_buff,length);
 #else
     unsigned int i = 0;
@@ -772,7 +774,7 @@ void USART2_Send_Data(u8 *send_buff,u16 length)
         USART2->DR = send_buff[i];
         while((USART2->SR&0X40)==0);  
     }
-    Delay_us(1);
+    //Delay_us(1);
 	USART2_485_RX_ENABLE;
 #endif
 }
@@ -780,10 +782,10 @@ void USART2_Send_Data(u8 *send_buff,u16 length)
 void USART3_Send_Data(u8 *send_buff,u16 length)
 {
 	USART3_485_TX_ENABLE;
-    Delay_us(7);
-    g_bit_SCI_DMA_Send(RS485_2) = ON;
+    //Delay_us(7);
     USART_ClearFlag(USART3, USART_FLAG_TC);
 #ifdef UART_DMA_ENABLE
+    g_bit_SCI_DMA_Send(RS485_2) = ON;
     DMA1_Channel2_HW_Start(send_buff,length);
 #else
     unsigned int i = 0;
@@ -792,7 +794,7 @@ void USART3_Send_Data(u8 *send_buff,u16 length)
         USART3->DR = send_buff[i];
         while((USART3->SR&0X40)==0);  
     }
-    Delay_us(1);
+    //Delay_us(1);
 	USART3_485_RX_ENABLE;
 #endif
 }
@@ -801,10 +803,10 @@ void UART4_Send_Data(u8 *send_buff,u16 length)
 {
     unsigned int i = 0;
     UART4_485_TX_ENABLE;
-    Delay_us(7);
-    g_bit_SCI_DMA_Send(RS485_3) = ON;
+    //Delay_us(7);
     USART_ClearFlag(UART4, USART_FLAG_TC);
 #ifdef UART_DMA_ENABLE
+    g_bit_SCI_DMA_Send(RS485_3) = ON;
     DMA2_Channel5_HW_Start(send_buff,length);
 #else
   for(i = 0;i < length;i ++)
@@ -812,7 +814,7 @@ void UART4_Send_Data(u8 *send_buff,u16 length)
   	UART4->DR = send_buff[i];
   	while((UART4->SR&0X40)==0);  
   }
-  Delay_us(1);
+  //Delay_us(1);
   UART4_485_RX_ENABLE;
 #endif
 }
@@ -821,18 +823,17 @@ void UART5_Send_Data(u8 *send_buff,u16 length)
 {
 	unsigned int i = 0;
 	UART5_485_TX_ENABLE;  	//485发送使能
-	Delay_us(7);
-	g_bit_SCI_DMA_Send(RS485_4) = ON;
+	//Delay_us(7);
 	USART_ClearFlag(UART5, USART_FLAG_TC);
+    //g_bit_SCI_DMA_Send(RS485_4) = ON;
 //  delay_us(300);  	//稍作延时，注意延时的长短根据波特率来定，波特率越小，延时应该越长
-  for(i = 0;i < length;i ++)
-  {  	  
-  	UART5->DR = send_buff[i];
-  	while((UART5->SR&0X40)==0);  
-  }
-  g_bit_SCI_DMA_Send(RS485_4) = ON;
+    for(i = 0;i < length;i ++)
+    {  	  
+        UART5->DR = send_buff[i];
+        while((UART5->SR&0X40)==0);  
+    }
 //  delay_us(50);   	//稍作延时，注意延时的长短根据波特率来定，波特率越小，延时应该越长
-  Delay_us(1);
+  //Delay_us(1);
 	UART5_485_RX_ENABLE;    	//485接收使能
 }
 
