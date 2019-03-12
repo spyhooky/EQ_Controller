@@ -324,6 +324,11 @@ void EXTI9_5_IRQHandler(void)
         EXIT9_5_IRQ();
     }
     EXTI_ClearITPendingBit(EXTI_Line6); //
+    if(EXTI_GetITStatus(EXTI_Line7) != RESET)   //EXTI9
+    {
+        EXIT9_5_IRQ();
+    }
+    EXTI_ClearITPendingBit(EXTI_Line7); //
 }
 
 

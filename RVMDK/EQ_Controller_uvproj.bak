@@ -307,7 +307,7 @@
               <OCR_RVCT4>
                 <Type>1</Type>
                 <StartAddress>0x8000000</StartAddress>
-                <Size>0x1c000</Size>
+                <Size>0x10000</Size>
               </OCR_RVCT4>
               <OCR_RVCT5>
                 <Type>1</Type>
@@ -439,19 +439,9 @@
               <FilePath>..\Task\Task_ModbusTCP.c</FilePath>
             </File>
             <File>
-              <FileName>Task_MQTT.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Task\Task_MQTT.c</FilePath>
-            </File>
-            <File>
               <FileName>Task_Main.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Task\Task_Main.h</FilePath>
-            </File>
-            <File>
-              <FileName>Task_HTTP.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Task\Task_HTTP.c</FilePath>
             </File>
             <File>
               <FileName>Task_PC_Com.c</FileName>
@@ -857,96 +847,6 @@
               <FileName>w5500.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Ethernet\W5500\w5500.c</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>Internet</GroupName>
-          <Files>
-            <File>
-              <FileName>dhcp.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Internet\DHCP\dhcp.c</FilePath>
-            </File>
-            <File>
-              <FileName>dns.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Internet\DNS\dns.c</FilePath>
-            </File>
-            <File>
-              <FileName>util.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Internet\HTTP\util.c</FilePath>
-            </File>
-            <File>
-              <FileName>httpd.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Internet\HTTP\httpd.c</FilePath>
-            </File>
-            <File>
-              <FileName>httputil.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Internet\HTTP\httputil.c</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>MQTT</GroupName>
-          <Files>
-            <File>
-              <FileName>transport.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\MQTT\transport.c</FilePath>
-            </File>
-            <File>
-              <FileName>MQTTConnectClient.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\MQTT\MQTTConnectClient.c</FilePath>
-            </File>
-            <File>
-              <FileName>MQTTConnectServer.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\MQTT\MQTTConnectServer.c</FilePath>
-            </File>
-            <File>
-              <FileName>MQTTDeserializePublish.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\MQTT\MQTTDeserializePublish.c</FilePath>
-            </File>
-            <File>
-              <FileName>MQTTFormat.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\MQTT\MQTTFormat.c</FilePath>
-            </File>
-            <File>
-              <FileName>MQTTPacket.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\MQTT\MQTTPacket.c</FilePath>
-            </File>
-            <File>
-              <FileName>MQTTSerializePublish.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\MQTT\MQTTSerializePublish.c</FilePath>
-            </File>
-            <File>
-              <FileName>MQTTSubscribeClient.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\MQTT\MQTTSubscribeClient.c</FilePath>
-            </File>
-            <File>
-              <FileName>MQTTSubscribeServer.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\MQTT\MQTTSubscribeServer.c</FilePath>
-            </File>
-            <File>
-              <FileName>MQTTUnsubscribeClient.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\MQTT\MQTTUnsubscribeClient.c</FilePath>
-            </File>
-            <File>
-              <FileName>MQTTUnsubscribeServer.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\MQTT\MQTTUnsubscribeServer.c</FilePath>
             </File>
           </Files>
         </Group>

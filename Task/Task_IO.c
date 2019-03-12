@@ -146,7 +146,7 @@ void Task_IO(void *p_arg)
             {
                 testcnt = 0;
                 Blink_LED_Status(200);
-                Uart_Transmit(chn_test,data,5);
+                UartOpFunc[chn_test]._send(data,5);
             }
             else
             {

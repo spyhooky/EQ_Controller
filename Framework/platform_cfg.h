@@ -313,7 +313,7 @@ struct {
 /*********************************   INPUT   *********************************/
 //#define INPUT_TRIGGER_INTERRUPT   //INPUT_TRIGGER_FILTER
 
-#define DIGIT_INPUT_CHN_NUM             16U
+#define DIGIT_INPUT_CHN_NUM             18U
 
 /****  	MCU_IN 1	****/
 #define MCU_IN_1_PORT				    GPIOC
@@ -396,9 +396,15 @@ struct {
 #define GET_INPUT_16_STATUS             GPIO_ReadInputDataBit(MCU_IN_16_PORT,MCU_IN_16_PIN)
 
 /****  	MCU_IN 17	****/
-#define MCU_IN_17_PORT				    GPIOE
+#define MCU_IN_17_PORT				    GPIOB
 #define MCU_IN_17_PIN 				    GPIO_Pin_6
 #define GET_INPUT_17_STATUS             GPIO_ReadInputDataBit(MCU_IN_17_PORT,MCU_IN_17_PIN)
+
+/****  	MCU_IN 18	****/
+#define MCU_IN_18_PORT				    GPIOB
+#define MCU_IN_18_PIN 				    GPIO_Pin_7
+#define GET_INPUT_18_STATUS             GPIO_ReadInputDataBit(MCU_IN_18_PORT,MCU_IN_18_PIN)
+
 
 #define DIGIT_INPUT_REG_LIST \
 {\
@@ -450,6 +456,12 @@ struct {
         },\
         {\
             MCU_IN_16_PORT,MCU_IN_16_PIN\
+        },\
+        {\
+            MCU_IN_17_PORT,MCU_IN_17_PIN\
+        },\
+        {\
+            MCU_IN_18_PORT,MCU_IN_18_PIN\
         }\
     },\
     GPIO_ReadInputDataBit,\

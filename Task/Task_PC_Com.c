@@ -18,7 +18,7 @@ enum Func_Node{
 };
 
 enum Error_Type{
-    Error_Func,Error_Check,Error_Timeout
+    Error_Func,Error_Check,Error_Timeout,Error_Other
 };
 
 
@@ -64,6 +64,7 @@ static void Postive_Responde(u8 func)
 static void Negtive_Responde(u8 err)
 {
     u16 CrcCheck;
+    Blink_LED_Status(80);
     RespondToPC.datalen = 5;
     RespondToPC.databuf[0] = Globle_Framework.DIP_SwitchStatus;
     RespondToPC.databuf[1] = 0x80;
@@ -119,10 +120,10 @@ void Package_RespData(u8 *data)
     u16 index;
     u16 CrcCheck;
     index = 0;
-    RespondToPC.datalen = 17;
+    RespondToPC.datalen = 17u;
     RespondToPC.databuf[index++] = data[0];
     RespondToPC.databuf[index++] = data[1];
-    RespondToPC.databuf[index++] = 12u;
+    RespondToPC.databuf[index++] = RespondToPC.datalen-5;
 #if 0
     Package_Float(Globle_Framework.Power_5V,&RespondToPC.databuf[index]);
     index += 4;
@@ -205,7 +206,7 @@ void Node_Frame_Parse(u8 *data, u16 len)
                 }
                 else
                 {
-                    Negtive_Responde(Error_Timeout);
+                    Negtive_Responde(Error_Other);
                 }
 
             break;
@@ -279,7 +280,10 @@ void Task_PC_Meg_Analysis(void)
     }
     else
     {
-        Negtive_Responde(Error_Timeout);
+        if(Globle_Framework.DIP_SwitchStatus == recvmsg.databuf[0])
+        {
+            Negtive_Responde(Error_Timeout);
+        }
     }
 }
 

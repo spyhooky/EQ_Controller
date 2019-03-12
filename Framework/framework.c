@@ -34,7 +34,7 @@ void Framework_Init(void)
         mBOX_Uart_Recv[i] = OSMboxCreate((void *)0);
     }   
 
-    UartFrame_Timeout_Calc();
+    //UartFrame_Timeout_Calc();
 }
 
 static void UartFrame_Timeout_Calc(void)
@@ -43,7 +43,7 @@ static void UartFrame_Timeout_Calc(void)
     float temp;//5个字节传输所需的时间，单位10ns
     for(i=0;i<NUM_UARTCHANNEL;i++)
     {
-        temp = 100000 * 5*1/RS232_baud[USARTCAN.Usart[i][uartBaudrate]]*10;
+        temp = 100000 * 5 * 1/RS232_baud[USARTCAN.Usart[i][uartBaudrate]]*10;
         USARTCAN.Usart[i][tmout] = (u8) ((temp + 5)/10);
         if(USARTCAN.Usart[i][tmout] < 6)
         {

@@ -35,11 +35,11 @@ wiz_NetTimeout gWIZNetTimeout =
 
                            
 Interface_Info USARTCAN = { 
-                            .Usart[RS232_1] = {1,6, 0, 0, 0, 0, 0,100}, //RS232  // En baudrate databit checkbit stopbit flowcontrol timeout
-                            .Usart[RS485_1] = {1,2, 0, 0, 0, 0, 0,100},
-							.Usart[RS485_2] = {1,2, 0, 0, 0, 0, 0,100},
-							.Usart[RS485_3] = {1,2, 0, 0, 0, 0, 0,100},
-							.Usart[RS485_4] = {1,2, 0, 0, 0, 0, 0,100},
+                            .Usart[RS232_1] = {1,6, 0, 0, 0, 0, 0,10}, //RS232  // En baudrate databit checkbit stopbit flowcontrol timeout
+                            .Usart[RS485_1] = {1,2, 0, 0, 0, 0, 0,10},
+							.Usart[RS485_2] = {1,2, 0, 0, 0, 0, 0,10},
+							.Usart[RS485_3] = {1,2, 0, 0, 0, 0, 0,10},
+							.Usart[RS485_4] = {1,2, 0, 0, 0, 0, 0,10},
                             .UsartProt[RS232_1]=
                             {
                                 .FrameStartInfo = 0,//FrameStartEn|byte_1,  //本配置为0时则为无协议，所有数据均为有效数据，当字节间时间超过配置时间后认为是完整一帧
@@ -47,7 +47,7 @@ Interface_Info USARTCAN = {
                                 .FrameEndInfo = 0,//FrameStartEn|byte_2,//同帧头配置类似，前边的宏使能才表示有帧尾，后边一个为字节数量
                                 .FrameEnd = {0x0d,0x0a,},
                                 .checksum = CheckSum_None,//当前是0,根据实际需要可能要更改
-                                .inteval = 10//单位100us,串口帧传输过程中字节间时间的最大允许间隔
+                                //.inteval = 10//单位100us,串口帧传输过程中字节间时间的最大允许间隔
                             },
                             .UsartProt[RS485_1]=
                             {
@@ -56,7 +56,7 @@ Interface_Info USARTCAN = {
                                 .FrameEndInfo = 0,//FrameStartEn|byte_2,
                                 .FrameEnd = {0x0d,0x0a,},
                                 .checksum = CheckSum_None,
-                                .inteval = 10//单位100us,串口帧传输过程中字节间时间的最大允许间隔
+                                //.inteval = 10//单位100us,串口帧传输过程中字节间时间的最大允许间隔
                             },
 							.UsartProt[RS485_2]=
                             {
@@ -65,7 +65,7 @@ Interface_Info USARTCAN = {
                                 .FrameEndInfo = 0,//FrameStartEn|byte_2,
                                 .FrameEnd = {0x0d,0x0a,},
                                 .checksum = CheckSum_None,
-                                .inteval = 10//单位100us,串口帧传输过程中字节间时间的最大允许间隔
+                                //.inteval = 10//单位100us,串口帧传输过程中字节间时间的最大允许间隔
                             },
 							.UsartProt[RS485_3]=
                             {
@@ -74,7 +74,7 @@ Interface_Info USARTCAN = {
                                 .FrameEndInfo = 0,//FrameStartEn|byte_2,
                                 .FrameEnd = {0x0d,0x0a,},
                                 .checksum = CheckSum_None,
-                                .inteval = 10//单位100us,串口帧传输过程中字节间时间的最大允许间隔
+                                //.inteval = 10//单位100us,串口帧传输过程中字节间时间的最大允许间隔
                             },
 							.UsartProt[RS485_4]=
                             {
@@ -83,7 +83,7 @@ Interface_Info USARTCAN = {
                                 .FrameEndInfo = 0,//FrameStartEn|byte_2,
                                 .FrameEnd = {0x0d,0x0a,},
                                 .checksum = CheckSum_None,
-                                .inteval = 10//单位100us,串口帧传输过程中字节间时间的最大允许间隔
+                                //.inteval = 10//单位100us,串口帧传输过程中字节间时间的最大允许间隔
                             },
                             .can = {1,3,0x700,0x701,1,0},
                             .datalen=50,//串口或CAN的每个通道传输数据的字长度

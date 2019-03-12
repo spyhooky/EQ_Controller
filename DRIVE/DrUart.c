@@ -36,9 +36,11 @@ void USART_Timer100us(void)
             {
                 g_bit_SCI_DMA_Send(channel) = OFF;
                 l_DMA_SendTime[channel] = 0;
+#if 0
                 DMA_Cmd(DMA1_Channel2, DISABLE);
                 DMA_ClearITPendingBit(DMA1_IT_GL2 | DMA1_IT_TC2 | DMA1_IT_HT2 | DMA1_IT_TE2);
                 USART3_485_RX_ENABLE;
+#endif
             }
             
         }
@@ -53,29 +55,28 @@ void USART_Timer100us(void)
 			{
 				g_u16_SCISingalFrameRecTime[channel]++;
 			}
+            if(g_u16_SCISingalFrameRecTime[channel]>USARTCAN.Usart[channel][tmout])
+            {
+                if(((USARTCAN.UsartProt[channel].FrameEndInfo.T_byte & FrameEndEn) != FrameEndEn)&&(FrameStatus[channel] == frame_data))
+                {
+                    //g_u16_SCISingalFrameRecTime[channel]=0;
+                    FrameStatus[channel] = frame_idle;
+                    CopyRecData(channel);
+                }
+                else
+                {
+                    FrameStatus[channel] = frame_idle;
+                    //g_u16_SCISingalFrameRecTime[channel]=0;
+                    g_u16_Message_Length[channel]=0;
+                    //LED_BLINK_ONCE(S_FAULT);
+                    //errorcode
+                }
+            }
 		}
 		else
 		{
-			g_u16_SCISingalFrameRecTime[channel]=0;
+			//g_u16_SCISingalFrameRecTime[channel]=0;
 		}
-        
-        if(g_u16_SCISingalFrameRecTime[channel]>USARTCAN.UsartProt[channel].inteval)
-        {
-            if(((USARTCAN.UsartProt[channel].FrameEndInfo.T_byte & FrameEndEn) != FrameEndEn)&&(FrameStatus[channel] == frame_data))
-            {
-                g_u16_SCISingalFrameRecTime[channel]=0;
-                FrameStatus[channel] = frame_idle;
-                CopyRecData(channel);
-            }
-            else
-            {
-                FrameStatus[channel] = frame_idle;
-                g_u16_SCISingalFrameRecTime[channel]=0;
-                g_u16_Message_Length[channel]=0;
-                //LED_BLINK_ONCE(S_FAULT);
-                //errorcode
-            }
-        }
 	}
 }
 
@@ -104,7 +105,7 @@ void CopyRecData(u8 channel)
 	{
 		USARTCAN_Recv[channel].lenth = g_u16_Message_Length[channel]+1;
 	}
-	g_u16_SCISingalFrameRecTime[channel]=0;
+	//g_u16_SCISingalFrameRecTime[channel]=0;
     USARTCAN_Recv[channel].datatype = USARTCAN.Usart[channel][uartDatatype];
     memcpy(USARTCAN_Recv[channel].databuf,start,USARTCAN_Recv[channel].lenth);
     memset(l_u8_Receive_Buffer[channel],0,SCI_BUF_MAXLEN);
@@ -120,30 +121,33 @@ void UsartRecieveData(u8 channel,u8 recdata)
     {
         UartOpFunc[channel]._recv(recdata);
     }
-    g_u16_SCISingalFrameRecTime[channel]=0;
+    
 	if(FrameStatus[channel] == frame_idle)
 	{
-        g_u16_Message_Length[channel]=0;
-		if((USARTCAN.UsartProt[channel].FrameStartInfo.T_byte & FrameStartEn) == FrameStartEn)//有帧头
-		{
-			if(Temp != USARTCAN.UsartProt[channel].FrameStart[g_u16_Message_Length[channel]])
-			{
-				return;
-			}
-            if(USARTCAN.UsartProt[channel].FrameStartInfo.Bits.btn==byte_1)
-            {
-                FrameStatus[channel] = frame_data;
+        if(g_u16_SCISingalFrameRecTime[channel]>USARTCAN.Usart[channel][tmout])
+        {
+            g_u16_Message_Length[channel]=0;
+    		if((USARTCAN.UsartProt[channel].FrameStartInfo.T_byte & FrameStartEn) == FrameStartEn)//有帧头
+    		{
+    			if(Temp != USARTCAN.UsartProt[channel].FrameStart[g_u16_Message_Length[channel]])
+    			{
+    				return;
+    			}
+                if(USARTCAN.UsartProt[channel].FrameStartInfo.Bits.btn==byte_1)
+                {
+                    FrameStatus[channel] = frame_data;
+                }
+                else
+                {
+                    FrameStatus[channel] = frame_head;
+                }
             }
             else
             {
-                FrameStatus[channel] = frame_head;
+                FrameStatus[channel] = frame_data;
             }
+            l_u8_Receive_Buffer[channel][g_u16_Message_Length[channel]] = Temp;
         }
-        else
-        {
-            FrameStatus[channel] = frame_data;
-        }
-        l_u8_Receive_Buffer[channel][g_u16_Message_Length[channel]] = Temp;
     }
     else if(FrameStatus[channel] == frame_head)
     {
@@ -221,6 +225,7 @@ void UsartRecieveData(u8 channel,u8 recdata)
         byteidx_faramend[channel]=0;
         g_u16_Message_Length[channel]=0;
     }
+    g_u16_SCISingalFrameRecTime[channel]=0;
 }
 
 void USART1_IRQ(u8 data)/*  */
@@ -386,6 +391,7 @@ void DrUSART1_Init(void)
     NVIC_Init(&NVIC_InitStructure);	//??????????VIC????
 
     USART_Cmd(USART1, ENABLE);
+    g_u16_SCISingalFrameRecTime[RS232_1] = 0xfff0;
 }
 
 void DrUSART2_Init(void)
@@ -485,6 +491,7 @@ void DrUSART2_Init(void)
     GPIO_Init(USART2_EN_PORT, &GPIO_InitStructure);
 
     USART2_485_RX_ENABLE;  	//485接收使能
+    g_u16_SCISingalFrameRecTime[RS485_1] = 0xfff0;
 }
 
 void DrUSART3_Init(void)
@@ -582,7 +589,7 @@ void DrUSART3_Init(void)
     GPIO_Init(USART3_EN_PORT, &GPIO_InitStructure);
 
     USART2_485_RX_ENABLE;  	//485接收使能
-
+    g_u16_SCISingalFrameRecTime[RS485_2] = 0xfff0;
 }
 
 void DrUART4_Init(void)
@@ -684,6 +691,7 @@ void DrUART4_Init(void)
     GPIO_Init(UART4_EN_PORT, &GPIO_InitStructure);
 
     UART4_485_RX_ENABLE;  	//485接收使能
+    g_u16_SCISingalFrameRecTime[RS485_3] = 0xfff0;
 }
 
 void DrUART5_Init(void)
@@ -741,6 +749,7 @@ void DrUART5_Init(void)
 	UART5_485_RX_ENABLE;  	//485接收使能
 	
 	USART_ClearITPendingBit(UART5, USART_IT_TC);//清除中断TC位
+	g_u16_SCISingalFrameRecTime[RS485_4] = 0xfff0;
 }
 
 
@@ -782,7 +791,7 @@ void USART2_Send_Data(u8 *send_buff,u16 length)
 void USART3_Send_Data(u8 *send_buff,u16 length)
 {
 	USART3_485_TX_ENABLE;
-    //Delay_us(7);
+    Delay_us(7);
     USART_ClearFlag(USART3, USART_FLAG_TC);
 #ifdef UART_DMA_ENABLE
     g_bit_SCI_DMA_Send(RS485_2) = ON;

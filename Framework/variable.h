@@ -96,7 +96,7 @@ typedef union {
 }BitStatus;
 
 
-enum UsartType{//串口配置数组各元素的定义，有增加向时请在下边第一行往后增加
+enum UsartType{//串口配置数组各元素的定义，有增加项时请在下边第一行往后增加
     EnUart=0,uartBaudrate,Databits,Chkbits,Stopbits,Flowctrl,uartDatatype,tmout,
     uartcfgnum
 };

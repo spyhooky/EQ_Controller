@@ -1,5 +1,0 @@
----- Uart_Transmit Matches (4 in 4 files) ----
-framework.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\Framework) line 95 : void Uart_Transmit(u8 chn,u8 *buf, u16 lenth)
-framework.h (D:\Develop\李总\Code\设备控制器\EQ_Controller\Framework) line 22 : void Uart_Transmit(u8 chn,u8 *buf, u16 lenth);
-Task_IO in Task_IO.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\Task) :                 Uart_Transmit(chn_test,data,5);
-Task_PC_Message_Recv in Task_PC_Com.c (D:\Develop\李总\Code\设备控制器\EQ_Controller\Task) :             Uart_Transmit(UART_PC_MESSAGE_CHN,RespondToPC.databuf,RespondToPC.datalen);

@@ -160,9 +160,7 @@ static void OutputGPIO_Configuration(void)
 /****************************************************************************/
 static void LED_Configuration(void)
 {
-    
-    GPIO_InitTypeDef GPIO_InitStructure;
-    
+    GPIO_InitTypeDef GPIO_InitStructure;    
     RCC_APB2PeriphClockCmd(LED_GPIO_APB, ENABLE);
     
 //    GPIO_InitStructure.GPIO_Pin     = LEDR_PIN;
