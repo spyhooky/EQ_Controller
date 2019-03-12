@@ -100,6 +100,7 @@ void Framework_Timer1ms(void)
 void Framework_Timer100ms(void)
 {
     PC_COM_Timer100ms();
+    Get_Rotary_Pulze();
 }
 
 
@@ -133,6 +134,12 @@ void Uart_Transmit(u8 chn,u8 *buf, u16 lenth)
         case RS485_4:UART5_Send_Data(buf,lenth);break;
         default:break;
     }
+}
+
+u32 Get_Rotary_Pulze(void)
+{
+    // 读取计数器信息
+    Globle_Framework.EncodePulse = TIM_GetCounter(TIM4);
 }
 
 void Package_Float(float data,u8 *buf)

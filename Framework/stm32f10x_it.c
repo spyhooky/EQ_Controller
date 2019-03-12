@@ -194,15 +194,15 @@ void TIM3_IRQHandler(void)
 }
 
 
-void TIM4_IRQHandler(void)
+void TIM5_IRQHandler(void)
 {
     OSIntEnter();
     
-    if (TIM_GetITStatus(TIM4, TIM_IT_Update) == SET)
+    if (TIM_GetITStatus(TIM5, TIM_IT_Update) == SET)
     {
-        TIM_ClearITPendingBit(TIM4, TIM_FLAG_Update);
+        TIM_ClearITPendingBit(TIM5, TIM_FLAG_Update);
         /* 100ms */
-        TIM4_IRQ();
+        TIM5_IRQ();
     }
     
     OSIntExit();

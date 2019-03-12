@@ -6,7 +6,7 @@
 /* 中断服务程序 */
 void TIM2_IRQ(void);
 void TIM3_IRQ(void);
-void TIM4_IRQ(void);
+void TIM5_IRQ(void);
     
 
 /* 短延时，初始化使用 */
