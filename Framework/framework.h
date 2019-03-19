@@ -4,6 +4,8 @@
 #include "stm32f10x.h"
 #include <math.h>
 
+#define TEMP_SAMPLES                                   20u
+
 typedef struct UartOpFuncTyp
 {
 	void (*_send)  (u8 *sendbuf, u16 lenth);

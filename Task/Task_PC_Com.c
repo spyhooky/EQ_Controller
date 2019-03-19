@@ -381,7 +381,7 @@ void Node_Frame_Parse(u8 *data, u16 len)
                 }
                 else
                 {
-                    if(len < 6)
+                    if(len < data[2]+5)
                     {
                         Negtive_Responde(Error_Timeout);
                     }
@@ -408,7 +408,7 @@ void Node_Frame_Parse(u8 *data, u16 len)
                 }
                 else
                 {
-                    if(len < 6)
+                    if(len < data[2]+5)
                     {
                         Negtive_Responde(Error_Timeout);
                     }
@@ -463,7 +463,7 @@ void Node_Frame_Parse(u8 *data, u16 len)
                 }
                 else
                 {
-                    if(len < 8)
+                    if(len < data[2]+5)
                     {
                         Negtive_Responde(Error_Timeout);
                     }

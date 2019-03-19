@@ -56,7 +56,7 @@
 
 #define CYCLE_BACKGROUND                        1u
 #define CYCLE_READ_ADC_VALUE                    (100U*CYCLE_BACKGROUND)
-#define CYCLE_CALC_ENV_TEMP                     (1000U*CYCLE_BACKGROUND)
+#define CYCLE_CALC_ENV_TEMP                     (100U*CYCLE_BACKGROUND)
 #define CYCLE_CALC_POWER_VOL                    (1000U*CYCLE_BACKGROUND)
 
 

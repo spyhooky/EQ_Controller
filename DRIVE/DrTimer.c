@@ -146,7 +146,7 @@ void TIM4_Encoder_Config(void)
     TIM_TimeBaseInit(TIM4, &TIM_TimeBaseStructure);              
 
     //TIM_EncoderInterfaceConfig(TIM4, TIM_EncoderMode_TI12, TIM_ICPolarity_BothEdge ,TIM_ICPolarity_BothEdge);
-    TIM_EncoderInterfaceConfig(TIM4, TIM_EncoderMode_TI12,  TIM_ICPolarity_Falling, TIM_ICPolarity_Falling);
+    TIM_EncoderInterfaceConfig(TIM4, TIM_EncoderMode_TI12,  TIM_ICPolarity_BothEdge, TIM_ICPolarity_BothEdge);
     TIM_ICStructInit(&TIM_ICInitStructure);
     TIM_ICInitStructure.TIM_ICFilter = 6; 
     TIM_ICInit(TIM4, &TIM_ICInitStructure);

@@ -11,7 +11,8 @@
 #ifdef FRAMEWORK_H
 
 UartOpFunc_t UartOpFunc[NUM_UARTCHANNEL];
-
+static u16 EnviromentTemp[TEMP_SAMPLES];//室温数据AD采样值，共10个数据，每10ms产生一次，然后取掉最大最小值后平均
+static u8 TempSample_Index;//室温采集索引
 static void UartFrame_Timeout_Calc(void);
 
 /****************************************************************************/
@@ -33,6 +34,12 @@ void Framework_Init(void)
     {
         mBOX_Uart_Recv[i] = OSMboxCreate((void *)0);
     }   
+
+    TempSample_Index = 0;
+    for(i=0;i<TEMP_SAMPLES;i++)
+    {
+        EnviromentTemp[i] = 0;
+    }
 
     //UartFrame_Timeout_Calc();
 }
@@ -106,15 +113,37 @@ void Framework_Timer100ms(void)
 /****************************************************************************/
 /*函数名：  Calc_CurrentTemp                                                 */
 /*功能说明：获取当前温度值的接口，根据AD值计算出温度，若要精确测温，
-每个芯片均需要标定更新温度值                                             */
+每个芯片均需要标定更新温度值.100ms采集一次AD数据，取10个中的8个数据平均*/
 /*输出参数：无                                                               */
 /****************************************************************************/
 void Calc_CurrentTemp(u16 sch_timer,u16 sch_cycle)
 {
-    float temp;
-    temp = (1.42 - GET_ADC_Result(TempSensor)*3.3/4096)*1000/4.35 + 25;
+    u8 i;
+    u16 max=0;
+    u16 min=0xffff;
+    u16 sum=0;
+    EnviromentTemp[TempSample_Index] = GET_ADC_Result(TempSensor);
+    if(TempSample_Index >= TEMP_SAMPLES)
+    {
+        for(i=0;i<TEMP_SAMPLES;i++)
+        {
+            if(max < EnviromentTemp[i])
+            {
+                max = EnviromentTemp[i];
+            }
+            if(min > EnviromentTemp[i])
+            {
+                min = EnviromentTemp[i];
+            }
+            sum = sum + EnviromentTemp[i];
+        }
+        sum = (sum - min - max)/(TEMP_SAMPLES - 2u);
+        Global_Variable.CurrentEnvTemp = (1.42 - sum*3.3/4096)*1000/4.35 + 25;
+        TempSample_Index = 0;
+    }
+    TempSample_Index++;
+    
     //temp = (1.42 - (GET_ADC_Result(TempSensor)*3.3/4096)/(GET_ADC_Result(VrefInit)*3.3/1.2/4096))*1000/4.35 + 25;
-	Global_Variable.CurrentEnvTemp =  temp;
 }
 
 /****************************************************************************/
@@ -137,7 +166,7 @@ void Calc_Power_5V(u16 sch_timer,u16 sch_cycle)
 u32 Get_Rotary_Pulze(void)
 {
     // 读取计数器信息
-    Global_Variable.EncodePulse = TIM_GetCounter(TIM4);
+    Global_Variable.EncodePulse = TIM_GetCounter(TIM4)/4U;
 }
 
 /****************************************************************************/
