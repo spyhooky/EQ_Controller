@@ -99,7 +99,6 @@ void Framework_Timer1ms(void)
 /***************************************************************************/
 void Framework_Timer100ms(void)
 {
-    PC_COM_Timer100ms();
     Get_Rotary_Pulze();
 }
 
@@ -115,33 +114,38 @@ void Calc_CurrentTemp(u16 sch_timer,u16 sch_cycle)
     float temp;
     temp = (1.42 - GET_ADC_Result(TempSensor)*3.3/4096)*1000/4.35 + 25;
     //temp = (1.42 - (GET_ADC_Result(TempSensor)*3.3/4096)/(GET_ADC_Result(VrefInit)*3.3/1.2/4096))*1000/4.35 + 25;
-	Globle_Framework.CurrentEnvTemp =  temp;
+	Global_Variable.CurrentEnvTemp =  temp;
 }
 
+/****************************************************************************/
+/*函数名：  Calc_Power_5V                                                   */
+/*功能说明：根据AD值计算当前电源电压                                        */
+/*输入参数：无                                                              */
+/*输出参数：无                                                              */
+/***************************************************************************/
 void Calc_Power_5V(u16 sch_timer,u16 sch_cycle)
 {
-	Globle_Framework.Power_5V =  GET_ADC_Result(Power_5V)*11/4096;
+	Global_Variable.Power_5V =  GET_ADC_Result(Power_5V)*11/4096;
 }
 
-void Uart_Transmit(u8 chn,u8 *buf, u16 lenth)
-{
-    switch(chn)
-    {
-        case RS232_1:USART1_Send_Data(buf,lenth);break;
-        case RS485_1:USART2_Send_Data(buf,lenth);break;
-        case RS485_2:USART3_Send_Data(buf,lenth);break;
-        case RS485_3:UART4_Send_Data(buf,lenth);break;
-        case RS485_4:UART5_Send_Data(buf,lenth);break;
-        default:break;
-    }
-}
-
+/****************************************************************************/
+/*函数名：  Get_Rotary_Pulze                                                */
+/*功能说明：获取当前编码器计数值                                            */
+/*输入参数：无                                                              */
+/*输出参数：无                                                              */
+/****************************************************************************/
 u32 Get_Rotary_Pulze(void)
 {
     // 读取计数器信息
-    Globle_Framework.EncodePulse = TIM_GetCounter(TIM4);
+    Global_Variable.EncodePulse = TIM_GetCounter(TIM4);
 }
 
+/****************************************************************************/
+/*函数名：  Package_Float                                                   */
+/*功能说明：将浮点型数据转换成数组，供串口上传                              */
+/*输入参数：无                                                              */
+/*输出参数：无                                                              */
+/****************************************************************************/
 void Package_Float(float data,u8 *buf)
 {
     u8 *addr;

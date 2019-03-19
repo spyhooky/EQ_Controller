@@ -72,7 +72,7 @@ void Ethernet_Init(void)
     while(tmp == PHY_LINK_OFF);
 		
 		
-	ReUpdate_IP_Address(&gWIZNETINFO,Globle_Framework.DIP_SwitchStatus);
+	ReUpdate_IP_Address(&gWIZNETINFO,Global_Variable.DIP_SwitchStatus);
     ctlnetwork(CN_SET_NETINFO, (void *)&gWIZNETINFO);
     
 

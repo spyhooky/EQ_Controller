@@ -208,15 +208,22 @@ extern Driver_Variable_Info Global_Driver;
 float GET_ADC_Result(u8 chanel);
 
 
-typedef struct Framework_Variable
+typedef struct Global_Variable_Group
 {
-	u8 DIP_SwitchStatus;   //当前拨码开关状态
-	u32 Digit_InputStatus; //数字开关量状态，0-断开，1-对地闭合
-	float CurrentEnvTemp;  //当前环境温度
-	u32 EncodePulse;
-    float  Power_5V;
-}Framework_Variable_Info;
-extern Framework_Variable_Info Globle_Framework;
+	u8 DIP_SwitchStatus;                //当前拨码开关状态
+	u32 Digit_InputStatus;              //数字开关量状态，0-断开，1-对地闭合
+	float CurrentEnvTemp;               //当前环境温度
+	u32 EncodePulse;                    //编码器计数，0-65535循环
+    float Power_5V;                     //电源电压
+    s16 Suspende_Current_Position;      //吊杆当前位置,单位mm
+    u16 Suspende_Current_Speed;         //吊杆运行状态,    电机运行的实际    速度，单位：mm/s
+    s16 Suspende_Target_Position;       //吊杆目标位置,单位mm
+    u16 Suspende_Target_Speed;          //吊杆目标运行的    速度，单位：mm/s
+    u8  DownLoad_Para[255];             //下载微控制器个性化参数
+    u8  Para_Independence[255];         //读取微控制器个性化参数
+    u8  Para_Common[255];               //读取微控制器个性化参数
+}Global_Variable_Info;
+extern Global_Variable_Info Global_Variable;
 
 
 

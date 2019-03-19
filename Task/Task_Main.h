@@ -20,8 +20,8 @@
 /************设置任务优先级,建议(10-50) *************************/
 /* #define OS_LOWEST_PRIO   63u */
 #define TASK_PRIO_MAIN                          60u
-
-#define TASK_PRIO_MBRTU_M                       10u
+#define TASK_PRIO_FREQ_CONVERT                  10u
+#define TASK_PRIO_MBRTU_M                       11u
 #define TASK_PRIO_PCMSG_RECV                    15u
 #define TASK_PRIO_FREQ_CONVER                   16u
 #define TASK_PRIO_ENCODER                       17u
@@ -46,6 +46,7 @@
 #define STKSIZE_FREQ_CONVER              STK_SIZE_1024
 #define STKSIZE_ENCODER                  STK_SIZE_256
 #define STKSIZE_MBRTU_M                  STK_SIZE_256
+#define STKSIZE_FREQ_CONVERT             STK_SIZE_256
 #define STKSIZE_TCPIP                    STK_SIZE_512
 #define STKSIZE_MBTCP                    STK_SIZE_256
 #define STKSIZE_MQTT                     STK_SIZE_1024                   

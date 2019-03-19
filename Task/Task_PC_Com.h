@@ -10,7 +10,7 @@
 
 typedef struct Polling_Frame
 {
-    s32 Suspende_Position;//吊杆当前位置,单位mm
+    s16 Suspende_Position;//吊杆当前位置,单位mm
     u16 Suspende_Running_Status; //吊杆运行状态
     //float Environment_Temp; //环境温度
     //float Motor_Temp;  //电机温度

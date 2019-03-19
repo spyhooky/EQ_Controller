@@ -1,6 +1,7 @@
 #include "main.h"
 
 #include "Task_PC_Com.h"
+#include "Task_Freq_Convert.h"
 #include "Task_IO.h"
 
 #ifdef __TASK_PC_MSG_RECV_H
@@ -40,33 +41,46 @@ static void Update_Running_ErrorSts(void);
 static void Postive_Responde(u8 func);
 static void Task_PC_Message_Update(void *p_arg);
 
+/********************************************************************************/
+/*函数名：  PC_COM_Init                                                         */
+/*功能说明：初始化函数                                                           */
+/*输入参数：无                                                                  */
+/*输出参数：无                                                                  */
+/*******************************************************************************/
 static void PC_COM_Init(void)
 {
     
 }
 
-void PC_COM_Timer100ms(void)
-{
-    
-}
-
+/********************************************************************************/
+/*函数名：  Postive_Responde                                                    */
+/*功能说明：肯定响应数据打包                                                     */
+/*输入参数：func，当前请求功能码                                                 */
+/*输出参数：无                                                                  */
+/*******************************************************************************/
 static void Postive_Responde(u8 func)
 {
     u16 CrcCheck;
     RespondToPC.datalen = 4;
-    RespondToPC.databuf[0] = Globle_Framework.DIP_SwitchStatus;
+    RespondToPC.databuf[0] = Global_Variable.DIP_SwitchStatus;
     RespondToPC.databuf[1] = func;
     CrcCheck = Get_rtuCrc16(RespondToPC.databuf,RespondToPC.datalen-2);
     RespondToPC.databuf[2] = CrcCheck%256;
     RespondToPC.databuf[3] = CrcCheck>>8;
 }
 
+/********************************************************************************/
+/*函数名：  Negtive_Responde                                                    */
+/*功能说明：否定响应数据打包                                                     */
+/*输入参数：err，当前错误类型                                                    */
+/*输出参数：无                                                                  */
+/*******************************************************************************/
 static void Negtive_Responde(u8 err)
 {
     u16 CrcCheck;
     Blink_LED_Status(80);
     RespondToPC.datalen = 5;
-    RespondToPC.databuf[0] = Globle_Framework.DIP_SwitchStatus;
+    RespondToPC.databuf[0] = Global_Variable.DIP_SwitchStatus;
     RespondToPC.databuf[1] = 0x80;
     RespondToPC.databuf[2] = err;
     CrcCheck = Get_rtuCrc16(RespondToPC.databuf,RespondToPC.datalen-2);
@@ -74,24 +88,29 @@ static void Negtive_Responde(u8 err)
     RespondToPC.databuf[4] = CrcCheck>>8;
 }
 
-
+/********************************************************************************/
+/*函数名：  Update_Running_ErrorSts                                             */
+/*功能说明：周期更新部分运行状态数据                                              */
+/*输入参数：无                                                                  */
+/*输出参数：无                                                                  */
+/*******************************************************************************/
 static void Update_Running_ErrorSts(void)
 {
-    //Polling_Frame_Respond.Suspende_Position = 0x12345678;//吊杆当前位置,单位mm
-    //Polling_Frame_Respond.Suspende_Running_Status = 0xABCD;//吊杆运行状态
-    Suspende_Reset = (Globle_Framework.Digit_InputStatus>>0)&0x01;//0-吊杆复位
-    Limit_Up_Signal = (Globle_Framework.Digit_InputStatus>>1)&0x01;//1-上限位信号
-    Limit_Down_Signal = (Globle_Framework.Digit_InputStatus>>2)&0x01;//2-下限位信号
-    Limit_Up_SlowDown = (Globle_Framework.Digit_InputStatus>>3)&0x01;//3-上限位减速信号
-    Limit_Down_SlowDown = (Globle_Framework.Digit_InputStatus>>4)&0x01;//4-下限位减速信号
-    Band_Type_Brake = (Globle_Framework.Digit_InputStatus>>5)&0x01;//5-抱闸信号
-    Err_Stop_Signal = (Globle_Framework.Digit_InputStatus>>6)&0x01;//16-急停故障
-    Err_Summit_Attempt = (Globle_Framework.Digit_InputStatus>>7)&0x01;//17-冲顶故障
-    Err_Loose_Rope = (Globle_Framework.Digit_InputStatus>>8)&0x01;//18-松绳故障
-    Err_Temp_Hign = (Globle_Framework.CurrentEnvTemp>70)?1:0;//19-SLAVE高温故障
-    Err_Temp_Low = (Globle_Framework.CurrentEnvTemp<-40)?1:0;//20-SLAVE低温故障
-    Err_Voltage_High = (Globle_Framework.Power_5V>6)?1:0;//21-SLAVE高压故障
-    Err_Voltage_Low = (Globle_Framework.Power_5V<4)?1:0;//22-SLAVE低压故障
+    Polling_Frame_Respond.Suspende_Position = Global_Variable.Suspende_Current_Position;//吊杆当前位置,单位mm
+    Polling_Frame_Respond.Suspende_Running_Status = Global_Variable.Suspende_Current_Speed;//吊杆运行状态
+    Suspende_Reset = (Global_Variable.Digit_InputStatus>>0)&0x01;//0-吊杆复位
+    Limit_Up_Signal = (Global_Variable.Digit_InputStatus>>1)&0x01;//1-上限位信号
+    Limit_Down_Signal = (Global_Variable.Digit_InputStatus>>2)&0x01;//2-下限位信号
+    Limit_Up_SlowDown = (Global_Variable.Digit_InputStatus>>3)&0x01;//3-上限位减速信号
+    Limit_Down_SlowDown = (Global_Variable.Digit_InputStatus>>4)&0x01;//4-下限位减速信号
+    Band_Type_Brake = (Global_Variable.Digit_InputStatus>>5)&0x01;//5-抱闸信号
+    Err_Stop_Signal = (Global_Variable.Digit_InputStatus>>6)&0x01;//16-急停故障
+    Err_Summit_Attempt = (Global_Variable.Digit_InputStatus>>7)&0x01;//17-冲顶故障
+    Err_Loose_Rope = (Global_Variable.Digit_InputStatus>>8)&0x01;//18-松绳故障
+    Err_Temp_Hign = (Global_Variable.CurrentEnvTemp>70)?1:0;//19-SLAVE高温故障
+    Err_Temp_Low = (Global_Variable.CurrentEnvTemp<-40)?1:0;//20-SLAVE低温故障
+    Err_Voltage_High = (Global_Variable.Power_5V>6)?1:0;//21-SLAVE高压故障
+    Err_Voltage_Low = (Global_Variable.Power_5V<4)?1:0;//22-SLAVE低压故障
 #if 0
     Inverter_Acc_OverCurrent = 0;//23-变频器加速过电流故障
     Inverter_Slow_OverCurrent = 0; //24-变频器减速过电流故障
@@ -112,15 +131,21 @@ static void Update_Running_ErrorSts(void)
     Suspende_Below_Zero = 0; //39-吊杆位置低于零位坐标    
 #endif
 
-    Band_Type_Brake_Out = Band_Type_Brake;
+    //Band_Type_Brake_Out = Band_Type_Brake;
 }
 
+/********************************************************************************/
+/*函数名：  Package_RespData                                                     */
+/*功能说明：查询帧响应数据打包                                                    */
+/*输入参数：data，帧前两个字节                                                    */
+/*输出参数：无                                                                   */
+/********************************************************************************/
 void Package_RespData(u8 *data)
 {
     u16 index;
     u16 CrcCheck;
     index = 0;
-    RespondToPC.datalen = 17u;
+    RespondToPC.datalen = 15u;
     RespondToPC.databuf[index++] = data[0];
     RespondToPC.databuf[index++] = data[1];
     RespondToPC.databuf[index++] = RespondToPC.datalen-5;
@@ -130,8 +155,6 @@ void Package_RespData(u8 *data)
     Package_Float(Globle_Framework.CurrentEnvTemp,&RespondToPC.databuf[index]);
     index += 4;
 #endif
-    RespondToPC.databuf[index++] = (Polling_Frame_Respond.Suspende_Position>>24)&0xff;
-    RespondToPC.databuf[index++] = (Polling_Frame_Respond.Suspende_Position>>16)&0xff;
     RespondToPC.databuf[index++] = (Polling_Frame_Respond.Suspende_Position>>8)&0xff;
     RespondToPC.databuf[index++] = (Polling_Frame_Respond.Suspende_Position)&0xff;
     RespondToPC.databuf[index++] = (Polling_Frame_Respond.Suspende_Running_Status>>8)&0xff;
@@ -147,55 +170,179 @@ void Package_RespData(u8 *data)
     RespondToPC.databuf[index++] = CrcCheck>>8;
 }
 
+/********************************************************************************/
+/*函数名：  Broadcast_Frame_Parse                                                */
+/*功能说明：广播帧数据解析                                                        */
+/*输入参数：data，接收数据缓冲区，len,接收数据长度                                 */
+/*输出参数：无                                                                   */
+/********************************************************************************/
 void Broadcast_Frame_Parse(u8 *data, u16 len)
 {
+    u16 CrcCheck;
+    u16 index=0;
     switch(data[1])
     {
-        case Rope_Wire_B:
-            
-
-        break;
-        case Suspender_Min_B:
-
-        break;
-        case Suspender_Emergency_Stop_B:
-
-        break;
-        case Suspender_Target_G:
-
-        break;
-        case Rope_Wire_G:
-
-        break;
-        case Suspender_Min_G:
-
-        break;
-        case Suspender_Emergency_Stop_G:
-
-        break;
-        case ParaDownload_Common:
-
-        break;
+        case Rope_Wire_B://全部吊杆收揽绳命令帧
+            if(len == data[2] + 5)
+            {
+                CrcCheck = Get_rtuCrc16(data,len-2);
+                if((CrcCheck%256 == data[len-2])&&((CrcCheck>>8) == data[len-1]))
+                {
+                    Global_Variable.Suspende_Target_Speed = (data[3]<<8)+data[4];
+                    CMD_Rope_Wire = ON;
+                }
+            }
+            break;
+        case Suspender_Min_B://全部吊杆降到零点位置坐标
+            if(len == data[2] + 5)
+            {
+                CrcCheck = Get_rtuCrc16(data,len-2);
+                if((CrcCheck%256 == data[len-2])&&((CrcCheck>>8) == data[len-1]))
+                {
+                    Global_Variable.Suspende_Target_Speed = (data[3]<<8)+data[4];
+                    CMD_Suspender_Min = ON;
+                }
+            }
+            break;
+        case Suspender_Emergency_Stop_B://全部吊杆急停
+            if(len == data[2] + 5)
+            {
+                CrcCheck = Get_rtuCrc16(data,len-2);
+                if((CrcCheck%256 == data[len-2])&&((CrcCheck>>8) == data[len-1]))
+                {
+                    Global_Variable.Suspende_Target_Speed = (data[3]<<8)+data[4];
+                    CMD_Suspender_Emergency_Stop = ON;
+                }
+            }
+            break;
+        case Suspender_Target_G://组广播命令 0x03:组成员全部吊杆运行到目标坐标位置
+            if(len == (data[2]<<8) + data[3] + 5)
+            {
+                for(index=5;index<data[4];index++)
+                {
+                    if(Global_Variable.DIP_SwitchStatus == data[index])//找是否有本节点请求
+                    {
+                        break;
+                    }
+                }
+                if(index < data[4])
+                {
+                    CrcCheck = Get_rtuCrc16(data,len-2);
+                    if((CrcCheck%256 == data[len-2])&&((CrcCheck>>8) == data[len-1]))
+                    {
+                        index = (5+ data[4] + 1) + index * 4;
+                        Global_Variable.Suspende_Target_Position = (data[index++]<<8)+data[index++];
+                        Global_Variable.Suspende_Target_Speed = (data[index++]<<8)+data[index++];
+                        CMD_Suspender_Target = ON;
+                    }
+                }
+            }
+            break;
+        case Rope_Wire_G://组广播命令 0x04:组成员吊杆全部复位
+            if(len == (data[2]<<8) + data[3] + 5)
+            {
+                for(index=5;index<data[4];index++)
+                {
+                    if(Global_Variable.DIP_SwitchStatus == data[index])//找是否有本节点请求
+                    {
+                        break;
+                    }
+                }
+                if(index < data[4])
+                {
+                    CrcCheck = Get_rtuCrc16(data,len-2);
+                    if((CrcCheck%256 == data[len-2])&&((CrcCheck>>8) == data[len-1]))
+                    {
+                        index = (5+ data[4] + 1) + index * 4;
+                        Global_Variable.Suspende_Target_Position = (data[index++]<<8)+data[index++];
+                        Global_Variable.Suspende_Target_Speed = (data[index++]<<8)+data[index++];
+                        CMD_Rope_Wire = ON;
+                    }
+                }
+            }
+            break;
+        case Suspender_Min_G://组广播命令 0x05:组成员吊杆放缆到零点坐标位置
+            if(len == (data[2]<<8) + data[3] + 5)
+            {
+                for(index=5;index<data[4];index++)
+                {
+                    if(Global_Variable.DIP_SwitchStatus == data[index])//找是否有本节点请求
+                    {
+                        break;
+                    }
+                }
+                if(index < data[4])
+                {
+                    CrcCheck = Get_rtuCrc16(data,len-2);
+                    if((CrcCheck%256 == data[len-2])&&((CrcCheck>>8) == data[len-1]))
+                    {
+                        index = (5+ data[4] + 1) + index * 2;
+                        Global_Variable.Suspende_Target_Position = (data[index++]<<8)+data[index++];
+                        Global_Variable.Suspende_Target_Speed = (data[index++]<<8)+data[index++];
+                        CMD_Suspender_Min = ON;
+                    }
+                }
+            }
+            break;
+        case Suspender_Emergency_Stop_G://组广播命令 0x06:组成员电机急停
+            if(len == (data[2]<<8) + data[3] + 5)
+            {
+                for(index=5;index<data[4];index++)
+                {
+                    if(Global_Variable.DIP_SwitchStatus == data[index])//找是否有本节点请求
+                    {
+                        break;
+                    }
+                }
+                if(index < data[4])
+                {
+                    CrcCheck = Get_rtuCrc16(data,len-2);
+                    if((CrcCheck%256 == data[len-2])&&((CrcCheck>>8) == data[len-1]))
+                    {
+                        index = (5+ data[4] + 1) + index * 1;
+                        Global_Variable.Suspende_Target_Position = (data[index++]<<8)+data[index++];
+                        Global_Variable.Suspende_Target_Speed = (data[index++]<<8)+data[index++];
+                        CMD_Suspender_Emergency_Stop = ON;
+                    }
+                }
+            }
+            break;
+        case ParaDownload_Common://微控制器的共性参数下载（数据待定）
+            if(len == (data[2]<<8) + data[3] + 5)
+            {
+                CrcCheck = Get_rtuCrc16(data,len-2);
+                if((CrcCheck%256 == data[len-2])&&((CrcCheck>>8) == data[len-1]))
+                {
+                    memcpy(Global_Variable.DownLoad_Para,&data[3],data[2]);
+                    CMD_ParaDownload_Common = ON;
+                }
+            }
+            break;
         default:
 
         break;
     }
 }
 
+/********************************************************************************/
+/*函数名：  Node_Frame_Parse                                                     */
+/*功能说明：普通节点帧数据解析                                                    */
+/*输入参数：data，接收数据缓冲区，len,接收数据长度                                 */
+/*输出参数：无                                                                   */
+/********************************************************************************/
 void Node_Frame_Parse(u8 *data, u16 len)
 {
     u16 CrcCheck;
-    u16 index;
-    index = 0;
-    if(Globle_Framework.DIP_SwitchStatus == data[0])
+    u16 index=0;
+    if(Global_Variable.DIP_SwitchStatus == data[0])
     {
         switch(data[1])//功能码
         {
-            case Polling:
+            case Polling://单个微控制器的查询命令帧
                 if(len == 4U)
                 {
                     CrcCheck = Get_rtuCrc16(data,len-2);
-                    if((CrcCheck%256 == data[2])&&((CrcCheck>>8) == data[3]))
+                    if((CrcCheck%256 == data[len-2])&&((CrcCheck>>8) == data[len-1]))
                     {
                         Package_RespData(data);
                     }
@@ -206,25 +353,26 @@ void Node_Frame_Parse(u8 *data, u16 len)
                 }
                 else
                 {
-                    Negtive_Responde(Error_Other);
+                    if(len < 4)
+                    {
+                        Negtive_Responde(Error_Timeout);
+                    }
+                    else
+                    {
+                        Negtive_Responde(Error_Other);
+                    }
                 }
 
             break;
-            case Rope_Wire_F:
-                Band_Type_Brake_Out = 1;
-                Postive_Responde(Rope_Wire_F);
-            break;
-            case Suspender_Min_F:
-
-            break;
-            case Suspender_Emergency_Stop_F:
-                // 当前用于调试，若上位机未通讯成功，启用modbus RTU进行调试，后边将会删除
-                if(len >= 4U)
+            case Rope_Wire_F://单个吊杆收揽（复位吊杆位置，就是吊杆的最高位置）
+                if((len == data[2]+5)&&(data[2] == 2U))
                 {
                     CrcCheck = Get_rtuCrc16(data,len-2);
-                    if(((CrcCheck>>8) == data[6])&&(CrcCheck%256 == data[7]))
+                    if((CrcCheck%256 == data[len-2])&&((CrcCheck>>8) == data[len-1]))
                     {
-                        Package_RespData(data);
+                        Global_Variable.Suspende_Target_Speed = (data[3]<<8)+data[4];
+                        CMD_Rope_Wire = ON;
+                        Postive_Responde(Rope_Wire_F);
                     }
                     else
                     {
@@ -233,21 +381,177 @@ void Node_Frame_Parse(u8 *data, u16 len)
                 }
                 else
                 {
-                    Negtive_Responde(Error_Timeout);
+                    if(len < 6)
+                    {
+                        Negtive_Responde(Error_Timeout);
+                    }
+                    else
+                    {
+                        Negtive_Responde(Error_Other);
+                    }
                 }
-            break;
-            case Suspender_Target_F:
-
-            break;
-            case ParaDownload_Independent:
-
-            break;
-            case Read_Common_Para:
-
-            break;
-            case Read_Independent_Para:
-
-            break;
+                break;
+            case Suspender_Min_F://单个吊杆降到零点坐标位置（吊杆的最低位置）
+                if((len == data[2]+5)&&(data[2] == 2U))
+                {
+                    CrcCheck = Get_rtuCrc16(data,len-2);
+                    if((CrcCheck%256 == data[len-2])&&((CrcCheck>>8) == data[len-1]))
+                    {
+                        Global_Variable.Suspende_Target_Speed = (data[3]<<8)+data[4];
+                        CMD_Suspender_Min = ON;
+                        Postive_Responde(Suspender_Min_F);
+                    }
+                    else
+                    {
+                        Negtive_Responde(Error_Check);
+                    }
+                }
+                else
+                {
+                    if(len < 6)
+                    {
+                        Negtive_Responde(Error_Timeout);
+                    }
+                    else
+                    {
+                        Negtive_Responde(Error_Other);
+                    }
+                }
+                break;
+            case Suspender_Emergency_Stop_F://单个吊杆急停
+                if(len == 4U)
+                {
+                    CrcCheck = Get_rtuCrc16(data,len-2);
+                    if((CrcCheck%256 == data[len-2])&&((CrcCheck>>8) == data[len-1]))
+                    {
+                        Global_Variable.Suspende_Target_Speed = (data[3]<<8)+data[4];
+                        CMD_Suspender_Emergency_Stop = ON;
+                        Postive_Responde(Suspender_Emergency_Stop_F);
+                    }
+                    else
+                    {
+                        Negtive_Responde(Error_Check);
+                    }
+                }
+                else
+                {
+                    if(len < 4)
+                    {
+                        Negtive_Responde(Error_Timeout);
+                    }
+                    else
+                    {
+                        Negtive_Responde(Error_Other);
+                    }
+                }
+                break;
+            case Suspender_Target_F://单个吊杆运行到设定的目标位置
+                if((len == data[2]+5)&&(data[2] == 4U))
+                {
+                    CrcCheck = Get_rtuCrc16(data,len-2);
+                    if((CrcCheck%256 == data[len-2])&&((CrcCheck>>8) == data[len-1]))
+                    {
+                        Global_Variable.Suspende_Target_Position = (data[3]<<8)+data[4];
+                        Global_Variable.Suspende_Target_Speed = (data[5]<<8)+data[6];
+                        CMD_Suspender_Target = ON;
+                        Postive_Responde(Suspender_Min_F);
+                    }
+                    else
+                    {
+                        Negtive_Responde(Error_Check);
+                    }
+                }
+                else
+                {
+                    if(len < 8)
+                    {
+                        Negtive_Responde(Error_Timeout);
+                    }
+                    else
+                    {
+                        Negtive_Responde(Error_Other);
+                    }
+                }
+                break;
+            case ParaDownload_Independent://单个微控制器个性化参数下载
+                if(len == data[2] + 5)
+                {
+                    CrcCheck = Get_rtuCrc16(data,len-2);
+                    if((CrcCheck%256 == data[len-2])&&((CrcCheck>>8) == data[len-1]))
+                    {
+                        memcpy(Global_Variable.DownLoad_Para,&data[3],data[2]);
+                        CMD_ParaDownload_Independent = ON;
+                        Postive_Responde(Suspender_Min_F);
+                    }
+                    else
+                    {
+                        Negtive_Responde(Error_Check);
+                    }
+                }
+                else
+                {
+                    if(len < data[2] + 5)
+                    {
+                        Negtive_Responde(Error_Timeout);
+                    }
+                    else
+                    {
+                        Negtive_Responde(Error_Other);
+                    }
+                }
+                break;
+            case Read_Common_Para://读单个微控制器的共性参数
+                if(len == 4U)
+                {
+                    CrcCheck = Get_rtuCrc16(data,len-2);
+                    if((CrcCheck%256 == data[len-2])&&((CrcCheck>>8) == data[len-1]))
+                    {
+                        CMD_Read_Common_Para = ON;
+                        //Postive_Responde(Read_Common_Para);//待定
+                    }
+                    else
+                    {
+                        Negtive_Responde(Error_Check);
+                    }
+                }
+                else
+                {
+                    if(len < 4)
+                    {
+                        Negtive_Responde(Error_Timeout);
+                    }
+                    else
+                    {
+                        Negtive_Responde(Error_Other);
+                    }
+                }
+                break;
+            case Read_Independent_Para://读单个微控制器的个性化参数
+                if(len == 4U)
+                {
+                    CrcCheck = Get_rtuCrc16(data,len-2);
+                    if((CrcCheck%256 == data[len-2])&&((CrcCheck>>8) == data[len-1]))
+                    {
+                        CMD_Read_Independent_Para = ON;
+                        //Postive_Responde(Read_Independent_Para);//待定
+                    }
+                    else
+                    {
+                        Negtive_Responde(Error_Check);
+                    }
+                }
+                else
+                {
+                    if(len < 4)
+                    {
+                        Negtive_Responde(Error_Timeout);
+                    }
+                    else
+                    {
+                        Negtive_Responde(Error_Other);
+                    }
+                }
+                break;
             default:
                 Negtive_Responde(Error_Func);
             break;
@@ -260,8 +564,13 @@ void Node_Frame_Parse(u8 *data, u16 len)
     }
 }
 
-
-void Task_PC_Meg_Analysis(void)
+/********************************************************************************/
+/*函数名：  PC_Msg_Analysis                                                      */
+/*功能说明：PC接收消息分析                                                        */
+/*输入参数：无                                                                   */
+/*输出参数：无                                                                   */
+/********************************************************************************/
+static void PC_Msg_Analysis(void)
 {
     u16 i;
     USARTCAN_Recv_t recvmsg;
@@ -280,14 +589,19 @@ void Task_PC_Meg_Analysis(void)
     }
     else
     {
-        if(Globle_Framework.DIP_SwitchStatus == recvmsg.databuf[0])
+        if(Global_Variable.DIP_SwitchStatus == recvmsg.databuf[0])
         {
             Negtive_Responde(Error_Timeout);
         }
     }
 }
 
-
+/********************************************************************************/
+/*函数名：  Task_PC_Message_Recv                                                 */
+/*功能说明：PC接收消息主TASK                                                      */
+/*输入参数：无                                                                   */
+/*输出参数：无                                                                   */
+/********************************************************************************/
 void Task_PC_Message_Recv(void *p_arg)
 {
     
@@ -303,7 +617,7 @@ void Task_PC_Message_Recv(void *p_arg)
         recvmsg = (u8*)OSMboxPend(mBOX_Uart_Recv[UART_PC_MESSAGE_CHN],0,&err);
         if(recvmsg[0] == ON)
         {
-            Task_PC_Meg_Analysis();
+            PC_Msg_Analysis();
         }
 
         if(RespondToPC.datalen > 0)
@@ -317,6 +631,12 @@ void Task_PC_Message_Recv(void *p_arg)
     
 }
 
+/********************************************************************************/
+/*函数名：  Task_PC_Message_Update                                               */
+/*功能说明：需要向上位机反馈的信号状态更新                                         */
+/*输入参数：无                                                                   */
+/*输出参数：无                                                                   */
+/********************************************************************************/
 void Task_PC_Message_Update(void *p_arg)
 {
     mBOX_PC_Message_Send = OSMboxCreate((void *)0);

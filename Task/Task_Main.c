@@ -6,7 +6,7 @@
 #include "Task_HTTP.h"
 #include "Task_IO.h"
 #include "Task_PC_Com.h"
-
+#include "Task_Freq_Convert.h"
 //#include "Task_LED.h"
 #include "transport.h"
 
@@ -113,7 +113,7 @@ void Task_Main(void *p_arg)
     //创建和PC通讯的task，传入的参数为项目配置信息
     OSTaskCreate(Task_MBRTU_Master, (void *)&gWIZNETINFO, (OS_STK*)&STK_MBRTU_M[STKSIZE_MBRTU_M-1], TASK_PRIO_MBRTU_M);
     //创建变频器铜须的task，传入的参数为项目配置信息
-    //OSTaskCreate(Task_Freq_Convert, (void *)&gWIZNETINFO, (OS_STK*)&STK_FREQ_CONVER[STKSIZE_FREQ_CONVERT-1], TASK_PRIO_FREQ_CONVERT);
+    OSTaskCreate(Task_Freq_Convert, (void *)&gWIZNETINFO, (OS_STK*)&STK_FREQ_CONVER[STKSIZE_FREQ_CONVERT-1], TASK_PRIO_FREQ_CONVERT);
     //创建编码器的task，传入的参数为项目配置信息
     //OSTaskCreate(Task_Encoder, (void *)&gWIZNETINFO, (OS_STK*)&STK_ENCODER[STKSIZE_ENCODER-1], TASK_PRIO_ENCODER);
     OSTaskCreate(Task_BackGround, (void *)&gWIZNETINFO, (OS_STK*)&STK_BACKGRD[STKSIZE_BACKGRD-1], TASK_PRIO_BACKGRD);//创建后台task，用于轮询查状态的，对时间要求不是非常高的功能，可放在此task内执行
@@ -183,8 +183,6 @@ void Task_Main(void *p_arg)
 /***************************************************************************/
 void Task_BackGround(void *p_arg)
 {
-    
-
     while(1)
     {    
 		//UART_CAN_Handler(p_arg);//暂时不使用该功能

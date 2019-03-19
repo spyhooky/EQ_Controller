@@ -7,8 +7,8 @@
 #include "t_list_impl.h"
 
 
-#define RTU_SEND_LENGTH             120          //发送缓冲区大小
-#define RTU_RECE_LENGTH             120         //接受缓冲区大小
+#define RTU_SEND_LENGTH             120 * 2          //发送缓冲区大小
+#define RTU_RECE_LENGTH             120 * 2        //接受缓冲区大小
 
 #define UART_CHN_RTU_MASTER                RS232_1
 
@@ -24,7 +24,7 @@ enum RTU_FSM_t
 
 enum RTU_Result_t
 {
-    EXCUTE_SUCCESS=1,EXCUTE_START=2,EXCUTE_FAIL=0x81
+    EXCUTE_IDLE=0,EXCUTE_SUCCESS=1,EXCUTE_START=2,EXCUTE_FAIL=0x81
 };
 
 enum RTU_TYPE_t
@@ -70,17 +70,19 @@ enum PPI_FSM {
     FSM_WAIT_DATA
 };
 
-struct RTU_ReqBlock {
+typedef struct RTU_ReqBlock {
 	struct list_head Entry;
-	enum USARTCAN_CHN chnindex;  //操作通道
+	u8 Excute_Num;   //执行次数，若设置为0，则表示永久执行
+    enum USARTCAN_CHN chnindex;  //操作通道
 	u8 sta_addr;          //站地址
 	FuncCode_t FuncCode;  //功能码
 	u8 Status;            //执行状态
 	u16 RegAddr;          //需要操作的首地址
 	u8  RegNum;           //操作的寄存器数量
-	u8*  mappedBuff;      //存放读寄存器的结果或写寄存器的值
-};
-extern struct RTU_ReqBlock RTU_MReqGrp; //手动请求块
+	u8* mappedBuff;      //存放读寄存器的结果或写寄存器的值
+}RTU_ReqBlock_t;
+extern RTU_ReqBlock_t RTU_Req_Read00; //RTU寄存器请求块
+
 
 struct RTU_Ctx {
 	volatile enum STATUS_EVENT_t event;
@@ -98,8 +100,10 @@ struct RTU_Ctx {
 	u8  rxindex;//接收缓冲区元素编号，从0开始累加，最大值即为发送长度
 	u8  rxbuff[RTU_RECE_LENGTH];//接收缓冲区
 };
-//extern struct RTU_Ctx RTU_Ctx_t;
+extern struct RTU_Ctx rtu_ctx;
 
+void RTU_AddReqBlock_Front(struct RTU_Ctx* _rtuctx, struct RTU_ReqBlock* _req);
+void RTU_AddReqBlock(struct RTU_Ctx* _rtuctx, struct RTU_ReqBlock* _req);
 void RTU_Read(struct RTU_Ctx* _rtuctx);
 void RTU_Write(struct RTU_Ctx* _rtuctx);
 void RTU_CyclicTask(void);

@@ -126,18 +126,16 @@ void Modbus_Server(u8 *aucTCPBuf,u16 usRecBufLen)
 #if 1
                 //Package_Float(Globle_Framework.Power_5V,&aucTCPBuf[9]);
                 //Package_Float(Globle_Framework.CurrentEnvTemp,&aucTCPBuf[13]);
-                aucTCPBuf[9] = (Polling_Frame_Respond.Suspende_Position>>24)&0xff;
-                aucTCPBuf[10] = (Polling_Frame_Respond.Suspende_Position>>16)&0xff;
-                aucTCPBuf[11] = (Polling_Frame_Respond.Suspende_Position>>8)&0xff;
-                aucTCPBuf[12] = (Polling_Frame_Respond.Suspende_Position)&0xff;
-                aucTCPBuf[13] = (Polling_Frame_Respond.Suspende_Running_Status>>8)&0xff;
-                aucTCPBuf[14] = (Polling_Frame_Respond.Suspende_Running_Status)&0xff;
-                aucTCPBuf[15] = Polling_Frame_Respond.Running_Error_Sts[0].Byte;
-                aucTCPBuf[16] = Polling_Frame_Respond.Running_Error_Sts[1].Byte;
-                aucTCPBuf[17] = Polling_Frame_Respond.Running_Error_Sts[2].Byte;
-                aucTCPBuf[18] = Polling_Frame_Respond.Running_Error_Sts[3].Byte;
-                aucTCPBuf[19] = Polling_Frame_Respond.Running_Error_Sts[4].Byte;
-                aucTCPBuf[20] = Polling_Frame_Respond.Running_Error_Sts[5].Byte;
+                aucTCPBuf[9] = (Polling_Frame_Respond.Suspende_Position>>8)&0xff;
+                aucTCPBuf[10] = (Polling_Frame_Respond.Suspende_Position)&0xff;
+                aucTCPBuf[11] = (Polling_Frame_Respond.Suspende_Running_Status>>8)&0xff;
+                aucTCPBuf[12] = (Polling_Frame_Respond.Suspende_Running_Status)&0xff;
+                aucTCPBuf[13] = Polling_Frame_Respond.Running_Error_Sts[0].Byte;
+                aucTCPBuf[14] = Polling_Frame_Respond.Running_Error_Sts[1].Byte;
+                aucTCPBuf[15] = Polling_Frame_Respond.Running_Error_Sts[2].Byte;
+                aucTCPBuf[16] = Polling_Frame_Respond.Running_Error_Sts[3].Byte;
+                aucTCPBuf[17] = Polling_Frame_Respond.Running_Error_Sts[4].Byte;
+                aucTCPBuf[18] = Polling_Frame_Respond.Running_Error_Sts[5].Byte;
 #endif
 			    
                 aucTCPBuf[8]=(u8)usTxLen;
@@ -252,7 +250,7 @@ void Task_ModbusTCP(void *p_arg)
     
     mbtcpparm = (struct wiz_NetInfo_t *)p_arg;
     MBTCP_Init();
-    mbtcpparm->stationID = Globle_Framework.DIP_SwitchStatus;
+    mbtcpparm->stationID = Global_Variable.DIP_SwitchStatus;
 
     if(mbtcpparm->session_mode == S_mb_server)
     {

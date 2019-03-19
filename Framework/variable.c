@@ -247,7 +247,7 @@ unsigned char HexToAsc(unsigned char aHex)//HEX转ASCII，正常输出范围0x30-0x39,0x
         return ret;
 }
 
-Framework_Variable_Info Globle_Framework;;
+Global_Variable_Info Global_Variable;
 Driver_Variable_Info Global_Driver;
 
 float GET_ADC_Result(u8 chanel)

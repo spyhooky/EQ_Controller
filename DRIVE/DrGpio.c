@@ -193,7 +193,7 @@ void DrGpioInit( void )
 
 void EXIT9_5_IRQ(void)
 {
-    Globle_Framework.Digit_InputStatus |= 0x8000;
+    Global_Variable.Digit_InputStatus |= 0x8000;
 }
 
 

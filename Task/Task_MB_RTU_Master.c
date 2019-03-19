@@ -2,13 +2,11 @@
 #include "Task_MB_RTU_Master.h"
 
 
-static struct RTU_Ctx rtu_ctx;//变量定义
-u16 rtutimer=0;
+struct RTU_Ctx rtu_ctx;//变量定义
 static u8 framestart=OFF;
 
 u8 RTU_485_Enable=OFF;
-u8 ADDR[40];
-u8 Wrdata[40];
+
 static u8 OP_Mode=READ;
 
 static volatile BitStatus    	        _RTUSystemStatus[NUM_UARTCHANNEL];
@@ -19,30 +17,12 @@ static volatile BitStatus    	        _RTUSystemStatus[NUM_UARTCHANNEL];
 
 void UART_RTU_Recv(unsigned char  l_u8ReceData);
 
-struct RTU_ReqBlock RTU_AReqGrp= //自动请求块
-{
-	LIST_HEAD_INIT(RTU_AReqGrp.Entry),
-	UART_CHN_RTU_MASTER,
-	1,
-	M_RdHold,
-	EXCUTE_SUCCESS,
-	0x0000,
-	0x01,
-	(u8*)&ADDR
-};
-
-struct RTU_ReqBlock RTU_MReqGrp= //手动请求块
-{
-	LIST_HEAD_INIT(RTU_MReqGrp.Entry),
-	UART_CHN_RTU_MASTER,
-	2,
-	M_WrHold,
-	EXCUTE_SUCCESS,
-	0x0002,
-	0x01,
-	(u8*)&Wrdata
-};
-
+/********************************************************************************/
+/*函数名：  RTU_AddReqBlock_Front                                               */
+/*功能说明：将新请求加到队列的头部                                                */
+/*输入参数：_rtuctx-目标队列，_req-新请求                                         */
+/*输出参数：无                                                                   */
+/********************************************************************************/
 void RTU_AddReqBlock_Front(struct RTU_Ctx* _rtuctx, struct RTU_ReqBlock* _req)
 {//将当前请求放到消息队列的首位
 	__disable_irq();
@@ -51,6 +31,12 @@ void RTU_AddReqBlock_Front(struct RTU_Ctx* _rtuctx, struct RTU_ReqBlock* _req)
 	_rtuctx->event=EV_REQ ;
 }
 
+/********************************************************************************/
+/*函数名：  RTU_AddReqBlock                                                      */
+/*功能说明：将新请求加到队列的尾部                                                */
+/*输入参数：_rtuctx-目标队列，_req-新请求                                         */
+/*输出参数：无                                                                   */
+/********************************************************************************/
 void RTU_AddReqBlock(struct RTU_Ctx* _rtuctx, struct RTU_ReqBlock* _req)
 {//将当前请求加入到队列
 	__disable_irq();
@@ -59,6 +45,12 @@ void RTU_AddReqBlock(struct RTU_Ctx* _rtuctx, struct RTU_ReqBlock* _req)
 	_rtuctx->event=EV_REQ ;
 }
 
+/********************************************************************************/
+/*函数名：  RTU_DelReqBlock                                                      */
+/*功能说明：删除队列的第一个元素                                                  */
+/*输入参数：_rtuctx-目标队列                                                     */
+/*输出参数：删除第一个成员后的最前边一个成员地址                                   */
+/********************************************************************************/
 static struct RTU_ReqBlock* RTU_DelReqBlock(struct RTU_Ctx* _rtu_ctx)
 {//删除消息队列的首个请求
     struct RTU_ReqBlock* req = 0;
@@ -75,6 +67,12 @@ static struct RTU_ReqBlock* RTU_DelReqBlock(struct RTU_Ctx* _rtu_ctx)
     return req;
 }
 
+/********************************************************************************/
+/*函数名：  BSP_RTU_StartSend                                                   */
+/*功能说明：调用BSP发送数据                                                      */
+/*输入参数：_rtuctx-目标队列                                                     */
+/*输出参数：无                                                                   */
+/********************************************************************************/
 static void BSP_RTU_StartSend(struct RTU_Ctx* _rturtx)
 {//启动串口发送
 	UartOpFunc[_rturtx->curr->chnindex]._send(_rturtx->txbuff,_rturtx->txindex);
@@ -83,7 +81,13 @@ static void BSP_RTU_StartSend(struct RTU_Ctx* _rturtx)
 	_rturtx->rxindex = 0;
 }
 	
-void RTU_Init(u8 interval,u16 guard)
+/********************************************************************************/
+/*函数名：  RTU_Init                                                             */
+/*功能说明：模块初始化函数                                                        */
+/*输入参数：interval-发送最后一个字节后的间隔时间，guard-发送请求后收到响应的超时时间*/
+/*输出参数：无                                                                   */
+/********************************************************************************/
+void RTU_Init(u16 interval,u16 guard)
 {//模块初始化
 	memset(&rtu_ctx, 0, sizeof(rtu_ctx));
 	rtu_ctx.fsm_state = RTU_REQ;//初始化成请求模式
@@ -91,15 +95,17 @@ void RTU_Init(u8 interval,u16 guard)
 	rtu_ctx.poll_interval=interval;//连续两个请求间隔时间
 	INIT_LIST_HEAD(&rtu_ctx.head);
 	RTU_485_Enable = ON;
-	RTU_AddReqBlock(&rtu_ctx,&RTU_AReqGrp);
 	rtu_ctx.event = EV_RX_OK;
 	rtu_ctx.Pollevent = EV_NONE;
-	rtu_ctx.Polltimer =100;//用于轮询的定时器初始值
 	UartOpFunc[UART_CHN_RTU_MASTER]._recv=UART_RTU_Recv;
-    //UartOpFunc[UART_CHN_RTU_MASTER]._send=USART3_Send_Data;
-	//UartOpFunc[1]._recv=UART_RTU_Recv;
 }
 
+/********************************************************************************/
+/*函数名：  RTU_HandleReply                                                     */
+/*功能说明：接收数据解析                                                         */
+/*输入参数：_rtuctx-目标队列                                                     */
+/*输出参数：无                                                                   */
+/********************************************************************************/
 void RTU_HandleReply(struct RTU_Ctx* _rtuctx)
 {
 	u8 i,j;
@@ -134,7 +140,41 @@ void RTU_HandleReply(struct RTU_Ctx* _rtuctx)
 	_rtuctx->rxindex=0;
 }
 
-//=====================================================================
+/********************************************************************************/
+/*函数名：  RTU_Timer1ms_Handler                                                 */
+/*功能说明：超时状态管理                                                          */
+/*输入参数：无                                                                   */
+/*输出参数：无                                                                   */
+/********************************************************************************/
+void RTU_Timer1ms_Handler(void)
+{
+	if(RTU_485_Enable == ON)
+	{
+		if((rtu_ctx.TOtimer>0)&&(!--rtu_ctx.TOtimer))
+		{
+			rtu_ctx.event = EV_TO;
+		}
+		
+		if(rtu_ctx.fsm_state == FSM_REQ)
+		{
+			if((rtu_ctx.Polltimer>0)&&(!--rtu_ctx.Polltimer))
+			{
+				rtu_ctx.Pollevent = EV_TO;
+			}
+		}
+		else
+		{
+			//rtu_ctx.Polltimer=0;
+		}
+	}
+}
+
+/********************************************************************************/
+/*函数名：  UART_RTU_Recv                                                        */
+/*功能说明：接收到的数据解析，判断每个字节是否有效，若无效则抛弃该帧数据             */
+/*输入参数：l_u8ReceData，当前接收的数据                                          */
+/*输出参数：无                                                                   */
+/********************************************************************************/
 void UART_RTU_Recv(unsigned char  l_u8ReceData)
 {
 	u16 CrcCheck;
@@ -177,6 +217,12 @@ void UART_RTU_Recv(unsigned char  l_u8ReceData)
 	rtu_ctx.rxindex++;
 }
 
+/********************************************************************************/
+/*函数名：  RTU_Read                                                             */
+/*功能说明：读请求数据打包                                                        */
+/*输入参数：_rtuctx，当前队列数据信息                                             */
+/*输出参数：无                                                                   */
+/********************************************************************************/
 void RTU_Read(struct RTU_Ctx* _rtuctx)
 {
     u16 CrcCheck;
@@ -194,6 +240,12 @@ void RTU_Read(struct RTU_Ctx* _rtuctx)
     BSP_RTU_StartSend(_rtuctx);
 }
 
+/********************************************************************************/
+/*函数名：  RTU_Write                                                            */
+/*功能说明：写请求数据打包                                                        */
+/*输入参数：_rtuctx，当前队列数据信息                                             */
+/*输出参数：无                                                                   */
+/********************************************************************************/
 void RTU_Write(struct RTU_Ctx* _rtuctx)
 {
     u16 CrcCheck;
@@ -235,6 +287,12 @@ void RTU_Write(struct RTU_Ctx* _rtuctx)
     BSP_RTU_StartSend(_rtuctx);
 }
 
+/********************************************************************************/
+/*函数名：  RTU_CyclicTask                                                      */
+/*功能说明：RTU状态机管理                                                        */
+/*输入参数：无                                                                  */
+/*输出参数：无                                                                  */
+/*******************************************************************************/
 void RTU_CyclicTask(void)
 {
     if (rtu_ctx.event == EV_NONE)
@@ -275,11 +333,39 @@ void RTU_CyclicTask(void)
         {
             rtu_ctx.fsm_next_state = RTU_REQ;
             rtu_ctx.curr->Status=EXCUTE_FAIL;
+            rtu_ctx.Polltimer=1000;
+            if (rtu_ctx.curr->Excute_Num > 1)
+            {
+                rtu_ctx.curr->Excute_Num--;
+                RTU_AddReqBlock(&rtu_ctx,rtu_ctx.curr);
+            }
+            else if(rtu_ctx.curr->Excute_Num == 0)
+            {
+                RTU_AddReqBlock(&rtu_ctx,rtu_ctx.curr);
+            }
+            else
+            {
+
+            }
         }
         else if(rtu_ctx.event == EV_RX_OK)
         {
             RTU_HandleReply(&rtu_ctx);
             rtu_ctx.fsm_next_state = RTU_REQ;
+            rtu_ctx.Polltimer=1000;
+            if (rtu_ctx.curr->Excute_Num > 1)
+            {
+                rtu_ctx.curr->Excute_Num--;
+                RTU_AddReqBlock(&rtu_ctx,rtu_ctx.curr);
+            }
+            else if(rtu_ctx.curr->Excute_Num == 0)
+            {
+                RTU_AddReqBlock(&rtu_ctx,rtu_ctx.curr);
+            }
+            else
+            {
+
+            }
         }
         else
         {
@@ -292,67 +378,17 @@ void RTU_CyclicTask(void)
     rtu_ctx.event = EV_NONE;
 }
 
-void RTU_Timer1ms_Handler(void)
-{
-	if(RTU_485_Enable == ON)
-	{
-		if((rtu_ctx.TOtimer>0)&&(!--rtu_ctx.TOtimer))
-		{
-			rtu_ctx.event = EV_TO;
-		}
-		
-		if(rtu_ctx.fsm_state == FSM_REQ)
-		{
-			if((rtu_ctx.Polltimer>0)&&(!--rtu_ctx.Polltimer))
-			{
-				rtu_ctx.Pollevent = EV_TO;
-			}
-		}
-		else
-		{
-			//rtu_ctx.Polltimer=0;
-		}
-	}
-}
-
+/********************************************************************************/
+/*函数名：  Task_MBRTU_Master                                                   */
+/*功能说明：RTU master主task                                                    */
+/*输入参数：无                                                                  */
+/*输出参数：无                                                                  */
+/*******************************************************************************/
 void Task_MBRTU_Master(void *p_arg)
 {
-    //u8 datatyppe;
-    //u16 dataaddr;
-	//datatyppe=M_RdHold;
-	//API_RTU_HOOK(RTU_MReqGrp);
-	u8 func=M_WrHold;
-    u8 num=1;
-    RTU_Init(100,100);
+    RTU_Init(2,100);
 	while(1)
-	{
-        if(rtu_ctx.Pollevent==EV_TO)
-        {
-            rtu_ctx.Polltimer=100;
-            if(Manual_Req(0)==OFF)
-            {
-                RTU_AReqGrp.chnindex=UART_CHN_RTU_MASTER;
-                RTU_AReqGrp.sta_addr=0x01;
-                RTU_AReqGrp.FuncCode=M_RdHold;
-                RTU_AReqGrp.RegAddr=0;
-                RTU_AReqGrp.RegNum=num;
-                RTU_AReqGrp.mappedBuff=ADDR;
-                RTU_AddReqBlock(&rtu_ctx,&RTU_AReqGrp);
-            }
-            else
-            {
-                Manual_Req(0)=0;
-                RTU_MReqGrp.chnindex=UART_CHN_RTU_MASTER;
-                RTU_MReqGrp.sta_addr=0x01;
-                RTU_MReqGrp.FuncCode=(FuncCode_t)func;//M_WrHold;
-                RTU_MReqGrp.RegAddr=0;
-                RTU_MReqGrp.RegNum=num;
-                RTU_MReqGrp.mappedBuff=Wrdata;
-                RTU_AddReqBlock(&rtu_ctx,&RTU_MReqGrp);
-            }
-            rtu_ctx.Pollevent=EV_NONE;
-        }
-    	
+	{    	
     	RTU_CyclicTask();
         OSTimeDlyHMSM(0, 0, 0, 1);
 	}

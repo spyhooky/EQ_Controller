@@ -17,7 +17,10 @@ void Blink_LED_Status(u16 mstimer);
 
 extern volatile BitStatus    	Relay_Output_Sts;//
 #define Running_Error_Sts(n)    Relay_Output_Sts.Byte
-#define Band_Type_Brake_Out  	Relay_Output_Sts.Bits.bit0 //抱闸延时输出
+#define BAND_TYPE_BRAKE_OUT  	Relay_Output_Sts.Bits.bit0 //抱闸延时输出
+#define CONTACTOR_RISE_OUT  	Relay_Output_Sts.Bits.bit1 //
+#define CONTACTOR_FALL_OUT  	Relay_Output_Sts.Bits.bit2 //
+#define CONTACTOR_STOP_OUT  	Relay_Output_Sts.Bits.bit3 //
 
 #if 0
 #define Limit_Up_Signal  		Relay_Output_Sts.Bits.bit1 //上限位信号

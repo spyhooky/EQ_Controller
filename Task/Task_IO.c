@@ -41,7 +41,7 @@ static struct DIPType           DigitInput_Sts[DIGIT_INPUT_CHN_NUM];//
 
 /**********仅仅测试串口时使用************/
 static u16 en_test=0;//该值写成1时，默认500ms周期向外部发送数据
-static u16 chn_test=2;//0-232通道，2-485通道，靠近编码器的485，板子中间的那个插件，用一个独立隔离DCDC的
+static u16 chn_test=1;//0-232通道，2-485通道，靠近编码器的485，板子中间的那个插件，用一个独立隔离DCDC的
 static u16 testcnt;
 /****************************************/
 
@@ -56,14 +56,14 @@ void Blink_LED_Status(u16 timer);
 
 void TaskIO_Timer100us(void)
 {
-    testcnt++;
+    //testcnt++;
 }
 
 
 void TaskIO_Timer1ms(void)
 {
 	u8 i;
-	
+	//testcnt++;
 	for(i=0;i<DIP_SWITCH_BITS_NUM;i++)
 	{//遍历所有拨码开关位
 		if(DIP_TimerEn(i) == ON)
@@ -90,6 +90,12 @@ void TaskIO_Timer1ms(void)
 	}
 }
 
+/***************************************************************************/
+/*函数名：  Task_IO_Init                                                    */
+/*功能说明：模块初始化函数                                                   */
+/*输入参数：无                                                              */
+/*输出参数：无                                                              */
+/***************************************************************************/
 void Task_IO_Init(void)
 {
     u8 j;
@@ -114,9 +120,15 @@ void Task_IO_Init(void)
     //Relay_Output_Sts=0;
 }
 
+/***************************************************************************/
+/*函数名：  Output_MainFunction                                            */
+/*功能说明：开关量输出控制函数                                               */
+/*输入参数：无                                                              */
+/*输出参数：无                                                              */
+/***************************************************************************/
 static void Output_MainFunction(void)
 {
-    if(Band_Type_Brake_Out == ON)
+    if(BAND_TYPE_BRAKE_OUT == ON)
     {
         RELAY_1_OUT(ON);
     }
@@ -125,6 +137,31 @@ static void Output_MainFunction(void)
         RELAY_1_OUT(OFF);
     }
 
+    if(CONTACTOR_RISE_OUT == ON)
+    {
+        RELAY_2_OUT(ON);
+    }
+    else
+    {
+        RELAY_2_OUT(OFF);
+    }
+    if(CONTACTOR_FALL_OUT == ON)
+    {
+        RELAY_3_OUT(ON);
+    }
+    else
+    {
+        RELAY_3_OUT(OFF);
+    }
+
+    if(CONTACTOR_STOP_OUT == ON)
+    {
+        RELAY_4_OUT(ON);
+    }
+    else
+    {
+        RELAY_4_OUT(OFF);
+    }
 }
 
 /****************************************************************************/
@@ -142,7 +179,7 @@ void Task_IO(void *p_arg)
     {	
         if(en_test==1)
         {
-            if(testcnt>=5000)
+            if(testcnt>=1000)
             {
                 testcnt = 0;
                 Blink_LED_Status(200);
@@ -150,7 +187,7 @@ void Task_IO(void *p_arg)
             }
             else
             {
-                //testcnt++;
+                testcnt++;
             }
         }
         
@@ -239,7 +276,7 @@ static void DIP_Switch_Detect(void)
         Cur_DIP_Status(j) = (cur_level[j]>4) ? 1:0;
         temp |= Cur_DIP_Status(j)<<j;
     }
-    Globle_Framework.DIP_SwitchStatus = ~temp;//更新拨码开关值
+    Global_Variable.DIP_SwitchStatus = ~temp;//更新拨码开关值
 }
 
 
@@ -274,7 +311,7 @@ static void DIP_Switch_Mainfunction(void)
 			{
 				temp |= Cur_DIP_Status(j)<<j;
 			}
-			Globle_Framework.DIP_SwitchStatus = ~temp;//更新拨码开关值
+			Global_Variable.DIP_SwitchStatus = ~temp;//更新拨码开关值
 		}
 		Pre_DIP_Level(i) = cur_level[i];
 	}
@@ -307,7 +344,7 @@ static void INPUT_Check_Mainfunction(void)
             INPUT_STS_KEEP_TIME(i) = 0u;
             Cur_Input_Status(i) = cur_level[i];
             //更新该输入口状态值
-            Globle_Framework.Digit_InputStatus = (cur_level[i]==0)? ((1<<i)|Globle_Framework.Digit_InputStatus):((~(1<<i))&Globle_Framework.Digit_InputStatus);
+            Global_Variable.Digit_InputStatus = (cur_level[i]==0)? ((1<<i)|Global_Variable.Digit_InputStatus):((~(1<<i))&Global_Variable.Digit_InputStatus);
         }
         Pre_Input_Level(i) = cur_level[i];
     }
