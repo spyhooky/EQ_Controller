@@ -1,5 +1,5 @@
 Dependencies for Project 'EQ_Controller', Target 'DAQ_Project': (DO NOT MODIFY !)
-F (..\readme.txt)(0x5C87E569)()
+F (..\readme.txt)(0x5C9122C3)()
 F (..\Task\Task_TCPIP.c)(0x5C7553A9)(-c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I..\uCOSII\CONFIG -I..\uCOSII\PORT -I..\uCOSII\CORE -I..\FWLIB\inc -I..\CMSIS -I..\DRIVE -I..\USER -I..\Task -I..\Internet -I..\Ethernet -I..\Ethernet\W5500 -I..\Internet -I..\Internet\HTTP -I..\Internet\DNS -I..\Internet\DHCP -I..\MQTT -I..\Framework --c99-I "C:\Program Files (x86)\Keil\ARM\RV31\INC"-I "C:\Program Files (x86)\Keil\ARM\CMSIS\Include"-I "C:\Program Files (x86)\Keil\ARM\Inc\ST\STM32F10x"-DSTM32F10X_CL -DUSE_STDPERIPH_DRIVER-o ..\output\task_tcpip.o --depend ..\output\task_tcpip.d)
 I (..\Framework\main.h)(0x5C7019B4)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\stdio.h)(0x51C7C554)
@@ -69,7 +69,7 @@ I (..\Internet\DHCP\dhcp.h)(0x59A7A1A1)
 I (..\Internet\HTTP\httputil.h)(0x59A7A1A2)
 I (..\Internet\HTTP\util.h)(0x5C826B2F)
 I (..\Internet\HTTP\httpd.h)(0x59A7A1A2)
-F (..\Task\Task_IO.c)(0x5C8FB146)(-c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I..\uCOSII\CONFIG -I..\uCOSII\PORT -I..\uCOSII\CORE -I..\FWLIB\inc -I..\CMSIS -I..\DRIVE -I..\USER -I..\Task -I..\Internet -I..\Ethernet -I..\Ethernet\W5500 -I..\Internet -I..\Internet\HTTP -I..\Internet\DNS -I..\Internet\DHCP -I..\MQTT -I..\Framework --c99-I "C:\Program Files (x86)\Keil\ARM\RV31\INC"-I "C:\Program Files (x86)\Keil\ARM\CMSIS\Include"-I "C:\Program Files (x86)\Keil\ARM\Inc\ST\STM32F10x"-DSTM32F10X_CL -DUSE_STDPERIPH_DRIVER-o ..\output\task_io.o --depend ..\output\task_io.d)
+F (..\Task\Task_IO.c)(0x5C92494F)(-c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I..\uCOSII\CONFIG -I..\uCOSII\PORT -I..\uCOSII\CORE -I..\FWLIB\inc -I..\CMSIS -I..\DRIVE -I..\USER -I..\Task -I..\Internet -I..\Ethernet -I..\Ethernet\W5500 -I..\Internet -I..\Internet\HTTP -I..\Internet\DNS -I..\Internet\DHCP -I..\MQTT -I..\Framework --c99-I "C:\Program Files (x86)\Keil\ARM\RV31\INC"-I "C:\Program Files (x86)\Keil\ARM\CMSIS\Include"-I "C:\Program Files (x86)\Keil\ARM\Inc\ST\STM32F10x"-DSTM32F10X_CL -DUSE_STDPERIPH_DRIVER-o ..\output\task_io.o --depend ..\output\task_io.d)
 I (..\Framework\main.h)(0x5C7019B4)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\stdio.h)(0x51C7C554)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\stdlib.h)(0x51C7C554)
@@ -478,7 +478,7 @@ I (..\Task\Task_Freq_Convert.h)(0x5C8E4915)
 I (..\Task\Task_MQTT.h)(0x5C7139FB)
 I (..\DRIVE\cJSON.h)(0x59A7A1A1)
 F (..\Framework\platform_cfg.h)(0x5C90E810)()
-F (..\Framework\main.c)(0x5C83808C)(-c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I..\uCOSII\CONFIG -I..\uCOSII\PORT -I..\uCOSII\CORE -I..\FWLIB\inc -I..\CMSIS -I..\DRIVE -I..\USER -I..\Task -I..\Internet -I..\Ethernet -I..\Ethernet\W5500 -I..\Internet -I..\Internet\HTTP -I..\Internet\DNS -I..\Internet\DHCP -I..\MQTT -I..\Framework --c99-I "C:\Program Files (x86)\Keil\ARM\RV31\INC"-I "C:\Program Files (x86)\Keil\ARM\CMSIS\Include"-I "C:\Program Files (x86)\Keil\ARM\Inc\ST\STM32F10x"-DSTM32F10X_CL -DUSE_STDPERIPH_DRIVER-o ..\output\main.o --depend ..\output\main.d)
+F (..\Framework\main.c)(0x5C926C0F)(-c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I..\uCOSII\CONFIG -I..\uCOSII\PORT -I..\uCOSII\CORE -I..\FWLIB\inc -I..\CMSIS -I..\DRIVE -I..\USER -I..\Task -I..\Internet -I..\Ethernet -I..\Ethernet\W5500 -I..\Internet -I..\Internet\HTTP -I..\Internet\DNS -I..\Internet\DHCP -I..\MQTT -I..\Framework --c99-I "C:\Program Files (x86)\Keil\ARM\RV31\INC"-I "C:\Program Files (x86)\Keil\ARM\CMSIS\Include"-I "C:\Program Files (x86)\Keil\ARM\Inc\ST\STM32F10x"-DSTM32F10X_CL -DUSE_STDPERIPH_DRIVER-o ..\output\main.o --depend ..\output\main.d)
 I (..\Framework\main.h)(0x5C7019B4)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\stdio.h)(0x51C7C554)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\stdlib.h)(0x51C7C554)

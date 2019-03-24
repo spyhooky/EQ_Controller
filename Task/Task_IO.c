@@ -40,7 +40,7 @@ static struct DIPType           DigitInput_Sts[DIGIT_INPUT_CHN_NUM];//
 #define DIGIT_INPUT_FILTER                            100u //数字开关量滤波时间，单位ms
 
 /**********仅仅测试串口时使用************/
-static u16 en_test=0;//该值写成1时，默认500ms周期向外部发送数据
+static u16 en_test=1;//该值写成1时，默认500ms周期向外部发送数据
 static u16 chn_test=1;//0-232通道，2-485通道，靠近编码器的485，板子中间的那个插件，用一个独立隔离DCDC的
 static u16 testcnt;
 /****************************************/
@@ -162,46 +162,6 @@ static void Output_MainFunction(void)
     {
         RELAY_4_OUT(OFF);
     }
-}
-
-/****************************************************************************/
-/*函数名：  Task_IO                                                         */
-/*功能说明：  IO的主函数，调用输入识别函数和输出控制函数                    */        
-/*输入参数：无                                                              */
-/*输出参数：无                                                              */
-/****************************************************************************/
-void Task_IO(void *p_arg)
-{
-    (void)p_arg;
-    Task_IO_Init();
-    u8 data[5] ={0x11,0x22,0x33,0x44,0x55};
-    while (1)
-    {	
-        if(en_test==1)
-        {
-            if(testcnt>=1000)
-            {
-                testcnt = 0;
-                Blink_LED_Status(200);
-                UartOpFunc[chn_test]._send(data,5);
-            }
-            else
-            {
-                testcnt++;
-            }
-        }
-        
-        if(DIP_Swtch_Update_En == ON)
-        {
-		    DIP_Switch_Mainfunction();
-        }
-		INPUT_Check_Mainfunction();
-		LED_MainFunction();
-        Output_MainFunction();
-        OSTimeDlyHMSM(0, 0, 0, 1);
-        
-    }
-    
 }
 
 /****************************************************************************/
@@ -350,7 +310,45 @@ static void INPUT_Check_Mainfunction(void)
     }
 }
 
-
+/****************************************************************************/
+/*函数名：  Task_IO                                                         */
+/*功能说明：IO的主函数，调用输入识别函数和输出控制函数                         */        
+/*输入参数：无                                                              */
+/*输出参数：无                                                              */
+/****************************************************************************/
+void Task_IO(void *p_arg)
+{
+    (void)p_arg;
+    Task_IO_Init();
+    u8 data[5] ={0x11,0x22,0x33,0x44,0x55};
+    while (1)
+    {	
+        if(en_test==1)
+        {
+            if(testcnt>=1000)
+            {
+                testcnt = 0;
+                Blink_LED_Status(200);
+                UartOpFunc[chn_test]._send(data,5);
+            }
+            else
+            {
+                testcnt++;
+            }
+        }
+        
+        if(DIP_Swtch_Update_En == ON)
+        {
+		    DIP_Switch_Mainfunction();
+        }
+		INPUT_Check_Mainfunction();
+		LED_MainFunction();
+        Output_MainFunction();
+        OSTimeDlyHMSM(0, 0, 0, 1);
+        
+    }
+    
+}
 
 
 

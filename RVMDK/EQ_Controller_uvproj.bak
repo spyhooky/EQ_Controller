@@ -453,6 +453,11 @@
               <FileType>1</FileType>
               <FilePath>..\Task\Task_MB_RTU_Master.c</FilePath>
             </File>
+            <File>
+              <FileName>Task_Freq_Convert.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Task\Task_Freq_Convert.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

@@ -120,6 +120,7 @@ void UsartRecieveData(u8 channel,u8 recdata)
     if(UartOpFunc[channel]._recv != NULL)
     {
         UartOpFunc[channel]._recv(recdata);
+        return;
     }
     
 	if(FrameStatus[channel] == frame_idle)
