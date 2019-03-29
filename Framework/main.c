@@ -14,7 +14,7 @@ int main(void)
     RCC_DeInit();
     vu8 i;
     SystemInit(); //系统初始化，包含时钟等
-    NVIC_SetVectorTable(NVIC_VectTab_FLASH, 0x8000);  //设置中断向量表的偏移地址，用于bootloader模式下
+    //NVIC_SetVectorTable(NVIC_VectTab_FLASH, 0x8000);  //设置中断向量表的偏移地址，用于bootloader模式下
     NVIC_PriorityGroupConfig(NVIC_PriorityGroup_3); //中断级别为1，一个位表示抢占级别，3个位表示中断优先级，数字越小级别越高
     SysTick_Config(SystemFrequency/OS_TICKS_PER_SEC);  //TICK初始化
     OSInit();  //OS初始化，

@@ -111,25 +111,23 @@ static void Update_Running_ErrorSts(void)
     Err_Temp_Low = (Global_Variable.CurrentEnvTemp<-40)?1:0;//20-SLAVE低温故障
     Err_Voltage_High = (Global_Variable.Power_5V>6)?1:0;//21-SLAVE高压故障
     Err_Voltage_Low = (Global_Variable.Power_5V<4)?1:0;//22-SLAVE低压故障
-#if 0
-    Inverter_Acc_OverCurrent = 0;//23-变频器加速过电流故障
-    Inverter_Slow_OverCurrent = 0; //24-变频器减速过电流故障
-    Inverter_Const_OverCurrent = 0;//25-变频器恒速过电流故障
-    Inverter_Acc_OverVoltage = 0;  //26-变频器加速过电压故障
-    Inverter_Slow_OverVoltage = 0; //27-变频器减速过电压故障
-    Inverter_Const_OverVoltage = 0;//28-变频器恒速过电压故障
-    Inverter_OverTemp = 0;       //29-变频器过热故障 
-    Inverter_OverLoad = 0;         //30-变频器过载故障
-    Inverter_Input_LackPhase = 0;  //31-变频器输入缺相故障
-    Inverter_Output_LackPhase = 0;//32-变频器输出缺相故障
-    Motor_OverLoad = 0;           //33-电机过载故障
-    Motor_Runing_UnderVoltage = 0; //34-电机运行中欠电压故障
-    Motor_ShortToGND = 0;       //35-电机对地短路故障
-    Motor_OverTemp = 0;      //36-电机过温故障    
-    Motor_OverSpeed = 0;   //37-电机过速故障        
-    Miss_PID_Respond = 0; //38-PID反馈丢失故障     
-    Suspende_Below_Zero = 0; //39-吊杆位置低于零位坐标    
-#endif
+    Inverter_Acc_OverCurrent = InvertorData[off_InvertorError]==0x01 ? 1u:0u;//23-变频器加速过电流故障
+    Inverter_Slow_OverCurrent = InvertorData[off_InvertorError]==0x02 ? 1u:0u; //24-变频器减速过电流故障
+    Inverter_Const_OverCurrent = InvertorData[off_InvertorError]==0x03 ? 1u:0u;//25-变频器恒速过电流故障
+    Inverter_Acc_OverVoltage = InvertorData[off_InvertorError]==0x04 ? 1u:0u;  //26-变频器加速过电压故障
+    Inverter_Slow_OverVoltage = InvertorData[off_InvertorError]==0x05 ? 1u:0u; //27-变频器减速过电压故障
+    Inverter_Const_OverVoltage = InvertorData[off_InvertorError]==0x06 ? 1u:0u;//28-变频器恒速过电压故障
+    Inverter_OverTemp = InvertorData[off_InvertorError]==0x08 ? 1u:0u;       //29-变频器过热故障 
+    Inverter_OverLoad = InvertorData[off_InvertorError]==0x09 ? 1u:0u;         //30-变频器过载故障
+    Inverter_Input_LackPhase = InvertorData[off_InvertorError]==0x13 ? 1u:0u;  //31-变频器输入缺相故障
+    Inverter_Output_LackPhase = InvertorData[off_InvertorError]==0x0C ? 1u:0u;//32-变频器输出缺相故障
+    Motor_OverLoad = InvertorData[off_InvertorError]==0x0A ? 1u:0u;           //33-电机过载故障
+    Motor_Runing_UnderVoltage = InvertorData[off_InvertorError]==0x0B ? 1u:0u; //34-电机运行中欠电压故障
+    Motor_ShortToGND = InvertorData[off_InvertorError]==0x14 ? 1u:0u;       //35-电机对地短路故障
+    Motor_OverTemp = InvertorData[off_InvertorError]==0x1A ? 1u:0u;      //36-电机过温故障    
+    Motor_OverSpeed = InvertorData[off_InvertorError]==0x1C ? 1u:0u;   //37-电机过速故障        
+    Miss_PID_Respond = InvertorData[off_InvertorError]==0x1E ? 1u:0u; //38-PID反馈丢失故障     
+    Suspende_Below_Zero = InvertorData[off_InvertorError]==0x01 ? 1u:0u; //39-吊杆位置低于零位坐标    
 
     //Band_Type_Brake_Out = Band_Type_Brake;
 }

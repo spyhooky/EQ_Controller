@@ -40,7 +40,7 @@ static struct DIPType           DigitInput_Sts[DIGIT_INPUT_CHN_NUM];//
 #define DIGIT_INPUT_FILTER                            100u //数字开关量滤波时间，单位ms
 
 /**********仅仅测试串口时使用************/
-static u16 en_test=1;//该值写成1时，默认500ms周期向外部发送数据
+static u16 en_test=0;//该值写成1时，默认500ms周期向外部发送数据
 static u16 chn_test=1;//0-232通道，2-485通道，靠近编码器的485，板子中间的那个插件，用一个独立隔离DCDC的
 static u16 testcnt;
 /****************************************/

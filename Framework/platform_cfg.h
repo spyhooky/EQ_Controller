@@ -6,21 +6,25 @@
 #ifdef STM32F10X_LD
     #define FLASH_PAGE_SIZE                 0x400U
     #define CONFIG_BASEADDR                 0x800EC00ul  //常用配置文件的存储起始地址
+    #define APP_CRC_ADDR                    0x8024000ul
 #endif
 
 #ifdef STM32F10X_MD
     #define FLASH_PAGE_SIZE                 0x400U
     #define CONFIG_BASEADDR                 0x800EC00ul
+    #define APP_CRC_ADDR                    0x8024000ul
 #endif
 
 #ifdef STM32F10X_HD
     #define FLASH_PAGE_SIZE                 0x800U
     #define CONFIG_BASEADDR                 0x803A000ul
+    #define APP_CRC_ADDR                    0x8030000ul
 #endif
 
 #ifdef STM32F10X_CL
     #define FLASH_PAGE_SIZE                 0x800U     
     #define CONFIG_BASEADDR                 0x803A000ul
+    #define APP_CRC_ADDR                    0x8030000ul
 #endif
 
 #define AIRCR_VECTKEY_MASK    ((uint32_t)0x05FA0000)
@@ -95,7 +99,6 @@ enum ADC_Channel
 /**************** 本地端口号分配 *******************/
 #define PORT_LOCAL        502
 
-#define APP_CRC_ADDR                                          0x8024000UL
 
 /* ASCII */
 #define SOH                             0x01U
