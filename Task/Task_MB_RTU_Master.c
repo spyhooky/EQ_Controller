@@ -97,7 +97,7 @@ void RTU_Init(u16 interval,u16 guard)
 	RTU_485_Enable = ON;
 	rtu_ctx.event = EV_RX_OK;
 	rtu_ctx.Pollevent = EV_NONE;
-	UartOpFunc[UART_CHN_RTU_MASTER]._recv=UART_RTU_Recv;
+	UartOpFunc[UART_CHN_CONVERT_FREQ]._recv=UART_RTU_Recv;
 }
 
 /********************************************************************************/
@@ -120,7 +120,7 @@ void RTU_HandleReply(struct RTU_Ctx* _rtuctx)
 	}
 	if(OP_Mode==READ)
 	{
-		if((rtu_ctx.curr->FuncCode == S_RdCoil)||(rtu_ctx.curr->FuncCode == S_RdInput))
+		if((rtu_ctx.curr->FuncCode == FUNC_RD_COILSTATUS)||(rtu_ctx.curr->FuncCode == FUNC_RD_INPUTSTATUS))
 		{
 			for(i=0;i<_rtuctx->rxbuff[2];i++)
 			{
@@ -227,7 +227,7 @@ void RTU_Read(struct RTU_Ctx* _rtuctx)
 {
     u16 CrcCheck;
     OP_Mode=READ;
-    _rtuctx->curr->FuncCode =(_rtuctx->curr->FuncCode==(FuncCode_t)0)? (FuncCode_t)0x03 : _rtuctx->curr->FuncCode ;
+    _rtuctx->curr->FuncCode =(_rtuctx->curr->FuncCode==(MB_FUNC_TYPE_t)0)? (MB_FUNC_TYPE_t)0x03 : _rtuctx->curr->FuncCode ;
     _rtuctx->txbuff[_rtuctx->txindex++] = _rtuctx->curr->sta_addr;
     _rtuctx->txbuff[_rtuctx->txindex++] = _rtuctx->curr->FuncCode;
     _rtuctx->txbuff[_rtuctx->txindex++] = _rtuctx->curr->RegAddr/256;
@@ -251,22 +251,22 @@ void RTU_Write(struct RTU_Ctx* _rtuctx)
     u16 CrcCheck;
     u8 temp,i;
     OP_Mode=WRITE;
-    _rtuctx->curr->FuncCode =(_rtuctx->curr->FuncCode==0u)? (FuncCode_t)0x10 : _rtuctx->curr->FuncCode ;
+    _rtuctx->curr->FuncCode =(_rtuctx->curr->FuncCode==0u)? (MB_FUNC_TYPE_t)0x10 : _rtuctx->curr->FuncCode ;
     _rtuctx->txbuff[_rtuctx->txindex++] = _rtuctx->curr->sta_addr;
     _rtuctx->txbuff[_rtuctx->txindex++] = _rtuctx->curr->FuncCode;
     _rtuctx->txbuff[_rtuctx->txindex++] = _rtuctx->curr->RegAddr/256;
     _rtuctx->txbuff[_rtuctx->txindex++] = _rtuctx->curr->RegAddr%256;
-    if(_rtuctx->curr->FuncCode == S_WrCoil)
+    if(_rtuctx->curr->FuncCode == FUNC_WR_SGCOIL)
     {
         temp=2;
         _rtuctx->curr->mappedBuff[0]= (_rtuctx->curr->mappedBuff[1]==0x01)?0xff:0x00;
         _rtuctx->curr->mappedBuff[1]=0x00;
     }
-    else if(_rtuctx->curr->FuncCode == M_WrCoil)
+    else if(_rtuctx->curr->FuncCode == FUNC_WR_MULCOIL)
     {
         temp = (_rtuctx->curr->RegNum/8)+((_rtuctx->curr->RegNum%8)==0?0:1);
     }
-    else if(_rtuctx->curr->FuncCode == M_WrHold)
+    else if(_rtuctx->curr->FuncCode == FUNC_WR_MULREG)
     {
         _rtuctx->txbuff[_rtuctx->txindex++] = _rtuctx->curr->RegNum/256;
         _rtuctx->txbuff[_rtuctx->txindex++] = _rtuctx->curr->RegNum%256;
@@ -310,14 +310,14 @@ void RTU_CyclicTask(void)
                 return;
             }
             rtu_ctx.curr->Status=EXCUTE_START; //正在处理中
-            if ((rtu_ctx.curr->FuncCode == S_RdCoil)||(rtu_ctx.curr->FuncCode == S_RdInput)||
-                (rtu_ctx.curr->FuncCode == M_RdHold)||(rtu_ctx.curr->FuncCode == M_RdInRegs))
+            if ((rtu_ctx.curr->FuncCode == FUNC_RD_COILSTATUS)||(rtu_ctx.curr->FuncCode == FUNC_RD_INPUTSTATUS)||
+                (rtu_ctx.curr->FuncCode == FUNC_RD_HOLDREG)||(rtu_ctx.curr->FuncCode == FUNC_RD_INREG))
             {
 
                 RTU_Read(&rtu_ctx);
             }
-            else if((rtu_ctx.curr->FuncCode == S_WrCoil)||(rtu_ctx.curr->FuncCode == S_WrHold)||
-                (rtu_ctx.curr->FuncCode == M_WrCoil)||(rtu_ctx.curr->FuncCode == M_WrHold))
+            else if((rtu_ctx.curr->FuncCode == FUNC_WR_SGCOIL)||(rtu_ctx.curr->FuncCode == FUNC_WR_SGREG)||
+                (rtu_ctx.curr->FuncCode == FUNC_WR_MULCOIL)||(rtu_ctx.curr->FuncCode == FUNC_WR_MULREG))
             {
                 RTU_Write(&rtu_ctx);
             }
@@ -352,7 +352,7 @@ void RTU_CyclicTask(void)
         {
             RTU_HandleReply(&rtu_ctx);
             rtu_ctx.fsm_next_state = RTU_REQ;
-            rtu_ctx.Polltimer=1000;
+            //rtu_ctx.Polltimer=1000;
             if (rtu_ctx.curr->Excute_Num > 1)
             {
                 rtu_ctx.curr->Excute_Num--;
@@ -386,7 +386,7 @@ void RTU_CyclicTask(void)
 /*******************************************************************************/
 void Task_MBRTU_Master(void *p_arg)
 {
-    RTU_Init(2,100);
+    RTU_Init(100,500);
 	while(1)
 	{    	
     	RTU_CyclicTask();

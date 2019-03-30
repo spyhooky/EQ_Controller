@@ -111,23 +111,23 @@ static void Update_Running_ErrorSts(void)
     Err_Temp_Low = (Global_Variable.CurrentEnvTemp<-40)?1:0;//20-SLAVE低温故障
     Err_Voltage_High = (Global_Variable.Power_5V>6)?1:0;//21-SLAVE高压故障
     Err_Voltage_Low = (Global_Variable.Power_5V<4)?1:0;//22-SLAVE低压故障
-    Inverter_Acc_OverCurrent = InvertorData[off_InvertorError]==0x01 ? 1u:0u;//23-变频器加速过电流故障
-    Inverter_Slow_OverCurrent = InvertorData[off_InvertorError]==0x02 ? 1u:0u; //24-变频器减速过电流故障
-    Inverter_Const_OverCurrent = InvertorData[off_InvertorError]==0x03 ? 1u:0u;//25-变频器恒速过电流故障
-    Inverter_Acc_OverVoltage = InvertorData[off_InvertorError]==0x04 ? 1u:0u;  //26-变频器加速过电压故障
-    Inverter_Slow_OverVoltage = InvertorData[off_InvertorError]==0x05 ? 1u:0u; //27-变频器减速过电压故障
-    Inverter_Const_OverVoltage = InvertorData[off_InvertorError]==0x06 ? 1u:0u;//28-变频器恒速过电压故障
-    Inverter_OverTemp = InvertorData[off_InvertorError]==0x08 ? 1u:0u;       //29-变频器过热故障 
-    Inverter_OverLoad = InvertorData[off_InvertorError]==0x09 ? 1u:0u;         //30-变频器过载故障
-    Inverter_Input_LackPhase = InvertorData[off_InvertorError]==0x13 ? 1u:0u;  //31-变频器输入缺相故障
-    Inverter_Output_LackPhase = InvertorData[off_InvertorError]==0x0C ? 1u:0u;//32-变频器输出缺相故障
-    Motor_OverLoad = InvertorData[off_InvertorError]==0x0A ? 1u:0u;           //33-电机过载故障
-    Motor_Runing_UnderVoltage = InvertorData[off_InvertorError]==0x0B ? 1u:0u; //34-电机运行中欠电压故障
-    Motor_ShortToGND = InvertorData[off_InvertorError]==0x14 ? 1u:0u;       //35-电机对地短路故障
-    Motor_OverTemp = InvertorData[off_InvertorError]==0x1A ? 1u:0u;      //36-电机过温故障    
-    Motor_OverSpeed = InvertorData[off_InvertorError]==0x1C ? 1u:0u;   //37-电机过速故障        
-    Miss_PID_Respond = InvertorData[off_InvertorError]==0x1E ? 1u:0u; //38-PID反馈丢失故障     
-    Suspende_Below_Zero = InvertorData[off_InvertorError]==0x01 ? 1u:0u; //39-吊杆位置低于零位坐标    
+    Inverter_Acc_OverCurrent = InvertorData[off_InvertorError*2]==0x01 ? 1u:0u;//23-变频器加速过电流故障
+    Inverter_Slow_OverCurrent = InvertorData[off_InvertorError*2]==0x02 ? 1u:0u; //24-变频器减速过电流故障
+    Inverter_Const_OverCurrent = InvertorData[off_InvertorError*2]==0x03 ? 1u:0u;//25-变频器恒速过电流故障
+    Inverter_Acc_OverVoltage = InvertorData[off_InvertorError*2]==0x04 ? 1u:0u;  //26-变频器加速过电压故障
+    Inverter_Slow_OverVoltage = InvertorData[off_InvertorError*2]==0x05 ? 1u:0u; //27-变频器减速过电压故障
+    Inverter_Const_OverVoltage = InvertorData[off_InvertorError*2]==0x06 ? 1u:0u;//28-变频器恒速过电压故障
+    Inverter_OverTemp = InvertorData[off_InvertorError*2]==0x08 ? 1u:0u;       //29-变频器过热故障 
+    Inverter_OverLoad = InvertorData[off_InvertorError*2]==0x09 ? 1u:0u;         //30-变频器过载故障
+    Inverter_Input_LackPhase = InvertorData[off_InvertorError*2]==0x13 ? 1u:0u;  //31-变频器输入缺相故障
+    Inverter_Output_LackPhase = InvertorData[off_InvertorError*2]==0x0C ? 1u:0u;//32-变频器输出缺相故障
+    Motor_OverLoad = InvertorData[off_InvertorError*2]==0x0A ? 1u:0u;           //33-电机过载故障
+    Motor_Runing_UnderVoltage = InvertorData[off_InvertorError*2]==0x0B ? 1u:0u; //34-电机运行中欠电压故障
+    Motor_ShortToGND = InvertorData[off_InvertorError*2]==0x14 ? 1u:0u;       //35-电机对地短路故障
+    Motor_OverTemp = InvertorData[off_InvertorError*2]==0x1A ? 1u:0u;      //36-电机过温故障    
+    Motor_OverSpeed = InvertorData[off_InvertorError*2]==0x1C ? 1u:0u;   //37-电机过速故障        
+    Miss_PID_Respond = InvertorData[off_InvertorError*2]==0x1E ? 1u:0u; //38-PID反馈丢失故障     
+    Suspende_Below_Zero = InvertorData[off_InvertorError*2]==0x01 ? 1u:0u; //39-吊杆位置低于零位坐标    
 
     //Band_Type_Brake_Out = Band_Type_Brake;
 }
@@ -368,6 +368,7 @@ void Node_Frame_Parse(u8 *data, u16 len)
                     CrcCheck = Get_rtuCrc16(data,len-2);
                     if((CrcCheck%256 == data[len-2])&&((CrcCheck>>8) == data[len-1]))
                     {
+                        Global_Variable.Suspende_Target_Position = 1000;
                         Global_Variable.Suspende_Target_Speed = (data[3]<<8)+data[4];
                         CMD_Rope_Wire = ON;
                         Postive_Responde(Rope_Wire_F);
@@ -395,6 +396,7 @@ void Node_Frame_Parse(u8 *data, u16 len)
                     CrcCheck = Get_rtuCrc16(data,len-2);
                     if((CrcCheck%256 == data[len-2])&&((CrcCheck>>8) == data[len-1]))
                     {
+                        Global_Variable.Suspende_Target_Position = 0;
                         Global_Variable.Suspende_Target_Speed = (data[3]<<8)+data[4];
                         CMD_Suspender_Min = ON;
                         Postive_Responde(Suspender_Min_F);

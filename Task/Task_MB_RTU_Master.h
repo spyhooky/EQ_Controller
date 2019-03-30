@@ -10,12 +10,8 @@
 #define RTU_SEND_LENGTH             120 * 2          //发送缓冲区大小
 #define RTU_RECE_LENGTH             120 * 2        //接受缓冲区大小
 
-#define UART_CHN_RTU_MASTER                RS232_1
+#define UART_CHN_CONVERT_FREQ                RS485_2
 
-typedef enum FuncCode_Info
-{
-	S_RdCoil=1,S_RdInput,M_RdHold,M_RdInRegs,S_WrCoil,S_WrHold,M_WrCoil=15,M_WrHold
-}FuncCode_t;
 
 enum RTU_FSM_t
 {
@@ -32,7 +28,7 @@ enum RTU_TYPE_t
     READ,WRITE
 };
 
-enum MB_FUNC_TYPE{
+typedef enum MB_FUNC_TYPE{
 	FUNC_RD_COILSTATUS=0X01,
 	FUNC_RD_INPUTSTATUS,
 	FUNC_RD_HOLDREG,
@@ -45,7 +41,7 @@ enum MB_FUNC_TYPE{
 	CFG_RESP_POS=0x55,
 	CFG_RESP_NEG=0xFF,
 	MB_RESP_NEG=0x80
-};
+}MB_FUNC_TYPE_t;
 
 enum MB_TCP_ErrorStatusTyp{
   Sta_OK=0,
@@ -75,7 +71,7 @@ typedef struct RTU_ReqBlock {
 	u8 Excute_Num;   //执行次数，若设置为0，则表示永久执行
     enum USARTCAN_CHN chnindex;  //操作通道
 	u8 sta_addr;          //站地址
-	FuncCode_t FuncCode;  //功能码
+	MB_FUNC_TYPE_t FuncCode;  //功能码
 	u8 Status;            //执行状态
 	u16 RegAddr;          //需要操作的首地址
 	u8  RegNum;           //操作的寄存器数量

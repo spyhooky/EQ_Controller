@@ -13,6 +13,8 @@
 UartOpFunc_t UartOpFunc[NUM_UARTCHANNEL];
 static u16 EnviromentTemp[TEMP_SAMPLES];//室温数据AD采样值，共10个数据，每10ms产生一次，然后取掉最大最小值后平均
 static u8 TempSample_Index;//室温采集索引
+static u16 PrePluse_Number;
+static s32 Pulse_Total;
 static void UartFrame_Timeout_Calc(void);
 
 /****************************************************************************/
@@ -24,6 +26,7 @@ static void UartFrame_Timeout_Calc(void);
 void Framework_Init(void)
 {
     u8 i;
+    PrePluse_Number = 0;
 	UartOpFunc[RS232_1]._send = USART1_Send_Data;
     UartOpFunc[RS485_1]._send = USART3_Send_Data;
     UartOpFunc[RS485_2]._send = USART2_Send_Data;
@@ -86,6 +89,7 @@ void Delay_us(u32 n)
 void Framework_Timer1ms(void)
 {
 	TaskIO_Timer1ms();
+    TaskFreq_Timer1ms();
     RTU_Timer1ms_Handler();
     #ifdef MQTT_ENABLE
 	MQTT_Timer1ms();
@@ -106,7 +110,7 @@ void Framework_Timer1ms(void)
 /***************************************************************************/
 void Framework_Timer100ms(void)
 {
-    Get_Rotary_Pulze();
+    
 }
 
 
@@ -163,11 +167,57 @@ void Calc_Power_5V(u16 sch_timer,u16 sch_cycle)
 /*输入参数：无                                                              */
 /*输出参数：无                                                              */
 /****************************************************************************/
-u32 Get_Rotary_Pulze(void)
+u16 Get_Rotary_Pulze(void)
 {
     // 读取计数器信息
-    Global_Variable.EncodePulse = TIM_GetCounter(TIM4)/4U;
+    return TIM_GetCounter(TIM4);
 }
+
+/********************************************************************************/
+/*函数名：  Calculate wire positi                                                   */
+/*功能说明：计算缆绳长度，确定位置                                                         */
+/*输入参数：p_arg                                                               */
+/*输出参数：无                                                                  */
+/*******************************************************************************/
+void Calculate_Wire_Position(u16 sch_timer,u16 sch_cycle)
+{
+    u16 EncodePulse;
+    float wireLen;
+    
+    EncodePulse = Get_Rotary_Pulze();
+    if(EncodePulse > PrePluse_Number )
+    {//当前值大于上次值
+        if((EncodePulse > 0xC000)&&(PrePluse_Number < 0x2000))
+        {//正转到反转导致数值翻转
+            Pulse_Total = Pulse_Total - (0xffff - EncodePulse + PrePluse_Number);
+            Global_Variable.EncodePulse = Pulse_Total/4;
+        }
+        else
+        {//正常正转，数值累加未翻转
+            Pulse_Total = Pulse_Total + (EncodePulse - PrePluse_Number);
+            Global_Variable.EncodePulse = Pulse_Total/4;
+        }
+    }
+    else
+    {//上次值大于当前值
+        if((EncodePulse < 0x2000)&&(PrePluse_Number > 0xC000))
+        {//正常正转数值翻转
+            Pulse_Total = Pulse_Total + (0xffff - PrePluse_Number + EncodePulse);
+            Global_Variable.EncodePulse = Pulse_Total/4;
+        }
+        else
+        {//正常反转，数值减小未翻转
+            Pulse_Total = Pulse_Total - (PrePluse_Number - EncodePulse);
+            Global_Variable.EncodePulse = Pulse_Total/4;
+        }
+    }    
+    if(EncodePulse != PrePluse_Number)
+    {
+        Global_Variable.Wire_Position = Global_Variable.EncodePulse * 2 * 3.14 * ENCODER_RADIUS / PULSE_PER_CYCLE;
+        PrePluse_Number = EncodePulse;
+    }
+}
+
 
 /****************************************************************************/
 /*函数名：  Package_Float                                                   */

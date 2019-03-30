@@ -435,29 +435,29 @@ void DrUSART2_Init(void)
     DMA_Init(DMA1_Channel7, &DMA_InitStructure);
     #endif
 
-    if((USARTCAN.Usart[RS485_1][Databits]==1)&&(USARTCAN.Usart[RS485_1][Chkbits]!=0))//7 odd/even
+    if((USARTCAN.Usart[RS485_2][Databits]==1)&&(USARTCAN.Usart[RS485_2][Chkbits]!=0))//7 odd/even
     {
         databits=0;
     }
-    else if((USARTCAN.Usart[RS485_1][Databits]==0)&&(USARTCAN.Usart[RS485_1][Chkbits]==0))//8 none
+    else if((USARTCAN.Usart[RS485_2][Databits]==0)&&(USARTCAN.Usart[RS485_2][Chkbits]==0))//8 none
     {
         databits=0;
     }
-    else if((USARTCAN.Usart[RS485_1][Databits]==0)&&(USARTCAN.Usart[RS485_1][Chkbits]!=0))//8 odd/even
+    else if((USARTCAN.Usart[RS485_2][Databits]==0)&&(USARTCAN.Usart[RS485_2][Chkbits]!=0))//8 odd/even
     {
         databits=1;
     }
     else
     {
-        USARTCAN.Usart[RS485_1][Databits]=0;
-        USARTCAN.Usart[RS485_1][Chkbits]=0;
+        USARTCAN.Usart[RS485_2][Databits]=0;
+        USARTCAN.Usart[RS485_2][Chkbits]=0;
     }
 
-    USART_InitStructure.USART_BaudRate = RS232_baud[USARTCAN.Usart[RS485_1][uartBaudrate]];
+    USART_InitStructure.USART_BaudRate = RS232_baud[USARTCAN.Usart[RS485_2][uartBaudrate]];
     USART_InitStructure.USART_WordLength = RS232_lenth[databits];//8???
-    USART_InitStructure.USART_StopBits = RS232_stop[USARTCAN.Usart[RS485_1][Stopbits]];//1????
-    USART_InitStructure.USART_Parity = RS232_parity[USARTCAN.Usart[RS485_1][Chkbits]];//?????
-    USART_InitStructure.USART_HardwareFlowControl = RS232_FlowCntl[USARTCAN.Usart[RS485_1][Flowctrl]]; //???????
+    USART_InitStructure.USART_StopBits = RS232_stop[USARTCAN.Usart[RS485_2][Stopbits]];//1????
+    USART_InitStructure.USART_Parity = RS232_parity[USARTCAN.Usart[RS485_2][Chkbits]];//?????
+    USART_InitStructure.USART_HardwareFlowControl = RS232_FlowCntl[USARTCAN.Usart[RS485_2][Flowctrl]]; //???????
     USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx; //???????
     USART_Init(USART2, &USART_InitStructure); 
 
@@ -536,29 +536,29 @@ void DrUSART3_Init(void)
     DMA_Init(DMA1_Channel2, &DMA_InitStructure);
     #endif
     
-    if((USARTCAN.Usart[RS485_2][Databits]==1)&&(USARTCAN.Usart[RS485_2][Chkbits]!=0))//7 odd/even
+    if((USARTCAN.Usart[RS485_1][Databits]==1)&&(USARTCAN.Usart[RS485_1][Chkbits]!=0))//7 odd/even
     {
         databits=0;
     }
-    else if((USARTCAN.Usart[RS485_2][Databits]==0)&&(USARTCAN.Usart[RS485_2][Chkbits]==0))//8 none
+    else if((USARTCAN.Usart[RS485_1][Databits]==0)&&(USARTCAN.Usart[RS485_1][Chkbits]==0))//8 none
     {
         databits=0;
     }
-    else if((USARTCAN.Usart[RS485_2][Databits]==0)&&(USARTCAN.Usart[RS485_2][Chkbits]!=0))//8 odd/even
+    else if((USARTCAN.Usart[RS485_1][Databits]==0)&&(USARTCAN.Usart[RS485_1][Chkbits]!=0))//8 odd/even
     {
         databits=1;
     }
     else
     {
-        USARTCAN.Usart[RS485_2][Databits]=0;
-        USARTCAN.Usart[RS485_2][Chkbits]=0;
+        USARTCAN.Usart[RS485_1][Databits]=0;
+        USARTCAN.Usart[RS485_1][Chkbits]=0;
     }
 
-    USART_InitStructure.USART_BaudRate = RS232_baud[USARTCAN.Usart[RS485_2][uartBaudrate]];
+    USART_InitStructure.USART_BaudRate = RS232_baud[USARTCAN.Usart[RS485_1][uartBaudrate]];
     USART_InitStructure.USART_WordLength = RS232_lenth[databits];//8位数据
-    USART_InitStructure.USART_StopBits = RS232_stop[USARTCAN.Usart[RS485_2][Stopbits]];//1位停止位
-    USART_InitStructure.USART_Parity = RS232_parity[USARTCAN.Usart[RS485_2][Chkbits]];//无奇偶校验
-    USART_InitStructure.USART_HardwareFlowControl = RS232_FlowCntl[USARTCAN.Usart[RS485_2][Flowctrl]]; //硬件流控制失能
+    USART_InitStructure.USART_StopBits = RS232_stop[USARTCAN.Usart[RS485_1][Stopbits]];//1位停止位
+    USART_InitStructure.USART_Parity = RS232_parity[USARTCAN.Usart[RS485_1][Chkbits]];//无奇偶校验
+    USART_InitStructure.USART_HardwareFlowControl = RS232_FlowCntl[USARTCAN.Usart[RS485_1][Flowctrl]]; //硬件流控制失能
     USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx; //发送和接受使能
     USART_Init(USART3, &USART_InitStructure); 
     USART_ITConfig(USART3, USART_IT_RXNE, ENABLE);
@@ -775,7 +775,7 @@ void USART2_Send_Data(u8 *send_buff,u16 length)
     //Delay_us(7);
     USART_ClearFlag(USART2, USART_FLAG_TC);
 #ifdef UART_DMA_ENABLE
-    g_bit_SCI_DMA_Send(RS485_1) = ON;
+    g_bit_SCI_DMA_Send(RS485_2) = ON;
     DMA1_Channel7_HW_Start(send_buff,length);
 #else
     unsigned int i = 0;
@@ -795,7 +795,7 @@ void USART3_Send_Data(u8 *send_buff,u16 length)
     Delay_us(7);
     USART_ClearFlag(USART3, USART_FLAG_TC);
 #ifdef UART_DMA_ENABLE
-    g_bit_SCI_DMA_Send(RS485_2) = ON;
+    g_bit_SCI_DMA_Send(RS485_1) = ON;
     DMA1_Channel2_HW_Start(send_buff,length);
 #else
     unsigned int i = 0;

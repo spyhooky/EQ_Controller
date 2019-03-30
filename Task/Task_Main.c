@@ -188,7 +188,8 @@ void Task_BackGround(void *p_arg)
 		//UART_CAN_Handler(p_arg);//暂时不使用该功能
 		
 		/******************APPLICATION START******************/
-        
+
+        Calculate_Wire_Position(Background_Timer,CYCLE_WRIE_POSITION);//缆绳长度计算
 		ReadADCAverageValue(Background_Timer,CYCLE_READ_ADC_VALUE);//AD采样值均值计算
 		Calc_CurrentTemp(Background_Timer,CYCLE_CALC_ENV_TEMP);//计算当前温度值
         Calc_Power_5V(Background_Timer,CYCLE_CALC_POWER_VOL);//计算当前5V电压值
