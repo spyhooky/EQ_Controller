@@ -126,14 +126,16 @@ void RTU_HandleReply(struct RTU_Ctx* _rtuctx)
 			{
 				for(j=0;j<8;j++)
 				{
-					_rtuctx->curr->mappedBuff[(8*2*i)+(2*j)]=0x00;
-					_rtuctx->curr->mappedBuff[(8*2*i)+(2*j)+1]=(_rtuctx->rxbuff[3+i]>>j)&0x01;
+					_rtuctx->curr->mappedBuff[(8*2*i)+(2*j)]=0x00 + (_rtuctx->rxbuff[3+i]>>j)&0x01;
 				}
 			}
 		}
 		else
 		{
-			memcpy(_rtuctx->curr->mappedBuff,&_rtuctx->rxbuff[3],_rtuctx->rxbuff[2]);
+            for(j=0;j<_rtuctx->rxbuff[2];j=j+2)
+			{
+                _rtuctx->curr->mappedBuff[j/2] = (_rtuctx->rxbuff[3+j]<<8) + _rtuctx->rxbuff[3+j+1];
+            }
 		}
 	}
 	memset(_rtuctx->rxbuff,0,_rtuctx->rxindex+1);
@@ -259,8 +261,7 @@ void RTU_Write(struct RTU_Ctx* _rtuctx)
     if(_rtuctx->curr->FuncCode == FUNC_WR_SGCOIL)
     {
         temp=2;
-        _rtuctx->curr->mappedBuff[0]= (_rtuctx->curr->mappedBuff[1]==0x01)?0xff:0x00;
-        _rtuctx->curr->mappedBuff[1]=0x00;
+        _rtuctx->curr->mappedBuff[0] = (_rtuctx->curr->mappedBuff[0]==0x01)?0xff00:0x0000;
     }
     else if(_rtuctx->curr->FuncCode == FUNC_WR_MULCOIL)
     {
@@ -279,7 +280,14 @@ void RTU_Write(struct RTU_Ctx* _rtuctx)
     }
     for(i=0;i<temp;i++)
     {
-        _rtuctx->txbuff[_rtuctx->txindex++]=_rtuctx->curr->mappedBuff[i];
+        if(i%2 == 0)
+        {
+            _rtuctx->txbuff[_rtuctx->txindex++]=_rtuctx->curr->mappedBuff[i/2]>>8;
+        }
+        else
+        {
+            _rtuctx->txbuff[_rtuctx->txindex++]=_rtuctx->curr->mappedBuff[i/2]&0xff;
+        }
     }
     CrcCheck = Get_rtuCrc16(_rtuctx->txbuff,_rtuctx->txindex);
     _rtuctx->txbuff[_rtuctx->txindex++] =  CrcCheck>>8;
@@ -302,7 +310,6 @@ void RTU_CyclicTask(void)
 	
 	switch (rtu_ctx.fsm_state)
     {
-        default:
         case RTU_REQ:
             rtu_ctx.curr = RTU_DelReqBlock(&rtu_ctx);
             if (rtu_ctx.curr == 0)
@@ -326,14 +333,14 @@ void RTU_CyclicTask(void)
 
             }
             rtu_ctx.TOtimer = rtu_ctx.guard_time;//每次发送请求时设置超时时间
-            rtu_ctx.fsm_next_state = RTU_WAITRESP;
+            rtu_ctx.fsm_state = RTU_WAITRESP;
             break;
     case RTU_WAITRESP:
         if(rtu_ctx.event == EV_TO)
         {
-            rtu_ctx.fsm_next_state = RTU_REQ;
+            rtu_ctx.fsm_state = RTU_REQ;
             rtu_ctx.curr->Status=EXCUTE_FAIL;
-            rtu_ctx.Polltimer=1000;
+            rtu_ctx.TOtimer = rtu_ctx.poll_interval;
             if (rtu_ctx.curr->Excute_Num > 1)
             {
                 rtu_ctx.curr->Excute_Num--;
@@ -347,12 +354,13 @@ void RTU_CyclicTask(void)
             {
 
             }
+            Error_Indicator(80);  //LED亮80ms后灭
         }
         else if(rtu_ctx.event == EV_RX_OK)
         {
             RTU_HandleReply(&rtu_ctx);
-            rtu_ctx.fsm_next_state = RTU_REQ;
-            //rtu_ctx.Polltimer=1000;
+            rtu_ctx.fsm_state = RTU_REQ;
+            rtu_ctx.TOtimer = rtu_ctx.poll_interval;
             if (rtu_ctx.curr->Excute_Num > 1)
             {
                 rtu_ctx.curr->Excute_Num--;
@@ -371,10 +379,10 @@ void RTU_CyclicTask(void)
         {
 
         }
-        rtu_ctx.TOtimer = rtu_ctx.poll_interval;
+        break;
+    default:    
         break;
     }
-    rtu_ctx.fsm_state = rtu_ctx.fsm_next_state;
     rtu_ctx.event = EV_NONE;
 }
 
@@ -386,7 +394,7 @@ void RTU_CyclicTask(void)
 /*******************************************************************************/
 void Task_MBRTU_Master(void *p_arg)
 {
-    RTU_Init(100,500);
+    RTU_Init(POLLING_INTERVAL,REQUIRE_TIMEOUT);//第一个参数表示发送间隔时间，第二个参数表示超时时间
 	while(1)
 	{    	
     	RTU_CyclicTask();

@@ -1,16 +1,25 @@
 #ifndef __TASK_FREQ_CONVERT_H
 #define __TASK_FREQ_CONVERT_H
 
+#define SLAVEID_FREQ                                    1U  //变频器从节点ID
+
+#define MAX_RUNNING_FREQ                                50  //电机最大运行频率
+#define MOTOR_SPEED                                    995  //电机转速
+#define DIAMETER_REDUCER                             126.5  //减速机直径
+#define DIAMETER_WIRE                                   10  //线缆直径
+#define PULSE_PER_CYCLE                               2000  //每转脉冲数
+#define ENCODER_DIOMETER                                 1  //编码器上的转盘直径mm,1表示编码器直接接到减速机上，该值待定
+#define REDUCTION_RATIO                                 50  //减速比
+
+#define INIT_POSITION_WIRE                           30000  //缆绳初始位置
 
 enum Invertor_Offset{//变频器状态参数地址
-    off_FreqByComm=0,   //通讯给定频率-10000~1000 `（十进制）
-    off_RunningFreq,
-    off_BusVoltage,
-    off_OutVoltage,
-    off_OutCurrent,
-    off_OutPower,
+    off_InvertorError=0,
+};
 
-    off_InvertorError=0x21,
+enum Motor_Command{
+    Motor_Fardward_Run=1,Motor_Backward_Run,Motor_Fardward_PointMove,Motor_Backward_PointMove,
+    Motor_Stop_Reduce,Motor_Stop_Free
 };
 
 typedef struct Invertor_Status_Group
@@ -34,10 +43,10 @@ extern volatile BitStatus Invertor_Status;
 #define CMD_ParaDownload_Common             Invertor_Status.Bits.bit7 //7-预留
 
 
-extern u8 InvertorData[80];
+extern u16 InvertorData[40];
 
 void Task_Freq_Convert(void *p_arg);
-
+void TaskFreq_Timer1ms(void);
 
 #endif
 

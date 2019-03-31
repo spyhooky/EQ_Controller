@@ -6,10 +6,6 @@
 
 #define TEMP_SAMPLES                                   20u
 
-#define PULSE_PER_CYCLE                           1000   //每转脉冲数
-#define ENCODER_RADIUS                              20   //编码器上的转盘半径mm
-#define REDUCTION_RATIO                     (float)1.78   //减速比
-
 typedef struct UartOpFuncTyp
 {
 	void (*_send)  (u8 *sendbuf, u16 lenth);
@@ -26,6 +22,7 @@ void Calc_CurrentTemp(u16 sch_timer,u16 sch_cycle);
 void Calc_Power_5V(u16 sch_timer,u16 sch_cycle);
 void UART_CAN_Handler(void *p_arg);
 void Package_Float(float data,u8 *buf);
+void Error_Indicator(u16 time);
 
 
 

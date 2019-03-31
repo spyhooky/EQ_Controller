@@ -5,7 +5,7 @@
 #include "Task_MQTT.h"
 #include "Task_IO.h"
 #include "Task_MB_RTU_Master.h"
-
+#include "Task_Freq_Convert.h"
 //#include "Task_LED.h"
 
 #ifdef FRAMEWORK_H
@@ -13,8 +13,10 @@
 UartOpFunc_t UartOpFunc[NUM_UARTCHANNEL];
 static u16 EnviromentTemp[TEMP_SAMPLES];//室温数据AD采样值，共10个数据，每10ms产生一次，然后取掉最大最小值后平均
 static u8 TempSample_Index;//室温采集索引
-static u16 PrePluse_Number;
-static s32 Pulse_Total;
+static u16 PrePluse_Number;//上一次取到的脉冲数
+static s32 Pulse_Total;     //脉冲总数
+static u16 Software_Timer;//软件定时器，后续备用
+static float Wire_Position_Float;      //缆绳相对于初始位置往下移动的距离，如初始为30000，当移动至29000位置时该值即为1000
 static void UartFrame_Timeout_Calc(void);
 
 /****************************************************************************/
@@ -27,6 +29,8 @@ void Framework_Init(void)
 {
     u8 i;
     PrePluse_Number = 0;
+    Software_Timer = 0;
+    Wire_Position_Float = 30000;
 	UartOpFunc[RS232_1]._send = USART1_Send_Data;
     UartOpFunc[RS485_1]._send = USART3_Send_Data;
     UartOpFunc[RS485_2]._send = USART2_Send_Data;
@@ -64,11 +68,11 @@ static void UartFrame_Timeout_Calc(void)
 
 
 /****************************************************************************/
-/*函数名：  Delay_us                                                  */
-/*功能说明：短延时，单位：us                                          */
-/*输入参数：n，1000即为1ms                                                              */
-/*输出参数：无                                                              */
-/***************************************************************************/
+/*函数名：  Delay_us                                                         */
+/*功能说明：短延时，单位：us                                                  */
+/*输入参数：n，1000即为1ms                                                   */
+/*输出参数：无                                                               */
+/****************************************************************************/
 
 void Delay_us(u32 n)
 {
@@ -100,6 +104,7 @@ void Framework_Timer1ms(void)
     #ifdef TCPIP_ENABLE
     TCPIP_Timer1ms();
     #endif
+    Software_Timer++;
 }
 
 /****************************************************************************/
@@ -117,7 +122,7 @@ void Framework_Timer100ms(void)
 /****************************************************************************/
 /*函数名：  Calc_CurrentTemp                                                 */
 /*功能说明：获取当前温度值的接口，根据AD值计算出温度，若要精确测温，
-每个芯片均需要标定更新温度值.100ms采集一次AD数据，取10个中的8个数据平均*/
+每个芯片均需要标定更新温度值.100ms采集一次AD数据，取10个中的8个数据平均          */
 /*输出参数：无                                                               */
 /****************************************************************************/
 void Calc_CurrentTemp(u16 sch_timer,u16 sch_cycle)
@@ -152,7 +157,7 @@ void Calc_CurrentTemp(u16 sch_timer,u16 sch_cycle)
 
 /****************************************************************************/
 /*函数名：  Calc_Power_5V                                                   */
-/*功能说明：根据AD值计算当前电源电压                                        */
+/*功能说明：根据AD值计算当前电源电压                                         */
 /*输入参数：无                                                              */
 /*输出参数：无                                                              */
 /***************************************************************************/
@@ -163,7 +168,7 @@ void Calc_Power_5V(u16 sch_timer,u16 sch_cycle)
 
 /****************************************************************************/
 /*函数名：  Get_Rotary_Pulze                                                */
-/*功能说明：获取当前编码器计数值                                            */
+/*功能说明：获取当前编码器计数值                                             */
 /*输入参数：无                                                              */
 /*输出参数：无                                                              */
 /****************************************************************************/
@@ -174,15 +179,14 @@ u16 Get_Rotary_Pulze(void)
 }
 
 /********************************************************************************/
-/*函数名：  Calculate wire positi                                                   */
-/*功能说明：计算缆绳长度，确定位置                                                         */
+/*函数名：  Calculate wire positi                                                */
+/*功能说明：计算缆绳长度，确定位置                                                */
 /*输入参数：p_arg                                                               */
 /*输出参数：无                                                                  */
 /*******************************************************************************/
 void Calculate_Wire_Position(u16 sch_timer,u16 sch_cycle)
 {
     u16 EncodePulse;
-    float wireLen;
     
     EncodePulse = Get_Rotary_Pulze();
     if(EncodePulse > PrePluse_Number )
@@ -213,7 +217,13 @@ void Calculate_Wire_Position(u16 sch_timer,u16 sch_cycle)
     }    
     if(EncodePulse != PrePluse_Number)
     {
-        Global_Variable.Wire_Position = Global_Variable.EncodePulse * 2 * 3.14 * ENCODER_RADIUS / PULSE_PER_CYCLE;
+        /*******************************************************************/
+        /*****                          总脉冲数                       ******/
+        /*****  相对于初始位置的长度 = ------------ * 周长 / 减速比     ******/
+        /*****                         每圈脉冲数                      ******/
+        /*******************************************************************/
+        Wire_Position_Float = (Global_Variable.EncodePulse * 3.14 * ENCODER_DIOMETER / PULSE_PER_CYCLE) * REDUCTION_RATIO;
+        Global_Variable.Suspende_Current_Position = INIT_POSITION_WIRE - (s16)Wire_Position_Float;
         PrePluse_Number = EncodePulse;
     }
 }
@@ -221,7 +231,7 @@ void Calculate_Wire_Position(u16 sch_timer,u16 sch_cycle)
 
 /****************************************************************************/
 /*函数名：  Package_Float                                                   */
-/*功能说明：将浮点型数据转换成数组，供串口上传                              */
+/*功能说明：将浮点型数据转换成数组，供串口上传                                 */
 /*输入参数：无                                                              */
 /*输出参数：无                                                              */
 /****************************************************************************/
@@ -235,6 +245,19 @@ void Package_Float(float data,u8 *buf)
     buf[3]=addr[2];
 }
 
+/****************************************************************************/
+/*函数名：  Error_Indicator                                                 */
+/*功能说明：故障指示，当有错误发生时将LED指示灯闪烁一下（由灭转亮               */
+/*输入参数：time：LED亮状态的持续时间                                         */
+/*输出参数：无                                                              */
+/****************************************************************************/
+void Error_Indicator(u16 time)
+{
+    if(Get_LED_Status() == OFF)
+    {
+        Blink_LED_Status(time);
+    }
+}
 
 //此函数暂时不使用
 #ifdef W5500_ENABLE

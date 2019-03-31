@@ -811,7 +811,7 @@ void USART3_Send_Data(u8 *send_buff,u16 length)
 
 void UART4_Send_Data(u8 *send_buff,u16 length)
 {
-    unsigned int i = 0;
+    
     UART4_485_TX_ENABLE;
     //Delay_us(7);
     USART_ClearFlag(UART4, USART_FLAG_TC);
@@ -819,13 +819,14 @@ void UART4_Send_Data(u8 *send_buff,u16 length)
     g_bit_SCI_DMA_Send(RS485_3) = ON;
     DMA2_Channel5_HW_Start(send_buff,length);
 #else
-  for(i = 0;i < length;i ++)
-  {  	  
-  	UART4->DR = send_buff[i];
-  	while((UART4->SR&0X40)==0);  
-  }
+    unsigned int i = 0;
+    for(i = 0;i < length;i ++)
+    {  	  
+        UART4->DR = send_buff[i];
+        while((UART4->SR&0X40)==0);  
+    }
   //Delay_us(1);
-  UART4_485_RX_ENABLE;
+    UART4_485_RX_ENABLE;
 #endif
 }
 

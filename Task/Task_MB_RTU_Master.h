@@ -11,6 +11,8 @@
 #define RTU_RECE_LENGTH             120 * 2        //接受缓冲区大小
 
 #define UART_CHN_CONVERT_FREQ                RS485_2
+#define POLLING_INTERVAL                        100u  //RTU周期发送请求帧的最小间隔时间
+#define REQUIRE_TIMEOUT                         500u  //RTU请求超时时间，超过该时间认为从节点未反应
 
 
 enum RTU_FSM_t
@@ -75,7 +77,7 @@ typedef struct RTU_ReqBlock {
 	u8 Status;            //执行状态
 	u16 RegAddr;          //需要操作的首地址
 	u8  RegNum;           //操作的寄存器数量
-	u8* mappedBuff;      //存放读寄存器的结果或写寄存器的值
+	u16* mappedBuff;      //存放读寄存器的结果或写寄存器的值
 }RTU_ReqBlock_t;
 extern RTU_ReqBlock_t RTU_Req_Read00; //RTU寄存器请求块
 

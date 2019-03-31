@@ -214,7 +214,6 @@ typedef struct Global_Variable_Group
 	u32 Digit_InputStatus;              //数字开关量状态，0-断开，1-对地闭合
 	float CurrentEnvTemp;               //当前环境温度
 	s32 EncodePulse;                    //编码器计数，0-65535循环
-	float Wire_Position;                  //缆绳位置
     float Power_5V;                     //电源电压
     s16 Suspende_Current_Position;      //吊杆当前位置,单位mm
     u16 Suspende_Current_Speed;         //吊杆运行状态,    电机运行的实际    速度，单位：mm/s

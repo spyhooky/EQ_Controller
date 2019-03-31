@@ -328,7 +328,7 @@ void Task_IO(void *p_arg)
             if(testcnt>=1000)
             {
                 testcnt = 0;
-                Blink_LED_Status(200);
+                Error_Indicator(200);
                 UartOpFunc[chn_test]._send(data,5);
             }
             else

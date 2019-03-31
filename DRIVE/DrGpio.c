@@ -59,9 +59,10 @@ static void DIP_Switch_Configuration(void)
 static void InputGPIO_Configuration(void)
 {
     u8 i;
-    u8 index=0;
+    
 	GPIO_InitTypeDef GPIO_InitStructure;
     #if (defined INPUT_TRIGGER_INTERRUPT)
+    u8 index=0;
     u8 portsrc;
     u8 pinsrc;
     u32 line;
