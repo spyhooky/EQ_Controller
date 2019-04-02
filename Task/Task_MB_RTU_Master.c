@@ -13,7 +13,7 @@ static volatile BitStatus    	        _RTUSystemStatus[NUM_UARTCHANNEL];
 #define SystemStatus(n)                 _RTUSystemStatus[n].Byte
 #define Manual_Req(n)                   _RTUSystemStatus[n].Bits.bit0
 
-
+static u8 squence_num=0;
 
 void UART_RTU_Recv(unsigned char  l_u8ReceData);
 
@@ -29,6 +29,7 @@ void RTU_AddReqBlock_Front(struct RTU_Ctx* _rtuctx, struct RTU_ReqBlock* _req)
 	list_add(&_req->Entry, &_rtuctx->head);
 	__enable_irq();
 	_rtuctx->event=EV_REQ ;
+    squence_num++;
 }
 
 /********************************************************************************/
@@ -43,6 +44,7 @@ void RTU_AddReqBlock(struct RTU_Ctx* _rtuctx, struct RTU_ReqBlock* _req)
 	list_add_tail(&_req->Entry, &_rtuctx->head);
 	__enable_irq();
 	_rtuctx->event=EV_REQ ;
+    squence_num++;
 }
 
 /********************************************************************************/
@@ -60,6 +62,7 @@ static struct RTU_ReqBlock* RTU_DelReqBlock(struct RTU_Ctx* _rtu_ctx)
         req = (struct RTU_ReqBlock*)_rtu_ctx->head.next;
         if (req)
         {
+            squence_num--;
             list_del(_rtu_ctx->head.next);
         }
     }
@@ -309,10 +312,10 @@ void RTU_CyclicTask(void)
     }
 	
 	switch (rtu_ctx.fsm_state)
-    {
+    { 
         case RTU_REQ:
             rtu_ctx.curr = RTU_DelReqBlock(&rtu_ctx);
-            if (rtu_ctx.curr == 0)
+            if (rtu_ctx.curr == NULL)
             {
                 return;
             }
@@ -340,13 +343,13 @@ void RTU_CyclicTask(void)
         {
             rtu_ctx.fsm_state = RTU_REQ;
             rtu_ctx.curr->Status=EXCUTE_FAIL;
-            rtu_ctx.TOtimer = rtu_ctx.poll_interval;
-            if (rtu_ctx.curr->Excute_Num > 1)
+            rtu_ctx.TOtimer = rtu_ctx.guard_time;
+            if (rtu_ctx.curr->Excute_Num > 1u)
             {
                 rtu_ctx.curr->Excute_Num--;
                 RTU_AddReqBlock(&rtu_ctx,rtu_ctx.curr);
             }
-            else if(rtu_ctx.curr->Excute_Num == 0)
+            else if(rtu_ctx.curr->Excute_Num == 0u)
             {
                 RTU_AddReqBlock(&rtu_ctx,rtu_ctx.curr);
             }
@@ -361,12 +364,12 @@ void RTU_CyclicTask(void)
             RTU_HandleReply(&rtu_ctx);
             rtu_ctx.fsm_state = RTU_REQ;
             rtu_ctx.TOtimer = rtu_ctx.poll_interval;
-            if (rtu_ctx.curr->Excute_Num > 1)
+            if (rtu_ctx.curr->Excute_Num > 1u)
             {
                 rtu_ctx.curr->Excute_Num--;
                 RTU_AddReqBlock(&rtu_ctx,rtu_ctx.curr);
             }
-            else if(rtu_ctx.curr->Excute_Num == 0)
+            else if(rtu_ctx.curr->Excute_Num == 0u)
             {
                 RTU_AddReqBlock(&rtu_ctx,rtu_ctx.curr);
             }
@@ -380,8 +383,7 @@ void RTU_CyclicTask(void)
 
         }
         break;
-    default:    
-        break;
+        default:break;
     }
     rtu_ctx.event = EV_NONE;
 }

@@ -12,7 +12,7 @@
 
 #define UART_CHN_CONVERT_FREQ                RS485_2
 #define POLLING_INTERVAL                        100u  //RTU周期发送请求帧的最小间隔时间
-#define REQUIRE_TIMEOUT                         500u  //RTU请求超时时间，超过该时间认为从节点未反应
+#define REQUIRE_TIMEOUT                        1000u  //RTU请求超时时间，超过该时间认为从节点未反应
 
 
 enum RTU_FSM_t

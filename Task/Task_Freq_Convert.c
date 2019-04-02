@@ -5,6 +5,7 @@
 #include "Task_MQTT.h"
 #include <stdlib.h>
 
+
 #ifdef __TASK_FREQ_CONVERT_H
 
 OS_EVENT *mBOX_LED_R;
@@ -17,6 +18,7 @@ volatile BitStatus Motor_Status;
 
 u16 InvertorData[40];
 u16 Motor_DelayTime;
+
 
 enum Write_Data_Off{
     Control_CMD,Convert_Freq
@@ -124,14 +126,14 @@ static void Freq_Convert_Init(void)
         Init_Point[i].RegAddr = Reg_InitGroup[i].ParaAddr;  //操作寄存器地址
         Init_Point[i].RegNum = 1u;                          //操作寄存器数量
         Init_Point[i].mappedBuff = (u16*)&Reg_InitGroup[i].DataValue;   //执行的数据，读取的寄存器数据或写操作的数据
-        RTU_AddReqBlock(&rtu_ctx,&Init_Point[i]);
+        //RTU_AddReqBlock(&rtu_ctx,&Init_Point[i]);
     }
-    //RTU_AddReqBlock(&rtu_ctx,&RTU_Req_Read8000);//添加读故障信息请求，后台会始终运行读命令
+    RTU_AddReqBlock(&rtu_ctx,&RTU_Req_Read8000);//添加读故障信息请求，后台会始终运行读命令
 }
 
 /********************************************************************************/
 /*函数名：  TaskFreq_Timer1ms                                                   */
-/*功能说明：1ms定时函数                                                         */
+/*功能说明：1ms定时函数                                                             */
 /*输入参数：无                                                                  */
 /*输出参数：无                                                                  */
 /*******************************************************************************/
@@ -147,19 +149,32 @@ void TaskFreq_Timer1ms(void)
 /*函数名：  Calculate_Frequence                                                          */
 /*功能说明：计算电机的运行频率                                                            */
 /*输入参数：无                                                                           */       
-/*输出参数：f(频率)=（50*X（设定速度））/[995*(D1(减速机直径)+D2（钢丝绳直径）*3.14/减速比)]*/
+/*输出参数：
+1：f(频率)=（50*X（设定速度））/[995*(D1(减速机直径)+D2（钢丝绳直径）*3.14/减速比)]
+*/
 /****************************************************************************************/
 static u16 Calculate_Frequence(void)
 {
     static float temp;
+#if 0
+    static float m_per_minute;//米每分钟，从mm每秒单位转过来
+    m_per_minute = (float)(Global_Variable.Suspende_Target_Speed * (float)3/(float)50);
+    temp = (MAX_RUNNING_FREQ/8.53)*m_per_minute;
+#endif
+#if 0
     temp = (MAX_RUNNING_FREQ * Global_Variable.Suspende_Target_Speed)/ 
         (MOTOR_SPEED * (DIAMETER_REDUCER+DIAMETER_WIRE) * 3.14 / REDUCTION_RATIO);
     if(temp > MAX_RUNNING_FREQ)
     {
         temp = MAX_RUNNING_FREQ;
     }
+
     //目前计算值不正确，暂时按照1000下发至变频器
     temp = 1000;
+#endif
+    temp = Global_Variable.Suspende_Target_Speed/60;
+    temp = temp>50?50:temp;
+    temp = temp<10?10:temp;
     return (u16)temp;
 }
 
@@ -172,10 +187,18 @@ static u16 Calculate_Frequence(void)
 /*******************************************************************************/
 void Motor_Forward(void)
 {
-    Wrdata[Control_CMD] = Motor_Fardward_Run;
-    Wrdata[Convert_Freq] = Calculate_Frequence();
-    RTU_AddReqBlock_Front(&rtu_ctx,&RTU_Req_WriteCMD_6000);
-    RTU_AddReqBlock_Front(&rtu_ctx,&RTU_Req_WriteFreq_5000);
+    u16 Freq_Req;
+    if(Wrdata[Control_CMD] != Motor_Fardward_Run)
+    {
+        Wrdata[Control_CMD] = Motor_Fardward_Run;
+        RTU_AddReqBlock_Front(&rtu_ctx,&RTU_Req_WriteCMD_6000);
+    }
+    Freq_Req = Calculate_Frequence();
+    if(Wrdata[Convert_Freq] != Freq_Req)
+    {
+        Wrdata[Convert_Freq] = Freq_Req;
+        RTU_AddReqBlock_Front(&rtu_ctx,&RTU_Req_WriteFreq_5000);
+    }
 }
 
 /********************************************************************************/
@@ -186,10 +209,18 @@ void Motor_Forward(void)
 /*******************************************************************************/
 void Motor_Backward(void)
 {
-    Wrdata[Control_CMD] = Motor_Backward_Run;
-    Wrdata[Convert_Freq] = Calculate_Frequence();
-    RTU_AddReqBlock_Front(&rtu_ctx,&RTU_Req_WriteCMD_6000);
-    RTU_AddReqBlock_Front(&rtu_ctx,&RTU_Req_WriteFreq_5000);
+    u16 Freq_Req;
+    if(Wrdata[Control_CMD] != Motor_Backward_Run)
+    {
+        Wrdata[Control_CMD] = Motor_Backward_Run;
+        RTU_AddReqBlock_Front(&rtu_ctx,&RTU_Req_WriteCMD_6000);
+    }
+    Freq_Req = Calculate_Frequence();
+    if(Wrdata[Convert_Freq] != Freq_Req)
+    {
+        Wrdata[Convert_Freq] = Freq_Req;
+        RTU_AddReqBlock_Front(&rtu_ctx,&RTU_Req_WriteFreq_5000);
+    }
 }
 
 /********************************************************************************/
@@ -200,15 +231,20 @@ void Motor_Backward(void)
 /*******************************************************************************/
 static void Motor_Stop(u8 stoptype)
 {
+    u8 stopmode;
     if((stoptype ==Motor_Stop_Reduce)||(stoptype ==Motor_Stop_Free))
     {   
-        Wrdata[Control_CMD] = stoptype;
+        stopmode = stoptype;
     }
     else
     {
-        Wrdata[Control_CMD] = Motor_Stop_Free;
+        stopmode = Motor_Stop_Free;
     }
-    RTU_AddReqBlock_Front(&rtu_ctx,&RTU_Req_WriteCMD_6000);
+    if(Wrdata[Control_CMD] != stopmode)
+    {
+        Wrdata[Control_CMD] = stopmode;
+        RTU_AddReqBlock(&rtu_ctx,&RTU_Req_WriteCMD_6000);
+    }
 }
 
 
@@ -224,6 +260,7 @@ void Task_Freq_Convert(void *p_arg)
 //     ethparm = (struct wiz_NetInfo_t *)p_arg;
     Freq_Convert_Init();
     static u16 cnt=0;
+    u8 i;
     float Delta_Position;
     while (1)
     {        
@@ -292,7 +329,7 @@ void Task_Freq_Convert(void *p_arg)
                 MOTOR_RUN_DELAY = OFF;
                 CMD_Suspender_Target = OFF;
                 if(Delta_Position > 0)
-{
+                {
                     Motor_Forward();
                 }
                 else
@@ -308,11 +345,27 @@ void Task_Freq_Convert(void *p_arg)
         }
         
         //cnt++;
-        if(cnt==10000)
+        if(cnt==1)
         {//仅仅为测试
             cnt = 0;
+            
+            //RTU_AddReqBlock_Front(&rtu_ctx,&RTU_Req_Read8000);
             RTU_AddReqBlock_Front(&rtu_ctx,&RTU_Req_WriteFreq_5000);
             RTU_AddReqBlock_Front(&rtu_ctx,&RTU_Req_WriteCMD_6000);
+            for(i=0;i<Init_Group_Total;i++)
+            {
+                Init_Point[i].Entry.next = &Init_Point[i].Entry;
+                Init_Point[i].Entry.prev = &Init_Point[i].Entry;
+                Init_Point[i].Excute_Num = 1u;                      //执行次数，0-无限次
+                Init_Point[i].chnindex = UART_CHN_CONVERT_FREQ;     //执行通道
+                Init_Point[i].sta_addr = SLAVEID_FREQ;              //从节点站地址
+                Init_Point[i].FuncCode = FUNC_WR_SGREG;             //功能码06
+                Init_Point[i].Status = EXCUTE_SUCCESS;              //执行结果
+                Init_Point[i].RegAddr = Reg_InitGroup[i].ParaAddr;  //操作寄存器地址
+                Init_Point[i].RegNum = 1u;                          //操作寄存器数量
+                Init_Point[i].mappedBuff = (u16*)&Reg_InitGroup[i].DataValue;   //执行的数据，读取的寄存器数据或写操作的数据
+                RTU_AddReqBlock(&rtu_ctx,&Init_Point[i]);
+            }
         }
 
         OSTimeDlyHMSM(0, 0, 0, 1);

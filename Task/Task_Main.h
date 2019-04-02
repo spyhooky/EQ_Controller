@@ -20,8 +20,8 @@
 /************设置任务优先级,建议(10-50) *************************/
 /* #define OS_LOWEST_PRIO   63u */
 #define TASK_PRIO_MAIN                          60u
-#define TASK_PRIO_FREQ_CONVERT                  10u
-#define TASK_PRIO_MBRTU_M                       11u
+#define TASK_PRIO_MBRTU_M                       10u
+#define TASK_PRIO_FREQ_CONVERT                  11u
 #define TASK_PRIO_PCMSG_RECV                    15u
 #define TASK_PRIO_FREQ_CONVER                   16u
 #define TASK_PRIO_ENCODER                       17u
