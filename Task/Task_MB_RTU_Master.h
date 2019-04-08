@@ -15,6 +15,11 @@
 #define REQUIRE_TIMEOUT                        1000u  //RTU请求超时时间，超过该时间认为从节点未反应
 
 
+enum RTU_Add_Type_t
+{
+	Add_New,Add_Cycle
+};
+
 enum RTU_FSM_t
 {
 	RTU_REQ,RTU_WAITRESP

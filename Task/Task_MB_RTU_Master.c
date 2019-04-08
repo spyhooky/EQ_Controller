@@ -13,8 +13,6 @@ static volatile BitStatus    	        _RTUSystemStatus[NUM_UARTCHANNEL];
 #define SystemStatus(n)                 _RTUSystemStatus[n].Byte
 #define Manual_Req(n)                   _RTUSystemStatus[n].Bits.bit0
 
-static u8 squence_num=0;
-
 void UART_RTU_Recv(unsigned char  l_u8ReceData);
 
 /********************************************************************************/
@@ -25,11 +23,21 @@ void UART_RTU_Recv(unsigned char  l_u8ReceData);
 /********************************************************************************/
 void RTU_AddReqBlock_Front(struct RTU_Ctx* _rtuctx, struct RTU_ReqBlock* _req)
 {//将当前请求放到消息队列的首位
+    struct list_head* p;
+    p = &_rtuctx->head;
+    do
+    {
+        if(p == _req->Entry.next)
+        {
+            return;
+        }
+        p = p->next;
+    }
+    while(p != &_rtuctx->head);
 	__disable_irq();
 	list_add(&_req->Entry, &_rtuctx->head);
 	__enable_irq();
 	_rtuctx->event=EV_REQ ;
-    squence_num++;
 }
 
 /********************************************************************************/
@@ -40,11 +48,21 @@ void RTU_AddReqBlock_Front(struct RTU_Ctx* _rtuctx, struct RTU_ReqBlock* _req)
 /********************************************************************************/
 void RTU_AddReqBlock(struct RTU_Ctx* _rtuctx, struct RTU_ReqBlock* _req)
 {//将当前请求加入到队列
+    struct list_head* p;
+    p = &_rtuctx->head;
+    do
+    {
+        if(p == _req->Entry.next)
+        {
+            return;
+        }
+        p = p->next;
+    }
+    while(p != &_rtuctx->head);
 	__disable_irq();
 	list_add_tail(&_req->Entry, &_rtuctx->head);
 	__enable_irq();
 	_rtuctx->event=EV_REQ ;
-    squence_num++;
 }
 
 /********************************************************************************/
@@ -62,7 +80,6 @@ static struct RTU_ReqBlock* RTU_DelReqBlock(struct RTU_Ctx* _rtu_ctx)
         req = (struct RTU_ReqBlock*)_rtu_ctx->head.next;
         if (req)
         {
-            squence_num--;
             list_del(_rtu_ctx->head.next);
         }
     }

@@ -180,7 +180,7 @@ void Broadcast_Frame_Parse(u8 *data, u16 len)
     u16 index=0;
     switch(data[1])
     {
-        case Rope_Wire_B://全部吊杆收揽绳命令帧
+        case Rope_Wire_B://全部吊杆收揽绳命令帧00
             if(len == data[2] + 5)
             {
                 CrcCheck = Get_rtuCrc16(data,len-2);
@@ -191,7 +191,7 @@ void Broadcast_Frame_Parse(u8 *data, u16 len)
                 }
             }
             break;
-        case Suspender_Min_B://全部吊杆降到零点位置坐标
+        case Suspender_Min_B://全部吊杆降到零点位置坐标01
             if(len == data[2] + 5)
             {
                 CrcCheck = Get_rtuCrc16(data,len-2);
@@ -202,7 +202,7 @@ void Broadcast_Frame_Parse(u8 *data, u16 len)
                 }
             }
             break;
-        case Suspender_Emergency_Stop_B://全部吊杆急停
+        case Suspender_Emergency_Stop_B://全部吊杆急停02
             if(len == data[2] + 5)
             {
                 CrcCheck = Get_rtuCrc16(data,len-2);
@@ -213,12 +213,12 @@ void Broadcast_Frame_Parse(u8 *data, u16 len)
                 }
             }
             break;
-        case Suspender_Target_G://组广播命令 0x03:组成员全部吊杆运行到目标坐标位置
-            if(len == (data[2]<<8) + data[3] + 5)
+        case Suspender_Target_G://组广播命令 0x03:组成员全部吊杆运行到目标坐标位置03
+            if(len == (data[2]<<8) + data[3] + 6)
             {
-                for(index=5;index<data[4];index++)
+                for(index=0;index<data[4];index++)
                 {
-                    if(Global_Variable.DIP_SwitchStatus == data[index])//找是否有本节点请求
+                    if(Global_Variable.DIP_SwitchStatus == data[5+index])//找是否有本节点请求
                     {
                         break;
                     }
@@ -228,20 +228,22 @@ void Broadcast_Frame_Parse(u8 *data, u16 len)
                     CrcCheck = Get_rtuCrc16(data,len-2);
                     if((CrcCheck%256 == data[len-2])&&((CrcCheck>>8) == data[len-1]))
                     {
-                        index = (5+ data[4] + 1) + index * 4;
-                        Global_Variable.Suspende_Target_Position = (data[index++]<<8)+data[index++];
-                        Global_Variable.Suspende_Target_Speed = (data[index++]<<8)+data[index++];
+                        index = (5+ data[4]) + index * 4;
+                        Global_Variable.Suspende_Target_Position = (data[index++]<<8);
+                        Global_Variable.Suspende_Target_Position += data[index++];
+                        Global_Variable.Suspende_Target_Speed = (data[index++]<<8);
+                        Global_Variable.Suspende_Target_Speed += data[index++];
                         CMD_Suspender_Target = ON;
                     }
                 }
             }
             break;
-        case Rope_Wire_G://组广播命令 0x04:组成员吊杆全部复位
-            if(len == (data[2]<<8) + data[3] + 5)
+        case Rope_Wire_G://组广播命令 0x04:组成员吊杆全部复位04
+            if(len == (data[2]<<8) + data[3] + 6)
             {
-                for(index=5;index<data[4];index++)
+                for(index=0;index<data[4];index++)
                 {
-                    if(Global_Variable.DIP_SwitchStatus == data[index])//找是否有本节点请求
+                    if(Global_Variable.DIP_SwitchStatus == data[5+index])//找是否有本节点请求
                     {
                         break;
                     }
@@ -251,20 +253,20 @@ void Broadcast_Frame_Parse(u8 *data, u16 len)
                     CrcCheck = Get_rtuCrc16(data,len-2);
                     if((CrcCheck%256 == data[len-2])&&((CrcCheck>>8) == data[len-1]))
                     {
-                        index = (5+ data[4] + 1) + index * 4;
-                        Global_Variable.Suspende_Target_Position = (data[index++]<<8)+data[index++];
-                        Global_Variable.Suspende_Target_Speed = (data[index++]<<8)+data[index++];
+                        index = (5+ data[4]) + index * 2;
+                        Global_Variable.Suspende_Target_Speed = (data[index++]<<8);
+                        Global_Variable.Suspende_Target_Speed += data[index++];
                         CMD_Rope_Wire = ON;
                     }
                 }
             }
             break;
-        case Suspender_Min_G://组广播命令 0x05:组成员吊杆放缆到零点坐标位置
-            if(len == (data[2]<<8) + data[3] + 5)
+        case Suspender_Min_G://组广播命令 0x05:组成员吊杆放缆到零点坐标位置05
+            if(len == (data[2]<<8) + data[3] + 6)
             {
-                for(index=5;index<data[4];index++)
+                for(index=0;index<data[4];index++)
                 {
-                    if(Global_Variable.DIP_SwitchStatus == data[index])//找是否有本节点请求
+                    if(Global_Variable.DIP_SwitchStatus == data[5+index])//找是否有本节点请求
                     {
                         break;
                     }
@@ -274,20 +276,20 @@ void Broadcast_Frame_Parse(u8 *data, u16 len)
                     CrcCheck = Get_rtuCrc16(data,len-2);
                     if((CrcCheck%256 == data[len-2])&&((CrcCheck>>8) == data[len-1]))
                     {
-                        index = (5+ data[4] + 1) + index * 2;
-                        Global_Variable.Suspende_Target_Position = (data[index++]<<8)+data[index++];
-                        Global_Variable.Suspende_Target_Speed = (data[index++]<<8)+data[index++];
+                        index = (5+ data[4]) + index * 2;
+                        Global_Variable.Suspende_Target_Speed = (data[index++]<<8);
+                        Global_Variable.Suspende_Target_Speed += data[index++];
                         CMD_Suspender_Min = ON;
                     }
                 }
             }
             break;
-        case Suspender_Emergency_Stop_G://组广播命令 0x06:组成员电机急停
-            if(len == (data[2]<<8) + data[3] + 5)
+        case Suspender_Emergency_Stop_G://组广播命令 0x06:组成员电机急停06
+            if(len == (data[2]<<8) + data[3] + 6)
             {
-                for(index=5;index<data[4];index++)
+                for(index=0;index<data[4];index++)
                 {
-                    if(Global_Variable.DIP_SwitchStatus == data[index])//找是否有本节点请求
+                    if(Global_Variable.DIP_SwitchStatus == data[5+index])//找是否有本节点请求
                     {
                         break;
                     }
@@ -297,16 +299,13 @@ void Broadcast_Frame_Parse(u8 *data, u16 len)
                     CrcCheck = Get_rtuCrc16(data,len-2);
                     if((CrcCheck%256 == data[len-2])&&((CrcCheck>>8) == data[len-1]))
                     {
-                        index = (5+ data[4] + 1) + index * 1;
-                        Global_Variable.Suspende_Target_Position = (data[index++]<<8)+data[index++];
-                        Global_Variable.Suspende_Target_Speed = (data[index++]<<8)+data[index++];
                         CMD_Suspender_Emergency_Stop = ON;
                     }
                 }
             }
             break;
-        case ParaDownload_Common://微控制器的共性参数下载（数据待定）
-            if(len == (data[2]<<8) + data[3] + 5)
+        case ParaDownload_Common://微控制器的共性参数下载（数据待定）07
+            if(len == (data[2]<<8) + data[3] + 6)
             {
                 CrcCheck = Get_rtuCrc16(data,len-2);
                 if((CrcCheck%256 == data[len-2])&&((CrcCheck>>8) == data[len-1]))

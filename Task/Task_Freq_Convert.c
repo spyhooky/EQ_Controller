@@ -17,7 +17,7 @@ volatile BitStatus Motor_Status;
 #define MOTOR_RUN_DELAY                   Motor_Status.Bits.bit1
 
 u16 InvertorData[40];
-u16 Motor_DelayTime;
+u16 Motor_DelayTime;//松开抱闸的计时，电机运行1-2s后松开，停止减速时再抱紧
 
 
 enum Write_Data_Off{
@@ -132,16 +132,28 @@ static void Freq_Convert_Init(void)
 }
 
 /********************************************************************************/
-/*函数名：  TaskFreq_Timer1ms                                                   */
+/*函数名：  TaskFreq_Timer100ms                                                   */
 /*功能说明：1ms定时函数                                                             */
 /*输入参数：无                                                                  */
 /*输出参数：无                                                                  */
 /*******************************************************************************/
-void TaskFreq_Timer1ms(void)
+void TaskFreq_Timer100ms(void)
 {
-    if(MOTOR_RUN_DELAY == ON)
+    if(MOTOR_RUNNING == ON)
     {
-        Motor_DelayTime++;
+        if(Motor_DelayTime >= BAND_TYPE_BRAKE_DELAY_THRES)
+        {
+            BAND_TYPE_BRAKE_OUT = ON;//抱闸断开
+        }
+        else
+        {
+            Motor_DelayTime++;
+        }
+    }
+    else
+    {
+        Motor_DelayTime = 0;
+        BAND_TYPE_BRAKE_OUT = OFF;//抱闸开启
     }
 }
 
@@ -173,9 +185,9 @@ static u16 Calculate_Frequence(void)
     temp = 1000;
 #endif
     temp = Global_Variable.Suspende_Target_Speed/60;
-    temp = temp>50?50:temp;
+    temp = temp>MAX_RUNNING_FREQ?MAX_RUNNING_FREQ:temp;
     temp = temp<10?10:temp;
-    return (u16)temp;
+    return (u16)temp*200;
 }
 
 
@@ -188,13 +200,13 @@ static u16 Calculate_Frequence(void)
 void Motor_Forward(void)
 {
     u16 Freq_Req;
-    if(Wrdata[Control_CMD] != Motor_Fardward_Run)
+    //if(Wrdata[Control_CMD] != Motor_Fardward_Run)
     {
         Wrdata[Control_CMD] = Motor_Fardward_Run;
         RTU_AddReqBlock_Front(&rtu_ctx,&RTU_Req_WriteCMD_6000);
     }
     Freq_Req = Calculate_Frequence();
-    if(Wrdata[Convert_Freq] != Freq_Req)
+    //if(Wrdata[Convert_Freq] != Freq_Req)
     {
         Wrdata[Convert_Freq] = Freq_Req;
         RTU_AddReqBlock_Front(&rtu_ctx,&RTU_Req_WriteFreq_5000);
@@ -210,13 +222,13 @@ void Motor_Forward(void)
 void Motor_Backward(void)
 {
     u16 Freq_Req;
-    if(Wrdata[Control_CMD] != Motor_Backward_Run)
+    //if(Wrdata[Control_CMD] != Motor_Backward_Run)
     {
         Wrdata[Control_CMD] = Motor_Backward_Run;
         RTU_AddReqBlock_Front(&rtu_ctx,&RTU_Req_WriteCMD_6000);
     }
     Freq_Req = Calculate_Frequence();
-    if(Wrdata[Convert_Freq] != Freq_Req)
+    //if(Wrdata[Convert_Freq] != Freq_Req)
     {
         Wrdata[Convert_Freq] = Freq_Req;
         RTU_AddReqBlock_Front(&rtu_ctx,&RTU_Req_WriteFreq_5000);
@@ -243,7 +255,7 @@ static void Motor_Stop(u8 stoptype)
     if(Wrdata[Control_CMD] != stopmode)
     {
         Wrdata[Control_CMD] = stopmode;
-        RTU_AddReqBlock(&rtu_ctx,&RTU_Req_WriteCMD_6000);
+        RTU_AddReqBlock_Front(&rtu_ctx,&RTU_Req_WriteCMD_6000);
     }
 }
 
@@ -260,7 +272,6 @@ void Task_Freq_Convert(void *p_arg)
 //     ethparm = (struct wiz_NetInfo_t *)p_arg;
     Freq_Convert_Init();
     static u16 cnt=0;
-    u8 i;
     float Delta_Position;
     while (1)
     {        
@@ -272,7 +283,7 @@ void Task_Freq_Convert(void *p_arg)
             {
                 Motor_DelayTime = 0;
                 Motor_Stop(Motor_Stop_Reduce);
-                BAND_TYPE_BRAKE_OUT = OFF;//抱闸断开
+                
                 MOTOR_RUNNING = OFF;
             }
         }
@@ -280,62 +291,32 @@ void Task_Freq_Convert(void *p_arg)
         if(CMD_Rope_Wire == ON)//单个吊杆收揽（复位吊杆位置，就是吊杆的最高位置）
         {
             MOTOR_RUNNING = ON;
-            //if(BAND_TYPE_BRAKE_OUT == OFF)
-            {
-                MOTOR_RUN_DELAY = ON;
-                //BAND_TYPE_BRAKE_OUT = ON;//抱闸闭合
-            }
-            //if(Motor_DelayTime >= 1000)
-            {
-                //Motor_DelayTime = 0;
-                MOTOR_RUN_DELAY = OFF;
-                CMD_Rope_Wire = OFF;
-                Motor_Forward();
-            }
+            CMD_Rope_Wire = OFF;
+            Motor_Forward();
         }
         if(CMD_Suspender_Min == ON)//单个吊杆降到零点坐标位置（吊杆的最低位置）
         {
             MOTOR_RUNNING = ON;
-            //if(BAND_TYPE_BRAKE_OUT == OFF)
-            {
-                MOTOR_RUN_DELAY = ON;
-                //BAND_TYPE_BRAKE_OUT = ON;//抱闸闭合
-            }
-            //if(Motor_DelayTime >= 1000)
-            {
-                //Motor_DelayTime = 0;
-                MOTOR_RUN_DELAY = OFF;
-                CMD_Suspender_Min = OFF;
-                Motor_Backward();
-            }
+            CMD_Suspender_Min = OFF;
+            Motor_Backward();
         }
         if(CMD_Suspender_Emergency_Stop == ON)//单个吊杆急停
         {
-            BAND_TYPE_BRAKE_OUT = OFF;//抱闸断开
+            MOTOR_RUNNING = OFF;
             CMD_Suspender_Emergency_Stop = OFF;
             Motor_Stop(Motor_Stop_Free);            
         }
         if(CMD_Suspender_Target == ON)//单个吊杆运行到设定的目标位置
         {
             MOTOR_RUNNING = ON;
-            //if(BAND_TYPE_BRAKE_OUT == OFF)
+            CMD_Suspender_Target = OFF;
+            if(Global_Variable.Suspende_Target_Position > Global_Variable.Suspende_Current_Position)
             {
-                MOTOR_RUN_DELAY = ON;
-                //BAND_TYPE_BRAKE_OUT = ON;//抱闸闭合
+                Motor_Forward();
             }
-            //if(Motor_DelayTime >= 1000)
+            else
             {
-                //Motor_DelayTime = 0;
-                MOTOR_RUN_DELAY = OFF;
-                CMD_Suspender_Target = OFF;
-                if(Delta_Position > 0)
-                {
-                    Motor_Forward();
-                }
-                else
-                {
-                    Motor_Backward();
-                }
+                Motor_Backward();
             }
         }
         if(CMD_ParaDownload_Independent == ON)//单个微控制器个性化参数下载
@@ -350,7 +331,8 @@ void Task_Freq_Convert(void *p_arg)
             cnt = 0;
             
             //RTU_AddReqBlock_Front(&rtu_ctx,&RTU_Req_Read8000);
-            RTU_AddReqBlock_Front(&rtu_ctx,&RTU_Req_WriteFreq_5000);
+            RTU_AddReqBlock(&rtu_ctx,&RTU_Req_WriteFreq_5000);
+#if 0
             RTU_AddReqBlock_Front(&rtu_ctx,&RTU_Req_WriteCMD_6000);
             for(i=0;i<Init_Group_Total;i++)
             {
@@ -366,6 +348,7 @@ void Task_Freq_Convert(void *p_arg)
                 Init_Point[i].mappedBuff = (u16*)&Reg_InitGroup[i].DataValue;   //执行的数据，读取的寄存器数据或写操作的数据
                 RTU_AddReqBlock(&rtu_ctx,&Init_Point[i]);
             }
+#endif
         }
 
         OSTimeDlyHMSM(0, 0, 0, 1);

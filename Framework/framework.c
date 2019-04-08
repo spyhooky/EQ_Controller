@@ -93,7 +93,6 @@ void Delay_us(u32 n)
 void Framework_Timer1ms(void)
 {
 	TaskIO_Timer1ms();
-    TaskFreq_Timer1ms();
     RTU_Timer1ms_Handler();
     #ifdef MQTT_ENABLE
 	MQTT_Timer1ms();
@@ -115,7 +114,7 @@ void Framework_Timer1ms(void)
 /***************************************************************************/
 void Framework_Timer100ms(void)
 {
-    
+    TaskFreq_Timer100ms();
 }
 
 

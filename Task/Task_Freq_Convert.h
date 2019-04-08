@@ -12,6 +12,7 @@
 #define REDUCTION_RATIO                                 50  //减速比
 
 #define INIT_POSITION_WIRE                           30000  //缆绳初始位置
+#define BAND_TYPE_BRAKE_DELAY_THRES                     20  //2s,电机运行后2s抱闸松开（继电器闭合）
 
 enum Invertor_Offset{//变频器状态参数地址
     off_InvertorError=0,
@@ -46,7 +47,7 @@ extern volatile BitStatus Invertor_Status;
 extern u16 InvertorData[40];
 
 void Task_Freq_Convert(void *p_arg);
-void TaskFreq_Timer1ms(void);
+void TaskFreq_Timer100ms(void);
 
 #endif
 
