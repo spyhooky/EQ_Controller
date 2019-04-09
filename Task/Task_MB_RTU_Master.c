@@ -324,13 +324,13 @@ void RTU_Write(struct RTU_Ctx* _rtuctx)
 void RTU_CyclicTask(void)
 {
     if (rtu_ctx.event == EV_NONE)
-    {
+    {//空闲状态
         return;
     }
 	
-	switch (rtu_ctx.fsm_state)
+	switch (rtu_ctx.fsm_state)//有超时事件或者有新block请求
     { 
-        case RTU_REQ:
+        case RTU_REQ://请求发送状态
             rtu_ctx.curr = RTU_DelReqBlock(&rtu_ctx);
             if (rtu_ctx.curr == NULL)
             {
@@ -339,13 +339,13 @@ void RTU_CyclicTask(void)
             rtu_ctx.curr->Status=EXCUTE_START; //正在处理中
             if ((rtu_ctx.curr->FuncCode == FUNC_RD_COILSTATUS)||(rtu_ctx.curr->FuncCode == FUNC_RD_INPUTSTATUS)||
                 (rtu_ctx.curr->FuncCode == FUNC_RD_HOLDREG)||(rtu_ctx.curr->FuncCode == FUNC_RD_INREG))
-            {
+            {//读寄存器
 
                 RTU_Read(&rtu_ctx);
             }
             else if((rtu_ctx.curr->FuncCode == FUNC_WR_SGCOIL)||(rtu_ctx.curr->FuncCode == FUNC_WR_SGREG)||
                 (rtu_ctx.curr->FuncCode == FUNC_WR_MULCOIL)||(rtu_ctx.curr->FuncCode == FUNC_WR_MULREG))
-            {
+            {//写寄存器
                 RTU_Write(&rtu_ctx);
             }
             else
@@ -357,12 +357,12 @@ void RTU_CyclicTask(void)
             break;
     case RTU_WAITRESP:
         if(rtu_ctx.event == EV_TO)
-        {
+        {//发送的命令没有收到响应
             rtu_ctx.fsm_state = RTU_REQ;
             rtu_ctx.curr->Status=EXCUTE_FAIL;
-            rtu_ctx.TOtimer = rtu_ctx.guard_time;
+            rtu_ctx.TOtimer = rtu_ctx.poll_interval;
             if (rtu_ctx.curr->Excute_Num > 1u)
-            {
+            {//判断是否有重发的配置，0表示需要周期发送的请求，非0表示需要发送的次数
                 rtu_ctx.curr->Excute_Num--;
                 RTU_AddReqBlock(&rtu_ctx,rtu_ctx.curr);
             }
@@ -377,12 +377,12 @@ void RTU_CyclicTask(void)
             Error_Indicator(80);  //LED亮80ms后灭
         }
         else if(rtu_ctx.event == EV_RX_OK)
-        {
+        {//正常收到从节点的响应数据
             RTU_HandleReply(&rtu_ctx);
             rtu_ctx.fsm_state = RTU_REQ;
             rtu_ctx.TOtimer = rtu_ctx.poll_interval;
             if (rtu_ctx.curr->Excute_Num > 1u)
-            {
+            {//判断是否有重发的配置，0表示需要周期发送的请求，非0表示需要发送的次数
                 rtu_ctx.curr->Excute_Num--;
                 RTU_AddReqBlock(&rtu_ctx,rtu_ctx.curr);
             }

@@ -221,7 +221,7 @@ typedef struct Global_Variable_Group
     u16 Suspende_Target_Speed;          //吊杆目标运行的    速度，单位：mm/s
     u8  DownLoad_Para[255];             //下载微控制器个性化参数
     u8  Para_Independence[255];         //读取微控制器个性化参数
-    u8  Para_Common[255];               //读取微控制器个性化参数
+    u8  Para_Common[255];               //读取微控制器共性参数
 }Global_Variable_Info;
 extern Global_Variable_Info Global_Variable;
 

@@ -584,11 +584,6 @@
               <FilePath>..\DRIVE\DrCan.c</FilePath>
             </File>
             <File>
-              <FileName>cJSON.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\DRIVE\cJSON.c</FilePath>
-            </File>
-            <File>
               <FileName>DrAdc.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\DRIVE\DrAdc.c</FilePath>

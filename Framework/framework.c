@@ -190,9 +190,9 @@ void Calculate_Wire_Position(u16 sch_timer,u16 sch_cycle)
     EncodePulse = Get_Rotary_Pulze();
     if(EncodePulse > PrePluse_Number )
     {//当前值大于上次值
-        if((EncodePulse > 0xC000)&&(PrePluse_Number < 0x2000))
+        if((EncodePulse > 0xC000u)&&(PrePluse_Number < 0x2000u))
         {//正转到反转导致数值翻转
-            Pulse_Total = Pulse_Total - (0xffff - EncodePulse + PrePluse_Number);
+            Pulse_Total = Pulse_Total - (0xffffu - EncodePulse + PrePluse_Number);
             Global_Variable.EncodePulse = Pulse_Total/4;
         }
         else
@@ -203,9 +203,9 @@ void Calculate_Wire_Position(u16 sch_timer,u16 sch_cycle)
     }
     else
     {//上次值大于当前值
-        if((EncodePulse < 0x2000)&&(PrePluse_Number > 0xC000))
+        if((EncodePulse < 0x2000u)&&(PrePluse_Number > 0xC000u))
         {//正常正转数值翻转
-            Pulse_Total = Pulse_Total + (0xffff - PrePluse_Number + EncodePulse);
+            Pulse_Total = Pulse_Total + (0xffffu - PrePluse_Number + EncodePulse);
             Global_Variable.EncodePulse = Pulse_Total/4;
         }
         else
@@ -221,7 +221,7 @@ void Calculate_Wire_Position(u16 sch_timer,u16 sch_cycle)
         /*****  相对于初始位置的长度 = ------------ * 周长 / 减速比     ******/
         /*****                         每圈脉冲数                      ******/
         /*******************************************************************/
-        Wire_Position_Float = (Global_Variable.EncodePulse * 3.14 * ENCODER_DIOMETER / PULSE_PER_CYCLE) * REDUCTION_RATIO;
+        Wire_Position_Float = Global_Variable.EncodePulse * LENTH_PER_PULSE;
         Global_Variable.Suspende_Current_Position = INIT_POSITION_WIRE - (s16)Wire_Position_Float;
         PrePluse_Number = EncodePulse;
     }

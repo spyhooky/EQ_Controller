@@ -5,11 +5,17 @@
 
 #define MAX_RUNNING_FREQ                                50  //电机最大运行频率
 #define MOTOR_SPEED                                    995  //电机转速
-#define DIAMETER_REDUCER                             126.5  //减速机直径
-#define DIAMETER_WIRE                                   10  //线缆直径
+#define DIAMETER_REDUCER                     (float)0.1265  //减速机直径
+#define DIAMETER_WIRE                          (float)0.01  //线缆直径
 #define PULSE_PER_CYCLE                               2000  //每转脉冲数
-#define ENCODER_DIOMETER                                 1  //编码器上的转盘直径mm,1表示编码器直接接到减速机上，该值待定
+#define ENCODER_GEAR_NUM                                47  //编码器齿轮数
+#define REDUCTION_GEAR_NUM                              71  //减速机齿轮数
 #define REDUCTION_RATIO                                 50  //减速比
+
+#define REDUCTION_SPEED             ((float)((float)MOTOR_SPEED/(float)REDUCTION_RATIO))   //减速机转速
+#define LENTH_REDUCTION_PER_MINUTE    ((float)(REDUCTION_SPEED*DIAMETER_REDUCER*3.14))   //减速机每分钟运行的长度
+#define ENCODER_SPEED               (REDUCTION_SPEED/((float)ENCODER_GEAR_NUM/(float)REDUCTION_GEAR_NUM))   //编码器转速
+#define LENTH_PER_PULSE             ((LENTH_REDUCTION_PER_MINUTE/ENCODER_SPEED)/((float)PULSE_PER_CYCLE/1000)) //编码器每脉冲对应钢丝绳所走的长度L,单位为mm
 
 #define INIT_POSITION_WIRE                           30000  //缆绳初始位置
 #define BAND_TYPE_BRAKE_DELAY_THRES                     20  //2s,电机运行后2s抱闸松开（继电器闭合）
