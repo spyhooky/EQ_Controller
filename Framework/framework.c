@@ -18,6 +18,8 @@ static s32 Pulse_Total;     //脉冲总数
 static u16 Software_Timer;//软件定时器，后续备用
 static float Wire_Position_Float;      //缆绳相对于初始位置往下移动的距离，如初始为30000，当移动至29000位置时该值即为1000
 static void UartFrame_Timeout_Calc(void);
+void ReadFlashData(void);
+
 
 /****************************************************************************/
 /*函数名：  Framework_Init                                                  */
@@ -28,6 +30,7 @@ static void UartFrame_Timeout_Calc(void);
 void Framework_Init(void)
 {
     u8 i;
+    
     PrePluse_Number = 0;
     Software_Timer = 0;
     Wire_Position_Float = 30000;
@@ -92,6 +95,7 @@ void Delay_us(u32 n)
 /***************************************************************************/
 void Framework_Timer1ms(void)
 {
+    Global_Variable.powertimer++;
 	TaskIO_Timer1ms();
     RTU_Timer1ms_Handler();
     #ifdef MQTT_ENABLE
@@ -193,12 +197,12 @@ void Calculate_Wire_Position(u16 sch_timer,u16 sch_cycle)
         if((EncodePulse > 0xC000u)&&(PrePluse_Number < 0x2000u))
         {//正转到反转导致数值翻转
             Pulse_Total = Pulse_Total - (0xffffu - EncodePulse + PrePluse_Number);
-            Global_Variable.EncodePulse = Pulse_Total/4;
+            Global_Variable.Encode_CurrentPulse = Pulse_Total/4;
         }
         else
         {//正常正转，数值累加未翻转
             Pulse_Total = Pulse_Total + (EncodePulse - PrePluse_Number);
-            Global_Variable.EncodePulse = Pulse_Total/4;
+            Global_Variable.Encode_CurrentPulse = Pulse_Total/4;
         }
     }
     else
@@ -206,12 +210,12 @@ void Calculate_Wire_Position(u16 sch_timer,u16 sch_cycle)
         if((EncodePulse < 0x2000u)&&(PrePluse_Number > 0xC000u))
         {//正常正转数值翻转
             Pulse_Total = Pulse_Total + (0xffffu - PrePluse_Number + EncodePulse);
-            Global_Variable.EncodePulse = Pulse_Total/4;
+            Global_Variable.Encode_CurrentPulse = Pulse_Total/4;
         }
         else
         {//正常反转，数值减小未翻转
             Pulse_Total = Pulse_Total - (PrePluse_Number - EncodePulse);
-            Global_Variable.EncodePulse = Pulse_Total/4;
+            Global_Variable.Encode_CurrentPulse = Pulse_Total/4;
         }
     }    
     if(EncodePulse != PrePluse_Number)
@@ -221,7 +225,7 @@ void Calculate_Wire_Position(u16 sch_timer,u16 sch_cycle)
         /*****  相对于初始位置的长度 = ------------ * 周长 / 减速比     ******/
         /*****                         每圈脉冲数                      ******/
         /*******************************************************************/
-        Wire_Position_Float = Global_Variable.EncodePulse * LENTH_PER_PULSE;
+        Wire_Position_Float = Global_Variable.Encode_CurrentPulse * Global_Variable.Para_Independence.Lenth_Per_Pulse;
         Global_Variable.Suspende_Current_Position = INIT_POSITION_WIRE - (s16)Wire_Position_Float;
         PrePluse_Number = EncodePulse;
     }
@@ -245,6 +249,23 @@ void Package_Float(float data,u8 *buf)
 }
 
 /****************************************************************************/
+/*函数名：Un  Package_Float                                                   */
+/*功能说明：将串口收到的数据转换成内部浮点型数据                                 */
+/*输入参数：无                                                              */
+/*输出参数：无                                                              */
+/****************************************************************************/
+void UnPackage_Float(u8 *buf,float *data)
+{
+    u8 *addr;
+    addr = (u8 *)data;
+    addr[0]=buf[1];
+    addr[1]=buf[0];
+    addr[2]=buf[3];
+    addr[3]=buf[2];
+}
+
+
+/****************************************************************************/
 /*函数名：  Error_Indicator                                                 */
 /*功能说明：故障指示，当有错误发生时将LED指示灯闪烁一下（由灭转亮               */
 /*输入参数：time：LED亮状态的持续时间                                         */
@@ -255,6 +276,28 @@ void Error_Indicator(u16 time)
     if(Get_LED_Status() == OFF)
     {
         Blink_LED_Status(time);
+    }
+}
+
+/****************************************************************************/
+/*函数名：  Para_Download                                                 */
+/*功能说明：参数下载，先擦写再写入               */
+/*输入参数：无                                         */
+/*输出参数：无                                                              */
+/****************************************************************************/
+void Para_Download(void)
+{
+    u8 flashdata[512];
+    if(CMD_ParaDownload_Independent == ON)
+    {
+        CMD_ParaDownload_Independent = OFF;
+        FlashErase(PARA_BASEADDR,1);
+        flashdata[0]=0xAA;
+        flashdata[1]=0x55;
+        flashdata[2]=0xAA;
+        flashdata[3]=0x55;
+        memcpy(&flashdata[4],&Global_Variable.Para_Independence,sizeof(Global_Variable.Para_Independence));
+        FlashWriteData(PARA_BASEADDR,flashdata,512+4);
     }
 }
 
@@ -301,6 +344,26 @@ void UART_CAN_Handler(void *p_arg)
 	}
 }
 #endif
+
+void ReadFlashData(void)
+{
+    u8 flashdata[512];
+    FlashReadData(PARA_BASEADDR,flashdata,512);
+    if((flashdata[0]==0xAA)&&(flashdata[1]==0x55)&&(flashdata[2]==0xAA)&&(flashdata[3]==0x55))
+    {
+        memcpy(&Global_Variable.Para_Independence,&flashdata[4],sizeof(Global_Variable.Para_Independence));
+    }
+    else
+    {
+        Global_Variable.Para_Independence.Suspende_Type = 0;
+        Global_Variable.Para_Independence.Convert_Cfg = 0;
+        Global_Variable.Para_Independence.Suspende_Limit_Up = 0;
+        Global_Variable.Para_Independence.Motor_Freq_Factor = 0.3665;
+        Global_Variable.Para_Independence.Lenth_Per_Pulse = LENTH_PER_PULSE;
+        Global_Variable.Para_Independence.Max_Motro_Freq = (u8)MAX_RUNNING_FREQ;
+    }
+    
+}
 
 
 #endif

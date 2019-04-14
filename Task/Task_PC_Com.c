@@ -169,6 +169,55 @@ void Package_RespData(u8 *data)
 }
 
 /********************************************************************************/
+/*函数名：  Parameter_Download                                                    */
+/*功能说明：参数下载                                                     */
+/*输入参数：data，接收数据首地址                                                    */
+/*输出参数：无                                                                  */
+/*******************************************************************************/
+static void Parameter_Download(u8 *data,u8 len)
+{
+    u16 index=0;
+    Global_Variable.Para_Independence.Suspende_Type = data[index++];
+    Global_Variable.Para_Independence.Convert_Cfg = data[index++];
+    Global_Variable.Para_Independence.Suspende_Limit_Up = (data[index++]*256)+data[index++];
+    UnPackage_Float(&data[index],&Global_Variable.Para_Independence.Motor_Freq_Factor);
+    index += 4;
+    UnPackage_Float(&data[8],&Global_Variable.Para_Independence.Lenth_Per_Pulse);
+    index += 4;
+    Global_Variable.Para_Independence.Max_Motro_Freq = data[index];
+}
+
+/********************************************************************************/
+/*函数名：  Parameter_Read                                                    */
+/*功能说明：参数下载                                                     */
+/*输入参数：data，接收数据首地址                                                    */
+/*输出参数：无                                                                  */
+/*******************************************************************************/
+static void Parameter_Read(void)
+{
+    u16 CrcCheck;
+    u16 index=0;
+    RespondToPC.datalen = 5 + sizeof(Global_Variable.Para_Independence);  
+    memset(RespondToPC.databuf,0,sizeof(RespondToPC.databuf));
+    RespondToPC.databuf[index++] = Global_Variable.DIP_SwitchStatus;
+    RespondToPC.databuf[index++] = Read_Common_Para;   
+    RespondToPC.databuf[index++] = sizeof(Global_Variable.Para_Independence);
+    RespondToPC.databuf[index++] = Global_Variable.Para_Independence.Suspende_Type;
+    RespondToPC.databuf[index++] = Global_Variable.Para_Independence.Convert_Cfg;
+    RespondToPC.databuf[index++] = Global_Variable.Para_Independence.Suspende_Limit_Up>>8;
+    RespondToPC.databuf[index++] = Global_Variable.Para_Independence.Suspende_Limit_Up&0xff;
+    Package_Float(Global_Variable.Para_Independence.Motor_Freq_Factor,&RespondToPC.databuf[index]);
+    index += 4;
+    Package_Float(Global_Variable.Para_Independence.Lenth_Per_Pulse,&RespondToPC.databuf[index]);
+    index += 4;
+    RespondToPC.databuf[index++] = Global_Variable.Para_Independence.Max_Motro_Freq;
+    CrcCheck = Get_rtuCrc16(RespondToPC.databuf,RespondToPC.datalen-2);
+    RespondToPC.databuf[RespondToPC.datalen-2] = CrcCheck%256;
+    RespondToPC.databuf[RespondToPC.datalen-1] = CrcCheck>>8;
+}
+
+
+/********************************************************************************/
 /*函数名：  Broadcast_Frame_Parse                                                */
 /*功能说明：广播帧数据解析                                                        */
 /*输入参数：data，接收数据缓冲区，len,接收数据长度                                 */
@@ -310,7 +359,7 @@ void Broadcast_Frame_Parse(u8 *data, u16 len)
                 CrcCheck = Get_rtuCrc16(data,len-2);
                 if((CrcCheck%256 == data[len-2])&&((CrcCheck>>8) == data[len-1]))
                 {
-                    memcpy(Global_Variable.DownLoad_Para,&data[3],data[2]);
+                    memcpy(&Global_Variable.Para_Independence,&data[3],data[2]);
                     CMD_ParaDownload_Common = ON;
                 }
             }
@@ -453,7 +502,7 @@ void Node_Frame_Parse(u8 *data, u16 len)
                         Global_Variable.Suspende_Target_Position = (data[3]<<8)+data[4];
                         Global_Variable.Suspende_Target_Speed = (data[5]<<8)+data[6];
                         CMD_Suspender_Target = ON;
-                        Postive_Responde(Suspender_Min_F);
+                        Postive_Responde(Suspender_Target_F);
                     }
                     else
                     {
@@ -478,9 +527,9 @@ void Node_Frame_Parse(u8 *data, u16 len)
                     CrcCheck = Get_rtuCrc16(data,len-2);
                     if((CrcCheck%256 == data[len-2])&&((CrcCheck>>8) == data[len-1]))
                     {
-                        memcpy(Global_Variable.DownLoad_Para,&data[3],data[2]);
+                        Parameter_Download(&data[3],data[2]);
                         CMD_ParaDownload_Independent = ON;
-                        Postive_Responde(Suspender_Min_F);
+                        Postive_Responde(ParaDownload_Independent);
                     }
                     else
                     {
@@ -532,7 +581,7 @@ void Node_Frame_Parse(u8 *data, u16 len)
                     if((CrcCheck%256 == data[len-2])&&((CrcCheck>>8) == data[len-1]))
                     {
                         CMD_Read_Independent_Para = ON;
-                        //Postive_Responde(Read_Independent_Para);//待定
+                        Parameter_Read();
                     }
                     else
                     {

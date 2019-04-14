@@ -22,7 +22,10 @@ void Calc_CurrentTemp(u16 sch_timer,u16 sch_cycle);
 void Calc_Power_5V(u16 sch_timer,u16 sch_cycle);
 void UART_CAN_Handler(void *p_arg);
 void Package_Float(float data,u8 *buf);
+void UnPackage_Float(u8 *buf,float *data);
 void Error_Indicator(u16 time);
+void Para_Download(void);
+void ReadFlashData(void);
 
 
 

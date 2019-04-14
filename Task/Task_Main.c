@@ -104,6 +104,7 @@ void Task_Main(void *p_arg)
     
     (void)p_arg;
     u8 Ethernet_Init_Flag = FALSE;
+    ReadFlashData();
     Config_DrCommon();
     Framework_Init();
     //创建IO的task，传入的参数为项目配置信息
@@ -193,6 +194,7 @@ void Task_BackGround(void *p_arg)
 		ReadADCAverageValue(Background_Timer,CYCLE_READ_ADC_VALUE);//AD采样值均值计算
 		Calc_CurrentTemp(Background_Timer,CYCLE_CALC_ENV_TEMP);//计算当前温度值
         Calc_Power_5V(Background_Timer,CYCLE_CALC_POWER_VOL);//计算当前5V电压值
+        Para_Download();//写个性化参数
 		
 		/******************APPLICATION END******************/
         OSTimeDlyHMSM(0, 0, 0, CYCLE_BACKGROUND);//必不可少，否则优先级低的任务得不到运行，时间为1ms

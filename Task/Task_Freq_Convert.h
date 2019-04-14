@@ -13,19 +13,33 @@
 #define REDUCTION_RATIO                                 50  //减速比
 
 #define REDUCTION_SPEED             ((float)((float)MOTOR_SPEED/(float)REDUCTION_RATIO))   //减速机转速
-#define LENTH_REDUCTION_PER_MINUTE    ((float)(REDUCTION_SPEED*DIAMETER_REDUCER*3.14))   //减速机每分钟运行的长度
+#define LENTH_REDUCTION_PER_MINUTE    ((float)(REDUCTION_SPEED*(DIAMETER_REDUCER+DIAMETER_WIRE)*3.14))   //减速机每分钟运行的长度
 #define ENCODER_SPEED               (REDUCTION_SPEED/((float)ENCODER_GEAR_NUM/(float)REDUCTION_GEAR_NUM))   //编码器转速
 #define LENTH_PER_PULSE             ((LENTH_REDUCTION_PER_MINUTE/ENCODER_SPEED)/((float)PULSE_PER_CYCLE/1000)) //编码器每脉冲对应钢丝绳所走的长度L,单位为mm
 
 #define INIT_POSITION_WIRE                           30000  //缆绳初始位置
 #define BAND_TYPE_BRAKE_DELAY_THRES                     20  //2s,电机运行后2s抱闸松开（继电器闭合）
 
+#define FREQ_REDUCE_BASE                                5U  //每次减速的频率基准值
+#define READ8000_INTERTER                               5U  //查询帧周期
+#define FREQ_REDUCE_INTERTER                          100U  //频率减速时间间隔，每隔100ms减5hz
+
+
 enum Invertor_Offset{//变频器状态参数地址
-    off_InvertorError=0,
+    off_InvertorError=0,off_CurrFreq,
+    NUM_Read_Total
+};
+enum Write_Data_Off{
+    Control_CMD,Convert_Freq,
+    NUM_Write_Total
 };
 
+enum Diretor_Info{//变频器状态参数地址
+    D_Forward=0,D_Backward
+};//正向-向上运动，即0mm向30000mm方向的运动，反向-向下运动
+
 enum Motor_Command{
-    Motor_Fardward_Run=1,Motor_Backward_Run,Motor_Fardward_PointMove,Motor_Backward_PointMove,
+    Motor_Backward_Run=1,Motor_Fardward_Run,Motor_Fardward_PointMove,Motor_Backward_PointMove,
     Motor_Stop_Reduce,Motor_Stop_Free
 };
 
@@ -50,7 +64,7 @@ extern volatile BitStatus Invertor_Status;
 #define CMD_ParaDownload_Common             Invertor_Status.Bits.bit7 //7-预留
 
 
-extern u16 InvertorData[40];
+extern u16 InvertorData[NUM_Read_Total];
 
 void Task_Freq_Convert(void *p_arg);
 void TaskFreq_Timer100ms(void);

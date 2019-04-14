@@ -18,12 +18,14 @@
 #ifdef STM32F10X_HD
     #define FLASH_PAGE_SIZE                 0x800U
     #define CONFIG_BASEADDR                 0x803A000ul
+    #define PARA_BASEADDR                   0x803A800ul
     #define APP_CRC_ADDR                    0x8030000ul
 #endif
 
 #ifdef STM32F10X_CL
     #define FLASH_PAGE_SIZE                 0x800U     
     #define CONFIG_BASEADDR                 0x803A000ul
+    #define PARA_BASEADDR                   0x803A800ul
     #define APP_CRC_ADDR                    0x8030000ul
 #endif
 

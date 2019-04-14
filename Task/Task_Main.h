@@ -55,7 +55,7 @@
 #define STKSIZE_PC_MSG_UPD               STK_SIZE_32
 
 #define CYCLE_BACKGROUND                        1u
-#define CYCLE_WRIE_POSITION                     (50U*CYCLE_BACKGROUND)
+#define CYCLE_WRIE_POSITION                     (5U*CYCLE_BACKGROUND)
 #define CYCLE_READ_ADC_VALUE                    (100U*CYCLE_BACKGROUND)
 #define CYCLE_CALC_ENV_TEMP                     (100U*CYCLE_BACKGROUND)
 #define CYCLE_CALC_POWER_VOL                    (1000U*CYCLE_BACKGROUND)

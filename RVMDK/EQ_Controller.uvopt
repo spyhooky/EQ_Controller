@@ -138,7 +138,7 @@
         <SetRegEntry>
           <Number>0</Number>
           <Key>DLGUARM</Key>
-          <Name>/</Name>
+          <Name></Name>
         </SetRegEntry>
         <SetRegEntry>
           <Number>0</Number>
@@ -161,24 +161,7 @@
           <Name>-O14 -S0 -C0 -N00("ARM Cortex-M3") -D00(1BA00477) -L00(4) -FO7 -FD20000000 -FC800 -FN1 -FF0STM32F10x_CL -FS08000000 -FL040000)</Name>
         </SetRegEntry>
       </TargetDriverDllRegistry>
-      <Breakpoint>
-        <Bp>
-          <Number>0</Number>
-          <Type>0</Type>
-          <LineNumber>14</LineNumber>
-          <EnabledFlag>1</EnabledFlag>
-          <Address>134283622</Address>
-          <ByteObject>0</ByteObject>
-          <HtxType>0</HtxType>
-          <ManyObjects>0</ManyObjects>
-          <SizeOfObject>0</SizeOfObject>
-          <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>1</BreakIfRCount>
-          <Filename>D:\Develop\脌卯脳脺\脡猫卤赂驴脴脰脝脝梅\Code\EQ_Controller_Application\Framework\main.c</Filename>
-          <ExecCommand></ExecCommand>
-          <Expression></Expression>
-        </Bp>
-      </Breakpoint>
+      <Breakpoint/>
       <WatchWindow1>
         <Ww>
           <count>0</count>
@@ -199,6 +182,26 @@
           <count>3</count>
           <WinNumber>1</WinNumber>
           <ItemText>Relay_Output_Sts</ItemText>
+        </Ww>
+        <Ww>
+          <count>4</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>flashdata</ItemText>
+        </Ww>
+        <Ww>
+          <count>5</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>TestTimer_E,0x0A</ItemText>
+        </Ww>
+        <Ww>
+          <count>6</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>TestTimer_S,0x0A</ItemText>
+        </Ww>
+        <Ww>
+          <count>7</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>rtu_ctx</ItemText>
         </Ww>
       </WatchWindow1>
       <WatchWindow2>
@@ -222,7 +225,7 @@
         <Mm>
           <WinNumber>1</WinNumber>
           <SubType>0</SubType>
-          <ItemText>0x20000088</ItemText>
+          <ItemText>0x803a800</ItemText>
         </Mm>
       </MemoryWindow1>
       <Tracepoint>
@@ -319,10 +322,10 @@
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>0</ColumnNumber>
+      <ColumnNumber>32</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>292</TopLine>
-      <CurrentLine>309</CurrentLine>
+      <TopLine>308</TopLine>
+      <CurrentLine>323</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>..\Task\Task_IO.c</PathWithFileName>
       <FilenameWithoutPath>Task_IO.c</FilenameWithoutPath>
@@ -383,10 +386,10 @@
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>17</ColumnNumber>
+      <ColumnNumber>54</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>230</TopLine>
-      <CurrentLine>250</CurrentLine>
+      <TopLine>187</TopLine>
+      <CurrentLine>200</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>..\Task\Task_PC_Com.c</PathWithFileName>
       <FilenameWithoutPath>Task_PC_Com.c</FilenameWithoutPath>
@@ -399,10 +402,10 @@
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>31</ColumnNumber>
+      <ColumnNumber>0</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>42</TopLine>
-      <CurrentLine>61</CurrentLine>
+      <TopLine>1</TopLine>
+      <CurrentLine>1</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>..\Task\Task_MB_RTU_Master.c</PathWithFileName>
       <FilenameWithoutPath>Task_MB_RTU_Master.c</FilenameWithoutPath>
@@ -415,10 +418,10 @@
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>9</ColumnNumber>
+      <ColumnNumber>21</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>129</TopLine>
-      <CurrentLine>147</CurrentLine>
+      <TopLine>315</TopLine>
+      <CurrentLine>344</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>..\Task\Task_Freq_Convert.c</PathWithFileName>
       <FilenameWithoutPath>Task_Freq_Convert.c</FilenameWithoutPath>
@@ -455,10 +458,10 @@
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>6</ColumnNumber>
+      <ColumnNumber>0</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
       <TopLine>1</TopLine>
-      <CurrentLine>17</CurrentLine>
+      <CurrentLine>14</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>..\Framework\main.c</PathWithFileName>
       <FilenameWithoutPath>main.c</FilenameWithoutPath>
@@ -487,10 +490,10 @@
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>0</ColumnNumber>
+      <ColumnNumber>22</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>1</TopLine>
-      <CurrentLine>1</CurrentLine>
+      <TopLine>317</TopLine>
+      <CurrentLine>350</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>..\Framework\framework.c</PathWithFileName>
       <FilenameWithoutPath>framework.c</FilenameWithoutPath>
@@ -567,10 +570,10 @@
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>16</ColumnNumber>
+      <ColumnNumber>0</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>47</TopLine>
-      <CurrentLine>69</CurrentLine>
+      <TopLine>155</TopLine>
+      <CurrentLine>172</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>..\Framework\stm32f10x_it.c</PathWithFileName>
       <FilenameWithoutPath>stm32f10x_it.c</FilenameWithoutPath>
@@ -785,8 +788,8 @@
       <Focus>0</Focus>
       <ColumnNumber>0</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>51</TopLine>
-      <CurrentLine>52</CurrentLine>
+      <TopLine>1</TopLine>
+      <CurrentLine>33</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>..\DRIVE\DrUart.c</PathWithFileName>
       <FilenameWithoutPath>DrUart.c</FilenameWithoutPath>
@@ -1329,8 +1332,8 @@
       <Focus>0</Focus>
       <ColumnNumber>0</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>82</TopLine>
-      <CurrentLine>98</CurrentLine>
+      <TopLine>194</TopLine>
+      <CurrentLine>236</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>..\UCOSII\PORT\os_cpu_a.asm</PathWithFileName>
       <FilenameWithoutPath>os_cpu_a.asm</FilenameWithoutPath>
@@ -1345,7 +1348,7 @@
       <Focus>0</Focus>
       <ColumnNumber>0</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>157</TopLine>
+      <TopLine>158</TopLine>
       <CurrentLine>170</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>..\UCOSII\PORT\os_cpu_c.c</PathWithFileName>
@@ -1378,7 +1381,7 @@
       <ColumnNumber>0</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
       <TopLine>1763</TopLine>
-      <CurrentLine>1780</CurrentLine>
+      <CurrentLine>1777</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>..\UCOSII\CORE\os_core.c</PathWithFileName>
       <FilenameWithoutPath>os_core.c</FilenameWithoutPath>

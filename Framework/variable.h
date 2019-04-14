@@ -207,21 +207,31 @@ typedef struct Driver_Variable
 extern Driver_Variable_Info Global_Driver;
 float GET_ADC_Result(u8 chanel);
 
+typedef struct ParaIndependence_Group
+{
+    u8 Suspende_Type;//吊杆类型
+    u8 Convert_Cfg;//变频器有无，0-无变频器，1-有变频器，通过485控制
+    u16 Suspende_Limit_Up;//吊杆上限位高度，单位mm
+    float Motor_Freq_Factor; //电机运行频率的系数C1，本电机的系数为0.3665，实际工程以计算为准
+    float Lenth_Per_Pulse;   //每脉冲钢丝绳所走的长度系数C2，本电机所对应的系数为0.1419，实际工程以计算为准
+    u8 Max_Motro_Freq;    //电机运行最大频率
+}ParaIndependence_Info;
 
 typedef struct Global_Variable_Group
 {
 	u8 DIP_SwitchStatus;                //当前拨码开关状态
 	u32 Digit_InputStatus;              //数字开关量状态，0-断开，1-对地闭合
 	float CurrentEnvTemp;               //当前环境温度
-	s32 EncodePulse;                    //编码器计数，0-65535循环
+	s32 Encode_CurrentPulse;            //编码器当前计数
+	s32 Encode_TargetPulse;              //编码器目标计数
     float Power_5V;                     //电源电压
     s16 Suspende_Current_Position;      //吊杆当前位置,单位mm
     u16 Suspende_Current_Speed;         //吊杆运行状态,    电机运行的实际    速度，单位：mm/s
     s16 Suspende_Target_Position;       //吊杆目标位置,单位mm
     u16 Suspende_Target_Speed;          //吊杆目标运行的    速度，单位：mm/s
-    u8  DownLoad_Para[255];             //下载微控制器个性化参数
-    u8  Para_Independence[255];         //读取微控制器个性化参数
+    ParaIndependence_Info  Para_Independence;//微控制器个性化参数
     u8  Para_Common[255];               //读取微控制器共性参数
+    u32 powertimer;
 }Global_Variable_Info;
 extern Global_Variable_Info Global_Variable;
 

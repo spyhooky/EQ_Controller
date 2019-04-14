@@ -174,7 +174,7 @@ void TIM5_Config(void)/* 100ms */
     TIM_DeInit(TIM5);
     RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM5, ENABLE);
     TIM_TimeBaseStructure.TIM_Period = 199;  /* 200ºÍ18000 1ms*/
-    TIM_TimeBaseStructure.TIM_Prescaler = 17999;
+    TIM_TimeBaseStructure.TIM_Prescaler = 35999;
     TIM_TimeBaseStructure.TIM_ClockDivision=0;
     TIM_TimeBaseStructure.TIM_CounterMode=TIM_CounterMode_Up;
     TIM_TimeBaseInit(TIM5, &TIM_TimeBaseStructure);

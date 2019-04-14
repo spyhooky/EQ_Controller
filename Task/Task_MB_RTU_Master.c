@@ -4,6 +4,8 @@
 
 struct RTU_Ctx rtu_ctx;//变量定义
 static u8 framestart=OFF;
+vu32 TestTimer_E;
+
 
 u8 RTU_485_Enable=OFF;
 
@@ -60,6 +62,7 @@ void RTU_AddReqBlock(struct RTU_Ctx* _rtuctx, struct RTU_ReqBlock* _req)
     }
     while(p != &_rtuctx->head);
 	__disable_irq();
+    _req->Status = EXCUTE_IDLE;
 	list_add_tail(&_req->Entry, &_rtuctx->head);
 	__enable_irq();
 	_rtuctx->event=EV_REQ ;
@@ -95,6 +98,7 @@ static struct RTU_ReqBlock* RTU_DelReqBlock(struct RTU_Ctx* _rtu_ctx)
 /********************************************************************************/
 static void BSP_RTU_StartSend(struct RTU_Ctx* _rturtx)
 {//启动串口发送
+    TestTimer_E = Global_Variable.powertimer;
 	UartOpFunc[_rturtx->curr->chnindex]._send(_rturtx->txbuff,_rturtx->txindex);
 	_rturtx->txindex=0;
 	_rturtx->TOtimer = _rturtx->guard_time;

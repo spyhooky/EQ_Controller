@@ -1,5 +1,5 @@
 Dependencies for Project 'EQ_Controller', Target 'DAQ_Project': (DO NOT MODIFY !)
-F (..\readme.txt)(0x5C9122C3)()
+F (..\readme.txt)(0x5CB366B8)()
 F (..\Task\Task_TCPIP.c)(0x5C7553A9)(-c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I..\uCOSII\CONFIG -I..\uCOSII\PORT -I..\uCOSII\CORE -I..\FWLIB\inc -I..\CMSIS -I..\DRIVE -I..\USER -I..\Task -I..\Internet -I..\Ethernet -I..\Ethernet\W5500 -I..\Internet -I..\Internet\HTTP -I..\Internet\DNS -I..\Internet\DHCP -I..\MQTT -I..\Framework --c99-I "C:\Program Files (x86)\Keil\ARM\RV31\INC"-I "C:\Program Files (x86)\Keil\ARM\CMSIS\Include"-I "C:\Program Files (x86)\Keil\ARM\Inc\ST\STM32F10x"-DSTM32F10X_CL -DUSE_STDPERIPH_DRIVER-o ..\output\task_tcpip.o --depend ..\output\task_tcpip.d)
 I (..\Framework\main.h)(0x5C7019B4)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\stdio.h)(0x51C7C554)
@@ -7,7 +7,7 @@ I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\stdlib.h)(0x51C7C554)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\string.h)(0x51C7C554)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\math.h)(0x51C7C554)
 I (..\Framework\t_list.h)(0x59A7A1A2)
-I (..\Framework\platform_cfg.h)(0x5C9CEBB9)
+I (..\Framework\platform_cfg.h)(0x5CB0BA5F)
 I (..\CMSIS\stm32f10x.h)(0x59A7A1A1)
 I (..\CMSIS\core_cm3.h)(0x59A7A1A1)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\stdint.h)(0x51C7C554)
@@ -36,7 +36,7 @@ I (..\FWLIB\inc\stm32f10x_tim.h)(0x59A7A1A1)
 I (..\FWLIB\inc\stm32f10x_usart.h)(0x59A7A1A1)
 I (..\FWLIB\inc\stm32f10x_wwdg.h)(0x59A7A1A1)
 I (..\FWLIB\inc\misc.h)(0x59A7A1A1)
-I (..\Framework\variable.h)(0x5CAC91C9)
+I (..\Framework\variable.h)(0x5CB24130)
 I (..\Ethernet\wizchip_conf.h)(0x59A7A1A1)
 I (..\Ethernet\W5500/w5500.h)(0x59A7A1A1)
 I (..\uCOSII\CORE\ucos_ii.h)(0x59A7A1A2)
@@ -53,7 +53,7 @@ I (..\uCOSII\CONFIG\includes.h)(0x59A7A1A2)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\ctype.h)(0x51C7C554)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\stdarg.h)(0x51C7C554)
 I (..\Framework\interface.h)(0x5C6EAC91)
-I (..\Framework\framework.h)(0x5CA031E9)
+I (..\Framework\framework.h)(0x5CB15921)
 I (..\DRIVE\DrTimer.h)(0x5C87E14A)
 I (..\DRIVE\DrGpio.h)(0x5C700791)
 I (..\DRIVE\DrSpi.h)(0x59A7A1A1)
@@ -62,7 +62,7 @@ I (..\DRIVE\DrUart.h)(0x5C8115EB)
 I (..\DRIVE\DrCan.h)(0x59A7A1A1)
 I (..\DRIVE\DrAdc.h)(0x5C6908D9)
 I (..\DRIVE\DrEthernet.h)(0x59A7A1A1)
-I (..\Task\Task_Main.h)(0x5CA8D576)
+I (..\Task\Task_Main.h)(0x5CB1E5CD)
 I (..\Task\Task_TCPIP.h)(0x5C7139A0)
 I (..\Ethernet\socket.h)(0x59A7A1A1)
 I (..\Internet\DHCP\dhcp.h)(0x59A7A1A1)
@@ -76,7 +76,7 @@ I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\stdlib.h)(0x51C7C554)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\string.h)(0x51C7C554)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\math.h)(0x51C7C554)
 I (..\Framework\t_list.h)(0x59A7A1A2)
-I (..\Framework\platform_cfg.h)(0x5C9CEBB9)
+I (..\Framework\platform_cfg.h)(0x5CB0BA5F)
 I (..\CMSIS\stm32f10x.h)(0x59A7A1A1)
 I (..\CMSIS\core_cm3.h)(0x59A7A1A1)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\stdint.h)(0x51C7C554)
@@ -105,7 +105,7 @@ I (..\FWLIB\inc\stm32f10x_tim.h)(0x59A7A1A1)
 I (..\FWLIB\inc\stm32f10x_usart.h)(0x59A7A1A1)
 I (..\FWLIB\inc\stm32f10x_wwdg.h)(0x59A7A1A1)
 I (..\FWLIB\inc\misc.h)(0x59A7A1A1)
-I (..\Framework\variable.h)(0x5CAC91C9)
+I (..\Framework\variable.h)(0x5CB24130)
 I (..\Ethernet\wizchip_conf.h)(0x59A7A1A1)
 I (..\Ethernet\W5500/w5500.h)(0x59A7A1A1)
 I (..\uCOSII\CORE\ucos_ii.h)(0x59A7A1A2)
@@ -122,7 +122,7 @@ I (..\uCOSII\CONFIG\includes.h)(0x59A7A1A2)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\ctype.h)(0x51C7C554)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\stdarg.h)(0x51C7C554)
 I (..\Framework\interface.h)(0x5C6EAC91)
-I (..\Framework\framework.h)(0x5CA031E9)
+I (..\Framework\framework.h)(0x5CB15921)
 I (..\DRIVE\DrTimer.h)(0x5C87E14A)
 I (..\DRIVE\DrGpio.h)(0x5C700791)
 I (..\DRIVE\DrSpi.h)(0x59A7A1A1)
@@ -131,16 +131,16 @@ I (..\DRIVE\DrUart.h)(0x5C8115EB)
 I (..\DRIVE\DrCan.h)(0x59A7A1A1)
 I (..\DRIVE\DrAdc.h)(0x5C6908D9)
 I (..\DRIVE\DrEthernet.h)(0x59A7A1A1)
-I (..\Task\Task_Main.h)(0x5CA8D576)
+I (..\Task\Task_Main.h)(0x5CB1E5CD)
 I (..\Task\Task_IO.h)(0x5CA38178)
-F (..\Task\Task_Main.c)(0x5C9EE68E)(-c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I..\uCOSII\CONFIG -I..\uCOSII\PORT -I..\uCOSII\CORE -I..\FWLIB\inc -I..\CMSIS -I..\DRIVE -I..\USER -I..\Task -I..\Internet -I..\Ethernet -I..\Ethernet\W5500 -I..\Internet -I..\Internet\HTTP -I..\Internet\DNS -I..\Internet\DHCP -I..\MQTT -I..\Framework --c99-I "C:\Program Files (x86)\Keil\ARM\RV31\INC"-I "C:\Program Files (x86)\Keil\ARM\CMSIS\Include"-I "C:\Program Files (x86)\Keil\ARM\Inc\ST\STM32F10x"-DSTM32F10X_CL -DUSE_STDPERIPH_DRIVER-o ..\output\task_main.o --depend ..\output\task_main.d)
+F (..\Task\Task_Main.c)(0x5CB1590C)(-c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I..\uCOSII\CONFIG -I..\uCOSII\PORT -I..\uCOSII\CORE -I..\FWLIB\inc -I..\CMSIS -I..\DRIVE -I..\USER -I..\Task -I..\Internet -I..\Ethernet -I..\Ethernet\W5500 -I..\Internet -I..\Internet\HTTP -I..\Internet\DNS -I..\Internet\DHCP -I..\MQTT -I..\Framework --c99-I "C:\Program Files (x86)\Keil\ARM\RV31\INC"-I "C:\Program Files (x86)\Keil\ARM\CMSIS\Include"-I "C:\Program Files (x86)\Keil\ARM\Inc\ST\STM32F10x"-DSTM32F10X_CL -DUSE_STDPERIPH_DRIVER-o ..\output\task_main.o --depend ..\output\task_main.d)
 I (..\Framework\main.h)(0x5C7019B4)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\stdio.h)(0x51C7C554)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\stdlib.h)(0x51C7C554)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\string.h)(0x51C7C554)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\math.h)(0x51C7C554)
 I (..\Framework\t_list.h)(0x59A7A1A2)
-I (..\Framework\platform_cfg.h)(0x5C9CEBB9)
+I (..\Framework\platform_cfg.h)(0x5CB0BA5F)
 I (..\CMSIS\stm32f10x.h)(0x59A7A1A1)
 I (..\CMSIS\core_cm3.h)(0x59A7A1A1)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\stdint.h)(0x51C7C554)
@@ -169,7 +169,7 @@ I (..\FWLIB\inc\stm32f10x_tim.h)(0x59A7A1A1)
 I (..\FWLIB\inc\stm32f10x_usart.h)(0x59A7A1A1)
 I (..\FWLIB\inc\stm32f10x_wwdg.h)(0x59A7A1A1)
 I (..\FWLIB\inc\misc.h)(0x59A7A1A1)
-I (..\Framework\variable.h)(0x5CAC91C9)
+I (..\Framework\variable.h)(0x5CB24130)
 I (..\Ethernet\wizchip_conf.h)(0x59A7A1A1)
 I (..\Ethernet\W5500/w5500.h)(0x59A7A1A1)
 I (..\uCOSII\CORE\ucos_ii.h)(0x59A7A1A2)
@@ -186,7 +186,7 @@ I (..\uCOSII\CONFIG\includes.h)(0x59A7A1A2)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\ctype.h)(0x51C7C554)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\stdarg.h)(0x51C7C554)
 I (..\Framework\interface.h)(0x5C6EAC91)
-I (..\Framework\framework.h)(0x5CA031E9)
+I (..\Framework\framework.h)(0x5CB15921)
 I (..\DRIVE\DrTimer.h)(0x5C87E14A)
 I (..\DRIVE\DrGpio.h)(0x5C700791)
 I (..\DRIVE\DrSpi.h)(0x59A7A1A1)
@@ -195,17 +195,17 @@ I (..\DRIVE\DrUart.h)(0x5C8115EB)
 I (..\DRIVE\DrCan.h)(0x59A7A1A1)
 I (..\DRIVE\DrAdc.h)(0x5C6908D9)
 I (..\DRIVE\DrEthernet.h)(0x59A7A1A1)
-I (..\Task\Task_Main.h)(0x5CA8D576)
+I (..\Task\Task_Main.h)(0x5CB1E5CD)
 I (..\Task\Task_TCPIP.h)(0x5C7139A0)
 I (..\Task\Task_ModbusTCP.h)(0x5C7139CF)
-I (..\Task\Task_MB_RTU_Master.h)(0x5CA8E462)
+I (..\Task\Task_MB_RTU_Master.h)(0x5CB2F791)
 I (..\Framework\t_list_impl.h)(0x59A7A1A2)
 I (..\Task\Task_MQTT.h)(0x5C7139FB)
 I (..\DRIVE\cJSON.h)(0x59A7A1A1)
 I (..\Task\Task_HTTP.h)(0x59A7A1A2)
 I (..\Task\Task_IO.h)(0x5CA38178)
 I (..\Task\Task_PC_Com.h)(0x5C8A85A2)
-I (..\Task\Task_Freq_Convert.h)(0x5CACA264)
+I (..\Task\Task_Freq_Convert.h)(0x5CB36091)
 I (..\MQTT\transport.h)(0x59A7A1A2)
 F (..\Task\Task_ModbusTCP.c)(0x5C8DCCB6)(-c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I..\uCOSII\CONFIG -I..\uCOSII\PORT -I..\uCOSII\CORE -I..\FWLIB\inc -I..\CMSIS -I..\DRIVE -I..\USER -I..\Task -I..\Internet -I..\Ethernet -I..\Ethernet\W5500 -I..\Internet -I..\Internet\HTTP -I..\Internet\DNS -I..\Internet\DHCP -I..\MQTT -I..\Framework --c99-I "C:\Program Files (x86)\Keil\ARM\RV31\INC"-I "C:\Program Files (x86)\Keil\ARM\CMSIS\Include"-I "C:\Program Files (x86)\Keil\ARM\Inc\ST\STM32F10x"-DSTM32F10X_CL -DUSE_STDPERIPH_DRIVER-o ..\output\task_modbustcp.o --depend ..\output\task_modbustcp.d)
 I (..\Task\Task_ModbusTCP.h)(0x5C7139CF)
@@ -215,7 +215,7 @@ I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\stdlib.h)(0x51C7C554)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\string.h)(0x51C7C554)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\math.h)(0x51C7C554)
 I (..\Framework\t_list.h)(0x59A7A1A2)
-I (..\Framework\platform_cfg.h)(0x5C9CEBB9)
+I (..\Framework\platform_cfg.h)(0x5CB0BA5F)
 I (..\CMSIS\stm32f10x.h)(0x59A7A1A1)
 I (..\CMSIS\core_cm3.h)(0x59A7A1A1)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\stdint.h)(0x51C7C554)
@@ -244,7 +244,7 @@ I (..\FWLIB\inc\stm32f10x_tim.h)(0x59A7A1A1)
 I (..\FWLIB\inc\stm32f10x_usart.h)(0x59A7A1A1)
 I (..\FWLIB\inc\stm32f10x_wwdg.h)(0x59A7A1A1)
 I (..\FWLIB\inc\misc.h)(0x59A7A1A1)
-I (..\Framework\variable.h)(0x5CAC91C9)
+I (..\Framework\variable.h)(0x5CB24130)
 I (..\Ethernet\wizchip_conf.h)(0x59A7A1A1)
 I (..\Ethernet\W5500/w5500.h)(0x59A7A1A1)
 I (..\uCOSII\CORE\ucos_ii.h)(0x59A7A1A2)
@@ -261,7 +261,7 @@ I (..\uCOSII\CONFIG\includes.h)(0x59A7A1A2)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\ctype.h)(0x51C7C554)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\stdarg.h)(0x51C7C554)
 I (..\Framework\interface.h)(0x5C6EAC91)
-I (..\Framework\framework.h)(0x5CA031E9)
+I (..\Framework\framework.h)(0x5CB15921)
 I (..\DRIVE\DrTimer.h)(0x5C87E14A)
 I (..\DRIVE\DrGpio.h)(0x5C700791)
 I (..\DRIVE\DrSpi.h)(0x59A7A1A1)
@@ -270,22 +270,22 @@ I (..\DRIVE\DrUart.h)(0x5C8115EB)
 I (..\DRIVE\DrCan.h)(0x59A7A1A1)
 I (..\DRIVE\DrAdc.h)(0x5C6908D9)
 I (..\DRIVE\DrEthernet.h)(0x59A7A1A1)
-I (..\Task\Task_Main.h)(0x5CA8D576)
+I (..\Task\Task_Main.h)(0x5CB1E5CD)
 I (..\Task\Task_PC_Com.h)(0x5C8A85A2)
 I (..\Ethernet\socket.h)(0x59A7A1A1)
 I (..\Internet\DHCP\dhcp.h)(0x59A7A1A1)
 I (..\Internet\HTTP\httputil.h)(0x59A7A1A2)
 I (..\Internet\HTTP\util.h)(0x5C826B2F)
 I (..\Internet\HTTP\httpd.h)(0x59A7A1A2)
-F (..\Task\Task_Main.h)(0x5CA8D576)()
-F (..\Task\Task_PC_Com.c)(0x5CA8E39B)(-c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I..\uCOSII\CONFIG -I..\uCOSII\PORT -I..\uCOSII\CORE -I..\FWLIB\inc -I..\CMSIS -I..\DRIVE -I..\USER -I..\Task -I..\Internet -I..\Ethernet -I..\Ethernet\W5500 -I..\Internet -I..\Internet\HTTP -I..\Internet\DNS -I..\Internet\DHCP -I..\MQTT -I..\Framework --c99-I "C:\Program Files (x86)\Keil\ARM\RV31\INC"-I "C:\Program Files (x86)\Keil\ARM\CMSIS\Include"-I "C:\Program Files (x86)\Keil\ARM\Inc\ST\STM32F10x"-DSTM32F10X_CL -DUSE_STDPERIPH_DRIVER-o ..\output\task_pc_com.o --depend ..\output\task_pc_com.d)
+F (..\Task\Task_Main.h)(0x5CB1E5CD)()
+F (..\Task\Task_PC_Com.c)(0x5CB323C3)(-c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I..\uCOSII\CONFIG -I..\uCOSII\PORT -I..\uCOSII\CORE -I..\FWLIB\inc -I..\CMSIS -I..\DRIVE -I..\USER -I..\Task -I..\Internet -I..\Ethernet -I..\Ethernet\W5500 -I..\Internet -I..\Internet\HTTP -I..\Internet\DNS -I..\Internet\DHCP -I..\MQTT -I..\Framework --c99-I "C:\Program Files (x86)\Keil\ARM\RV31\INC"-I "C:\Program Files (x86)\Keil\ARM\CMSIS\Include"-I "C:\Program Files (x86)\Keil\ARM\Inc\ST\STM32F10x"-DSTM32F10X_CL -DUSE_STDPERIPH_DRIVER-o ..\output\task_pc_com.o --depend ..\output\task_pc_com.d)
 I (..\Framework\main.h)(0x5C7019B4)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\stdio.h)(0x51C7C554)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\stdlib.h)(0x51C7C554)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\string.h)(0x51C7C554)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\math.h)(0x51C7C554)
 I (..\Framework\t_list.h)(0x59A7A1A2)
-I (..\Framework\platform_cfg.h)(0x5C9CEBB9)
+I (..\Framework\platform_cfg.h)(0x5CB0BA5F)
 I (..\CMSIS\stm32f10x.h)(0x59A7A1A1)
 I (..\CMSIS\core_cm3.h)(0x59A7A1A1)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\stdint.h)(0x51C7C554)
@@ -314,7 +314,7 @@ I (..\FWLIB\inc\stm32f10x_tim.h)(0x59A7A1A1)
 I (..\FWLIB\inc\stm32f10x_usart.h)(0x59A7A1A1)
 I (..\FWLIB\inc\stm32f10x_wwdg.h)(0x59A7A1A1)
 I (..\FWLIB\inc\misc.h)(0x59A7A1A1)
-I (..\Framework\variable.h)(0x5CAC91C9)
+I (..\Framework\variable.h)(0x5CB24130)
 I (..\Ethernet\wizchip_conf.h)(0x59A7A1A1)
 I (..\Ethernet\W5500/w5500.h)(0x59A7A1A1)
 I (..\uCOSII\CORE\ucos_ii.h)(0x59A7A1A2)
@@ -331,7 +331,7 @@ I (..\uCOSII\CONFIG\includes.h)(0x59A7A1A2)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\ctype.h)(0x51C7C554)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\stdarg.h)(0x51C7C554)
 I (..\Framework\interface.h)(0x5C6EAC91)
-I (..\Framework\framework.h)(0x5CA031E9)
+I (..\Framework\framework.h)(0x5CB15921)
 I (..\DRIVE\DrTimer.h)(0x5C87E14A)
 I (..\DRIVE\DrGpio.h)(0x5C700791)
 I (..\DRIVE\DrSpi.h)(0x59A7A1A1)
@@ -340,18 +340,18 @@ I (..\DRIVE\DrUart.h)(0x5C8115EB)
 I (..\DRIVE\DrCan.h)(0x59A7A1A1)
 I (..\DRIVE\DrAdc.h)(0x5C6908D9)
 I (..\DRIVE\DrEthernet.h)(0x59A7A1A1)
-I (..\Task\Task_Main.h)(0x5CA8D576)
+I (..\Task\Task_Main.h)(0x5CB1E5CD)
 I (..\Task\Task_PC_Com.h)(0x5C8A85A2)
-I (..\Task\Task_Freq_Convert.h)(0x5CACA264)
+I (..\Task\Task_Freq_Convert.h)(0x5CB36091)
 I (..\Task\Task_IO.h)(0x5CA38178)
-F (..\Task\Task_MB_RTU_Master.c)(0x5CAC94DD)(-c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I..\uCOSII\CONFIG -I..\uCOSII\PORT -I..\uCOSII\CORE -I..\FWLIB\inc -I..\CMSIS -I..\DRIVE -I..\USER -I..\Task -I..\Internet -I..\Ethernet -I..\Ethernet\W5500 -I..\Internet -I..\Internet\HTTP -I..\Internet\DNS -I..\Internet\DHCP -I..\MQTT -I..\Framework --c99-I "C:\Program Files (x86)\Keil\ARM\RV31\INC"-I "C:\Program Files (x86)\Keil\ARM\CMSIS\Include"-I "C:\Program Files (x86)\Keil\ARM\Inc\ST\STM32F10x"-DSTM32F10X_CL -DUSE_STDPERIPH_DRIVER-o ..\output\task_mb_rtu_master.o --depend ..\output\task_mb_rtu_master.d)
+F (..\Task\Task_MB_RTU_Master.c)(0x5CB3585A)(-c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I..\uCOSII\CONFIG -I..\uCOSII\PORT -I..\uCOSII\CORE -I..\FWLIB\inc -I..\CMSIS -I..\DRIVE -I..\USER -I..\Task -I..\Internet -I..\Ethernet -I..\Ethernet\W5500 -I..\Internet -I..\Internet\HTTP -I..\Internet\DNS -I..\Internet\DHCP -I..\MQTT -I..\Framework --c99-I "C:\Program Files (x86)\Keil\ARM\RV31\INC"-I "C:\Program Files (x86)\Keil\ARM\CMSIS\Include"-I "C:\Program Files (x86)\Keil\ARM\Inc\ST\STM32F10x"-DSTM32F10X_CL -DUSE_STDPERIPH_DRIVER-o ..\output\task_mb_rtu_master.o --depend ..\output\task_mb_rtu_master.d)
 I (..\Framework\main.h)(0x5C7019B4)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\stdio.h)(0x51C7C554)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\stdlib.h)(0x51C7C554)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\string.h)(0x51C7C554)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\math.h)(0x51C7C554)
 I (..\Framework\t_list.h)(0x59A7A1A2)
-I (..\Framework\platform_cfg.h)(0x5C9CEBB9)
+I (..\Framework\platform_cfg.h)(0x5CB0BA5F)
 I (..\CMSIS\stm32f10x.h)(0x59A7A1A1)
 I (..\CMSIS\core_cm3.h)(0x59A7A1A1)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\stdint.h)(0x51C7C554)
@@ -380,7 +380,7 @@ I (..\FWLIB\inc\stm32f10x_tim.h)(0x59A7A1A1)
 I (..\FWLIB\inc\stm32f10x_usart.h)(0x59A7A1A1)
 I (..\FWLIB\inc\stm32f10x_wwdg.h)(0x59A7A1A1)
 I (..\FWLIB\inc\misc.h)(0x59A7A1A1)
-I (..\Framework\variable.h)(0x5CAC91C9)
+I (..\Framework\variable.h)(0x5CB24130)
 I (..\Ethernet\wizchip_conf.h)(0x59A7A1A1)
 I (..\Ethernet\W5500/w5500.h)(0x59A7A1A1)
 I (..\uCOSII\CORE\ucos_ii.h)(0x59A7A1A2)
@@ -397,7 +397,7 @@ I (..\uCOSII\CONFIG\includes.h)(0x59A7A1A2)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\ctype.h)(0x51C7C554)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\stdarg.h)(0x51C7C554)
 I (..\Framework\interface.h)(0x5C6EAC91)
-I (..\Framework\framework.h)(0x5CA031E9)
+I (..\Framework\framework.h)(0x5CB15921)
 I (..\DRIVE\DrTimer.h)(0x5C87E14A)
 I (..\DRIVE\DrGpio.h)(0x5C700791)
 I (..\DRIVE\DrSpi.h)(0x59A7A1A1)
@@ -406,17 +406,17 @@ I (..\DRIVE\DrUart.h)(0x5C8115EB)
 I (..\DRIVE\DrCan.h)(0x59A7A1A1)
 I (..\DRIVE\DrAdc.h)(0x5C6908D9)
 I (..\DRIVE\DrEthernet.h)(0x59A7A1A1)
-I (..\Task\Task_Main.h)(0x5CA8D576)
-I (..\Task\Task_MB_RTU_Master.h)(0x5CA8E462)
+I (..\Task\Task_Main.h)(0x5CB1E5CD)
+I (..\Task\Task_MB_RTU_Master.h)(0x5CB2F791)
 I (..\Framework\t_list_impl.h)(0x59A7A1A2)
-F (..\Task\Task_Freq_Convert.c)(0x5CAB704A)(-c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I..\uCOSII\CONFIG -I..\uCOSII\PORT -I..\uCOSII\CORE -I..\FWLIB\inc -I..\CMSIS -I..\DRIVE -I..\USER -I..\Task -I..\Internet -I..\Ethernet -I..\Ethernet\W5500 -I..\Internet -I..\Internet\HTTP -I..\Internet\DNS -I..\Internet\DHCP -I..\MQTT -I..\Framework --c99-I "C:\Program Files (x86)\Keil\ARM\RV31\INC"-I "C:\Program Files (x86)\Keil\ARM\CMSIS\Include"-I "C:\Program Files (x86)\Keil\ARM\Inc\ST\STM32F10x"-DSTM32F10X_CL -DUSE_STDPERIPH_DRIVER-o ..\output\task_freq_convert.o --depend ..\output\task_freq_convert.d)
+F (..\Task\Task_Freq_Convert.c)(0x5CB3665A)(-c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I..\uCOSII\CONFIG -I..\uCOSII\PORT -I..\uCOSII\CORE -I..\FWLIB\inc -I..\CMSIS -I..\DRIVE -I..\USER -I..\Task -I..\Internet -I..\Ethernet -I..\Ethernet\W5500 -I..\Internet -I..\Internet\HTTP -I..\Internet\DNS -I..\Internet\DHCP -I..\MQTT -I..\Framework --c99-I "C:\Program Files (x86)\Keil\ARM\RV31\INC"-I "C:\Program Files (x86)\Keil\ARM\CMSIS\Include"-I "C:\Program Files (x86)\Keil\ARM\Inc\ST\STM32F10x"-DSTM32F10X_CL -DUSE_STDPERIPH_DRIVER-o ..\output\task_freq_convert.o --depend ..\output\task_freq_convert.d)
 I (..\Framework\main.h)(0x5C7019B4)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\stdio.h)(0x51C7C554)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\stdlib.h)(0x51C7C554)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\string.h)(0x51C7C554)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\math.h)(0x51C7C554)
 I (..\Framework\t_list.h)(0x59A7A1A2)
-I (..\Framework\platform_cfg.h)(0x5C9CEBB9)
+I (..\Framework\platform_cfg.h)(0x5CB0BA5F)
 I (..\CMSIS\stm32f10x.h)(0x59A7A1A1)
 I (..\CMSIS\core_cm3.h)(0x59A7A1A1)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\stdint.h)(0x51C7C554)
@@ -445,7 +445,7 @@ I (..\FWLIB\inc\stm32f10x_tim.h)(0x59A7A1A1)
 I (..\FWLIB\inc\stm32f10x_usart.h)(0x59A7A1A1)
 I (..\FWLIB\inc\stm32f10x_wwdg.h)(0x59A7A1A1)
 I (..\FWLIB\inc\misc.h)(0x59A7A1A1)
-I (..\Framework\variable.h)(0x5CAC91C9)
+I (..\Framework\variable.h)(0x5CB24130)
 I (..\Ethernet\wizchip_conf.h)(0x59A7A1A1)
 I (..\Ethernet\W5500/w5500.h)(0x59A7A1A1)
 I (..\uCOSII\CORE\ucos_ii.h)(0x59A7A1A2)
@@ -462,7 +462,7 @@ I (..\uCOSII\CONFIG\includes.h)(0x59A7A1A2)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\ctype.h)(0x51C7C554)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\stdarg.h)(0x51C7C554)
 I (..\Framework\interface.h)(0x5C6EAC91)
-I (..\Framework\framework.h)(0x5CA031E9)
+I (..\Framework\framework.h)(0x5CB15921)
 I (..\DRIVE\DrTimer.h)(0x5C87E14A)
 I (..\DRIVE\DrGpio.h)(0x5C700791)
 I (..\DRIVE\DrSpi.h)(0x59A7A1A1)
@@ -471,14 +471,14 @@ I (..\DRIVE\DrUart.h)(0x5C8115EB)
 I (..\DRIVE\DrCan.h)(0x59A7A1A1)
 I (..\DRIVE\DrAdc.h)(0x5C6908D9)
 I (..\DRIVE\DrEthernet.h)(0x59A7A1A1)
-I (..\Task\Task_Main.h)(0x5CA8D576)
+I (..\Task\Task_Main.h)(0x5CB1E5CD)
 I (..\Task\Task_IO.h)(0x5CA38178)
-I (..\Task\Task_MB_RTU_Master.h)(0x5CA8E462)
+I (..\Task\Task_MB_RTU_Master.h)(0x5CB2F791)
 I (..\Framework\t_list_impl.h)(0x59A7A1A2)
-I (..\Task\Task_Freq_Convert.h)(0x5CACA264)
+I (..\Task\Task_Freq_Convert.h)(0x5CB36091)
 I (..\Task\Task_MQTT.h)(0x5C7139FB)
 I (..\DRIVE\cJSON.h)(0x59A7A1A1)
-F (..\Framework\platform_cfg.h)(0x5C9CEBB9)()
+F (..\Framework\platform_cfg.h)(0x5CB0BA5F)()
 F (..\Framework\main.c)(0x5CACC602)(-c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I..\uCOSII\CONFIG -I..\uCOSII\PORT -I..\uCOSII\CORE -I..\FWLIB\inc -I..\CMSIS -I..\DRIVE -I..\USER -I..\Task -I..\Internet -I..\Ethernet -I..\Ethernet\W5500 -I..\Internet -I..\Internet\HTTP -I..\Internet\DNS -I..\Internet\DHCP -I..\MQTT -I..\Framework --c99-I "C:\Program Files (x86)\Keil\ARM\RV31\INC"-I "C:\Program Files (x86)\Keil\ARM\CMSIS\Include"-I "C:\Program Files (x86)\Keil\ARM\Inc\ST\STM32F10x"-DSTM32F10X_CL -DUSE_STDPERIPH_DRIVER-o ..\output\main.o --depend ..\output\main.d)
 I (..\Framework\main.h)(0x5C7019B4)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\stdio.h)(0x51C7C554)
@@ -486,7 +486,7 @@ I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\stdlib.h)(0x51C7C554)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\string.h)(0x51C7C554)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\math.h)(0x51C7C554)
 I (..\Framework\t_list.h)(0x59A7A1A2)
-I (..\Framework\platform_cfg.h)(0x5C9CEBB9)
+I (..\Framework\platform_cfg.h)(0x5CB0BA5F)
 I (..\CMSIS\stm32f10x.h)(0x59A7A1A1)
 I (..\CMSIS\core_cm3.h)(0x59A7A1A1)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\stdint.h)(0x51C7C554)
@@ -515,7 +515,7 @@ I (..\FWLIB\inc\stm32f10x_tim.h)(0x59A7A1A1)
 I (..\FWLIB\inc\stm32f10x_usart.h)(0x59A7A1A1)
 I (..\FWLIB\inc\stm32f10x_wwdg.h)(0x59A7A1A1)
 I (..\FWLIB\inc\misc.h)(0x59A7A1A1)
-I (..\Framework\variable.h)(0x5CAC91C9)
+I (..\Framework\variable.h)(0x5CB24130)
 I (..\Ethernet\wizchip_conf.h)(0x59A7A1A1)
 I (..\Ethernet\W5500/w5500.h)(0x59A7A1A1)
 I (..\uCOSII\CORE\ucos_ii.h)(0x59A7A1A2)
@@ -532,7 +532,7 @@ I (..\uCOSII\CONFIG\includes.h)(0x59A7A1A2)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\ctype.h)(0x51C7C554)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\stdarg.h)(0x51C7C554)
 I (..\Framework\interface.h)(0x5C6EAC91)
-I (..\Framework\framework.h)(0x5CA031E9)
+I (..\Framework\framework.h)(0x5CB15921)
 I (..\DRIVE\DrTimer.h)(0x5C87E14A)
 I (..\DRIVE\DrGpio.h)(0x5C700791)
 I (..\DRIVE\DrSpi.h)(0x59A7A1A1)
@@ -541,16 +541,16 @@ I (..\DRIVE\DrUart.h)(0x5C8115EB)
 I (..\DRIVE\DrCan.h)(0x59A7A1A1)
 I (..\DRIVE\DrAdc.h)(0x5C6908D9)
 I (..\DRIVE\DrEthernet.h)(0x59A7A1A1)
-I (..\Task\Task_Main.h)(0x5CA8D576)
+I (..\Task\Task_Main.h)(0x5CB1E5CD)
 F (..\Framework\main.h)(0x5C7019B4)()
-F (..\Framework\framework.c)(0x5CACBFA5)(-c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I..\uCOSII\CONFIG -I..\uCOSII\PORT -I..\uCOSII\CORE -I..\FWLIB\inc -I..\CMSIS -I..\DRIVE -I..\USER -I..\Task -I..\Internet -I..\Ethernet -I..\Ethernet\W5500 -I..\Internet -I..\Internet\HTTP -I..\Internet\DNS -I..\Internet\DHCP -I..\MQTT -I..\Framework --c99-I "C:\Program Files (x86)\Keil\ARM\RV31\INC"-I "C:\Program Files (x86)\Keil\ARM\CMSIS\Include"-I "C:\Program Files (x86)\Keil\ARM\Inc\ST\STM32F10x"-DSTM32F10X_CL -DUSE_STDPERIPH_DRIVER-o ..\output\framework.o --depend ..\output\framework.d)
+F (..\Framework\framework.c)(0x5CB32372)(-c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I..\uCOSII\CONFIG -I..\uCOSII\PORT -I..\uCOSII\CORE -I..\FWLIB\inc -I..\CMSIS -I..\DRIVE -I..\USER -I..\Task -I..\Internet -I..\Ethernet -I..\Ethernet\W5500 -I..\Internet -I..\Internet\HTTP -I..\Internet\DNS -I..\Internet\DHCP -I..\MQTT -I..\Framework --c99-I "C:\Program Files (x86)\Keil\ARM\RV31\INC"-I "C:\Program Files (x86)\Keil\ARM\CMSIS\Include"-I "C:\Program Files (x86)\Keil\ARM\Inc\ST\STM32F10x"-DSTM32F10X_CL -DUSE_STDPERIPH_DRIVER-o ..\output\framework.o --depend ..\output\framework.d)
 I (..\Framework\main.h)(0x5C7019B4)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\stdio.h)(0x51C7C554)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\stdlib.h)(0x51C7C554)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\string.h)(0x51C7C554)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\math.h)(0x51C7C554)
 I (..\Framework\t_list.h)(0x59A7A1A2)
-I (..\Framework\platform_cfg.h)(0x5C9CEBB9)
+I (..\Framework\platform_cfg.h)(0x5CB0BA5F)
 I (..\CMSIS\stm32f10x.h)(0x59A7A1A1)
 I (..\CMSIS\core_cm3.h)(0x59A7A1A1)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\stdint.h)(0x51C7C554)
@@ -579,7 +579,7 @@ I (..\FWLIB\inc\stm32f10x_tim.h)(0x59A7A1A1)
 I (..\FWLIB\inc\stm32f10x_usart.h)(0x59A7A1A1)
 I (..\FWLIB\inc\stm32f10x_wwdg.h)(0x59A7A1A1)
 I (..\FWLIB\inc\misc.h)(0x59A7A1A1)
-I (..\Framework\variable.h)(0x5CAC91C9)
+I (..\Framework\variable.h)(0x5CB24130)
 I (..\Ethernet\wizchip_conf.h)(0x59A7A1A1)
 I (..\Ethernet\W5500/w5500.h)(0x59A7A1A1)
 I (..\uCOSII\CORE\ucos_ii.h)(0x59A7A1A2)
@@ -596,7 +596,7 @@ I (..\uCOSII\CONFIG\includes.h)(0x59A7A1A2)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\ctype.h)(0x51C7C554)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\stdarg.h)(0x51C7C554)
 I (..\Framework\interface.h)(0x5C6EAC91)
-I (..\Framework\framework.h)(0x5CA031E9)
+I (..\Framework\framework.h)(0x5CB15921)
 I (..\DRIVE\DrTimer.h)(0x5C87E14A)
 I (..\DRIVE\DrGpio.h)(0x5C700791)
 I (..\DRIVE\DrSpi.h)(0x59A7A1A1)
@@ -605,16 +605,16 @@ I (..\DRIVE\DrUart.h)(0x5C8115EB)
 I (..\DRIVE\DrCan.h)(0x59A7A1A1)
 I (..\DRIVE\DrAdc.h)(0x5C6908D9)
 I (..\DRIVE\DrEthernet.h)(0x59A7A1A1)
-I (..\Task\Task_Main.h)(0x5CA8D576)
+I (..\Task\Task_Main.h)(0x5CB1E5CD)
 I (..\Task\Task_TCPIP.h)(0x5C7139A0)
 I (..\Task\Task_ModbusTCp.h)(0x5C7139CF)
 I (..\Task\Task_MQTT.h)(0x5C7139FB)
 I (..\DRIVE\cJSON.h)(0x59A7A1A1)
 I (..\Task\Task_IO.h)(0x5CA38178)
-I (..\Task\Task_MB_RTU_Master.h)(0x5CA8E462)
+I (..\Task\Task_MB_RTU_Master.h)(0x5CB2F791)
 I (..\Framework\t_list_impl.h)(0x59A7A1A2)
-I (..\Task\Task_Freq_Convert.h)(0x5CACA264)
-F (..\Framework\framework.h)(0x5CA031E9)()
+I (..\Task\Task_Freq_Convert.h)(0x5CB36091)
+F (..\Framework\framework.h)(0x5CB15921)()
 F (..\Framework\interface.c)(0x5CA02C0A)(-c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I..\uCOSII\CONFIG -I..\uCOSII\PORT -I..\uCOSII\CORE -I..\FWLIB\inc -I..\CMSIS -I..\DRIVE -I..\USER -I..\Task -I..\Internet -I..\Ethernet -I..\Ethernet\W5500 -I..\Internet -I..\Internet\HTTP -I..\Internet\DNS -I..\Internet\DHCP -I..\MQTT -I..\Framework --c99-I "C:\Program Files (x86)\Keil\ARM\RV31\INC"-I "C:\Program Files (x86)\Keil\ARM\CMSIS\Include"-I "C:\Program Files (x86)\Keil\ARM\Inc\ST\STM32F10x"-DSTM32F10X_CL -DUSE_STDPERIPH_DRIVER-o ..\output\interface.o --depend ..\output\interface.d)
 I (..\Framework\main.h)(0x5C7019B4)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\stdio.h)(0x51C7C554)
@@ -622,7 +622,7 @@ I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\stdlib.h)(0x51C7C554)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\string.h)(0x51C7C554)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\math.h)(0x51C7C554)
 I (..\Framework\t_list.h)(0x59A7A1A2)
-I (..\Framework\platform_cfg.h)(0x5C9CEBB9)
+I (..\Framework\platform_cfg.h)(0x5CB0BA5F)
 I (..\CMSIS\stm32f10x.h)(0x59A7A1A1)
 I (..\CMSIS\core_cm3.h)(0x59A7A1A1)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\stdint.h)(0x51C7C554)
@@ -651,7 +651,7 @@ I (..\FWLIB\inc\stm32f10x_tim.h)(0x59A7A1A1)
 I (..\FWLIB\inc\stm32f10x_usart.h)(0x59A7A1A1)
 I (..\FWLIB\inc\stm32f10x_wwdg.h)(0x59A7A1A1)
 I (..\FWLIB\inc\misc.h)(0x59A7A1A1)
-I (..\Framework\variable.h)(0x5CAC91C9)
+I (..\Framework\variable.h)(0x5CB24130)
 I (..\Ethernet\wizchip_conf.h)(0x59A7A1A1)
 I (..\Ethernet\W5500/w5500.h)(0x59A7A1A1)
 I (..\uCOSII\CORE\ucos_ii.h)(0x59A7A1A2)
@@ -668,7 +668,7 @@ I (..\uCOSII\CONFIG\includes.h)(0x59A7A1A2)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\ctype.h)(0x51C7C554)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\stdarg.h)(0x51C7C554)
 I (..\Framework\interface.h)(0x5C6EAC91)
-I (..\Framework\framework.h)(0x5CA031E9)
+I (..\Framework\framework.h)(0x5CB15921)
 I (..\DRIVE\DrTimer.h)(0x5C87E14A)
 I (..\DRIVE\DrGpio.h)(0x5C700791)
 I (..\DRIVE\DrSpi.h)(0x59A7A1A1)
@@ -677,7 +677,7 @@ I (..\DRIVE\DrUart.h)(0x5C8115EB)
 I (..\DRIVE\DrCan.h)(0x59A7A1A1)
 I (..\DRIVE\DrAdc.h)(0x5C6908D9)
 I (..\DRIVE\DrEthernet.h)(0x59A7A1A1)
-I (..\Task\Task_Main.h)(0x5CA8D576)
+I (..\Task\Task_Main.h)(0x5CB1E5CD)
 I (..\Task\Task_IO.h)(0x5CA38178)
 F (..\Framework\interface.h)(0x5C6EAC91)()
 F (..\Framework\stm32f10x_conf.h)(0x59A7A1A2)()
@@ -723,8 +723,8 @@ I (..\uCOSII\PORT\os_cpu.h)(0x59A7A1A2)
 I (..\Framework\main.h)(0x5C7019B4)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\math.h)(0x51C7C554)
 I (..\Framework\t_list.h)(0x59A7A1A2)
-I (..\Framework\platform_cfg.h)(0x5C9CEBB9)
-I (..\Framework\variable.h)(0x5CAC91C9)
+I (..\Framework\platform_cfg.h)(0x5CB0BA5F)
+I (..\Framework\variable.h)(0x5CB24130)
 I (..\Ethernet\wizchip_conf.h)(0x59A7A1A1)
 I (..\Ethernet\W5500/w5500.h)(0x59A7A1A1)
 I (..\MQTT\MQTTPacket.h)(0x59A7A1A2)
@@ -735,7 +735,7 @@ I (..\MQTT\MQTTUnsubscribe.h)(0x59A7A1A2)
 I (..\MQTT\MQTTFormat.h)(0x59A7A1A2)
 I (..\MQTT\StackTrace.h)(0x59A7A1A2)
 I (..\Framework\interface.h)(0x5C6EAC91)
-I (..\Framework\framework.h)(0x5CA031E9)
+I (..\Framework\framework.h)(0x5CB15921)
 I (..\DRIVE\DrTimer.h)(0x5C87E14A)
 I (..\DRIVE\DrGpio.h)(0x5C700791)
 I (..\DRIVE\DrSpi.h)(0x59A7A1A1)
@@ -744,7 +744,7 @@ I (..\DRIVE\DrUart.h)(0x5C8115EB)
 I (..\DRIVE\DrCan.h)(0x59A7A1A1)
 I (..\DRIVE\DrAdc.h)(0x5C6908D9)
 I (..\DRIVE\DrEthernet.h)(0x59A7A1A1)
-I (..\Task\Task_Main.h)(0x5CA8D576)
+I (..\Task\Task_Main.h)(0x5CB1E5CD)
 F (..\Framework\stm32f10x_it.h)(0x59A7A1A2)()
 F (..\Framework\variable.c)(0x5C9F1917)(-c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I..\uCOSII\CONFIG -I..\uCOSII\PORT -I..\uCOSII\CORE -I..\FWLIB\inc -I..\CMSIS -I..\DRIVE -I..\USER -I..\Task -I..\Internet -I..\Ethernet -I..\Ethernet\W5500 -I..\Internet -I..\Internet\HTTP -I..\Internet\DNS -I..\Internet\DHCP -I..\MQTT -I..\Framework --c99-I "C:\Program Files (x86)\Keil\ARM\RV31\INC"-I "C:\Program Files (x86)\Keil\ARM\CMSIS\Include"-I "C:\Program Files (x86)\Keil\ARM\Inc\ST\STM32F10x"-DSTM32F10X_CL -DUSE_STDPERIPH_DRIVER-o ..\output\variable.o --depend ..\output\variable.d)
 I (..\Framework\main.h)(0x5C7019B4)
@@ -753,7 +753,7 @@ I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\stdlib.h)(0x51C7C554)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\string.h)(0x51C7C554)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\math.h)(0x51C7C554)
 I (..\Framework\t_list.h)(0x59A7A1A2)
-I (..\Framework\platform_cfg.h)(0x5C9CEBB9)
+I (..\Framework\platform_cfg.h)(0x5CB0BA5F)
 I (..\CMSIS\stm32f10x.h)(0x59A7A1A1)
 I (..\CMSIS\core_cm3.h)(0x59A7A1A1)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\stdint.h)(0x51C7C554)
@@ -782,7 +782,7 @@ I (..\FWLIB\inc\stm32f10x_tim.h)(0x59A7A1A1)
 I (..\FWLIB\inc\stm32f10x_usart.h)(0x59A7A1A1)
 I (..\FWLIB\inc\stm32f10x_wwdg.h)(0x59A7A1A1)
 I (..\FWLIB\inc\misc.h)(0x59A7A1A1)
-I (..\Framework\variable.h)(0x5CAC91C9)
+I (..\Framework\variable.h)(0x5CB24130)
 I (..\Ethernet\wizchip_conf.h)(0x59A7A1A1)
 I (..\Ethernet\W5500/w5500.h)(0x59A7A1A1)
 I (..\uCOSII\CORE\ucos_ii.h)(0x59A7A1A2)
@@ -799,7 +799,7 @@ I (..\uCOSII\CONFIG\includes.h)(0x59A7A1A2)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\ctype.h)(0x51C7C554)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\stdarg.h)(0x51C7C554)
 I (..\Framework\interface.h)(0x5C6EAC91)
-I (..\Framework\framework.h)(0x5CA031E9)
+I (..\Framework\framework.h)(0x5CB15921)
 I (..\DRIVE\DrTimer.h)(0x5C87E14A)
 I (..\DRIVE\DrGpio.h)(0x5C700791)
 I (..\DRIVE\DrSpi.h)(0x59A7A1A1)
@@ -808,12 +808,12 @@ I (..\DRIVE\DrUart.h)(0x5C8115EB)
 I (..\DRIVE\DrCan.h)(0x59A7A1A1)
 I (..\DRIVE\DrAdc.h)(0x5C6908D9)
 I (..\DRIVE\DrEthernet.h)(0x59A7A1A1)
-I (..\Task\Task_Main.h)(0x5CA8D576)
+I (..\Task\Task_Main.h)(0x5CB1E5CD)
 I (..\Internet\HTTP\httputil.h)(0x59A7A1A2)
 I (..\Ethernet\socket.h)(0x59A7A1A1)
 I (..\Internet\HTTP\util.h)(0x5C826B2F)
 I (..\Internet\HTTP\httpd.h)(0x59A7A1A2)
-F (..\Framework\variable.h)(0x5CAC91C9)()
+F (..\Framework\variable.h)(0x5CB24130)()
 F (..\DRIVE\DrFlash.c)(0x5C7017CC)(-c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I..\uCOSII\CONFIG -I..\uCOSII\PORT -I..\uCOSII\CORE -I..\FWLIB\inc -I..\CMSIS -I..\DRIVE -I..\USER -I..\Task -I..\Internet -I..\Ethernet -I..\Ethernet\W5500 -I..\Internet -I..\Internet\HTTP -I..\Internet\DNS -I..\Internet\DHCP -I..\MQTT -I..\Framework --c99-I "C:\Program Files (x86)\Keil\ARM\RV31\INC"-I "C:\Program Files (x86)\Keil\ARM\CMSIS\Include"-I "C:\Program Files (x86)\Keil\ARM\Inc\ST\STM32F10x"-DSTM32F10X_CL -DUSE_STDPERIPH_DRIVER-o ..\output\drflash.o --depend ..\output\drflash.d)
 I (..\Framework\main.h)(0x5C7019B4)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\stdio.h)(0x51C7C554)
@@ -821,7 +821,7 @@ I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\stdlib.h)(0x51C7C554)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\string.h)(0x51C7C554)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\math.h)(0x51C7C554)
 I (..\Framework\t_list.h)(0x59A7A1A2)
-I (..\Framework\platform_cfg.h)(0x5C9CEBB9)
+I (..\Framework\platform_cfg.h)(0x5CB0BA5F)
 I (..\CMSIS\stm32f10x.h)(0x59A7A1A1)
 I (..\CMSIS\core_cm3.h)(0x59A7A1A1)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\stdint.h)(0x51C7C554)
@@ -850,7 +850,7 @@ I (..\FWLIB\inc\stm32f10x_tim.h)(0x59A7A1A1)
 I (..\FWLIB\inc\stm32f10x_usart.h)(0x59A7A1A1)
 I (..\FWLIB\inc\stm32f10x_wwdg.h)(0x59A7A1A1)
 I (..\FWLIB\inc\misc.h)(0x59A7A1A1)
-I (..\Framework\variable.h)(0x5CAC91C9)
+I (..\Framework\variable.h)(0x5CB24130)
 I (..\Ethernet\wizchip_conf.h)(0x59A7A1A1)
 I (..\Ethernet\W5500/w5500.h)(0x59A7A1A1)
 I (..\uCOSII\CORE\ucos_ii.h)(0x59A7A1A2)
@@ -867,7 +867,7 @@ I (..\uCOSII\CONFIG\includes.h)(0x59A7A1A2)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\ctype.h)(0x51C7C554)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\stdarg.h)(0x51C7C554)
 I (..\Framework\interface.h)(0x5C6EAC91)
-I (..\Framework\framework.h)(0x5CA031E9)
+I (..\Framework\framework.h)(0x5CB15921)
 I (..\DRIVE\DrTimer.h)(0x5C87E14A)
 I (..\DRIVE\DrGpio.h)(0x5C700791)
 I (..\DRIVE\DrSpi.h)(0x59A7A1A1)
@@ -876,16 +876,16 @@ I (..\DRIVE\DrUart.h)(0x5C8115EB)
 I (..\DRIVE\DrCan.h)(0x59A7A1A1)
 I (..\DRIVE\DrAdc.h)(0x5C6908D9)
 I (..\DRIVE\DrEthernet.h)(0x59A7A1A1)
-I (..\Task\Task_Main.h)(0x5CA8D576)
+I (..\Task\Task_Main.h)(0x5CB1E5CD)
 F (..\DRIVE\DrFlash.h)(0x59A7A1A1)()
-F (..\DRIVE\DrTimer.c)(0x5C90EBE4)(-c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I..\uCOSII\CONFIG -I..\uCOSII\PORT -I..\uCOSII\CORE -I..\FWLIB\inc -I..\CMSIS -I..\DRIVE -I..\USER -I..\Task -I..\Internet -I..\Ethernet -I..\Ethernet\W5500 -I..\Internet -I..\Internet\HTTP -I..\Internet\DNS -I..\Internet\DHCP -I..\MQTT -I..\Framework --c99-I "C:\Program Files (x86)\Keil\ARM\RV31\INC"-I "C:\Program Files (x86)\Keil\ARM\CMSIS\Include"-I "C:\Program Files (x86)\Keil\ARM\Inc\ST\STM32F10x"-DSTM32F10X_CL -DUSE_STDPERIPH_DRIVER-o ..\output\drtimer.o --depend ..\output\drtimer.d)
+F (..\DRIVE\DrTimer.c)(0x5CB22B78)(-c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I..\uCOSII\CONFIG -I..\uCOSII\PORT -I..\uCOSII\CORE -I..\FWLIB\inc -I..\CMSIS -I..\DRIVE -I..\USER -I..\Task -I..\Internet -I..\Ethernet -I..\Ethernet\W5500 -I..\Internet -I..\Internet\HTTP -I..\Internet\DNS -I..\Internet\DHCP -I..\MQTT -I..\Framework --c99-I "C:\Program Files (x86)\Keil\ARM\RV31\INC"-I "C:\Program Files (x86)\Keil\ARM\CMSIS\Include"-I "C:\Program Files (x86)\Keil\ARM\Inc\ST\STM32F10x"-DSTM32F10X_CL -DUSE_STDPERIPH_DRIVER-o ..\output\drtimer.o --depend ..\output\drtimer.d)
 I (..\Framework\main.h)(0x5C7019B4)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\stdio.h)(0x51C7C554)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\stdlib.h)(0x51C7C554)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\string.h)(0x51C7C554)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\math.h)(0x51C7C554)
 I (..\Framework\t_list.h)(0x59A7A1A2)
-I (..\Framework\platform_cfg.h)(0x5C9CEBB9)
+I (..\Framework\platform_cfg.h)(0x5CB0BA5F)
 I (..\CMSIS\stm32f10x.h)(0x59A7A1A1)
 I (..\CMSIS\core_cm3.h)(0x59A7A1A1)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\stdint.h)(0x51C7C554)
@@ -914,7 +914,7 @@ I (..\FWLIB\inc\stm32f10x_tim.h)(0x59A7A1A1)
 I (..\FWLIB\inc\stm32f10x_usart.h)(0x59A7A1A1)
 I (..\FWLIB\inc\stm32f10x_wwdg.h)(0x59A7A1A1)
 I (..\FWLIB\inc\misc.h)(0x59A7A1A1)
-I (..\Framework\variable.h)(0x5CAC91C9)
+I (..\Framework\variable.h)(0x5CB24130)
 I (..\Ethernet\wizchip_conf.h)(0x59A7A1A1)
 I (..\Ethernet\W5500/w5500.h)(0x59A7A1A1)
 I (..\uCOSII\CORE\ucos_ii.h)(0x59A7A1A2)
@@ -931,7 +931,7 @@ I (..\uCOSII\CONFIG\includes.h)(0x59A7A1A2)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\ctype.h)(0x51C7C554)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\stdarg.h)(0x51C7C554)
 I (..\Framework\interface.h)(0x5C6EAC91)
-I (..\Framework\framework.h)(0x5CA031E9)
+I (..\Framework\framework.h)(0x5CB15921)
 I (..\DRIVE\DrTimer.h)(0x5C87E14A)
 I (..\DRIVE\DrGpio.h)(0x5C700791)
 I (..\DRIVE\DrSpi.h)(0x59A7A1A1)
@@ -940,7 +940,7 @@ I (..\DRIVE\DrUart.h)(0x5C8115EB)
 I (..\DRIVE\DrCan.h)(0x59A7A1A1)
 I (..\DRIVE\DrAdc.h)(0x5C6908D9)
 I (..\DRIVE\DrEthernet.h)(0x59A7A1A1)
-I (..\Task\Task_Main.h)(0x5CA8D576)
+I (..\Task\Task_Main.h)(0x5CB1E5CD)
 I (..\Task\Task_MQTT.h)(0x5C7139FB)
 I (..\DRIVE\cJSON.h)(0x59A7A1A1)
 I (..\Task\Task_ModbusTCP.h)(0x5C7139CF)
@@ -953,7 +953,7 @@ I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\stdlib.h)(0x51C7C554)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\string.h)(0x51C7C554)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\math.h)(0x51C7C554)
 I (..\Framework\t_list.h)(0x59A7A1A2)
-I (..\Framework\platform_cfg.h)(0x5C9CEBB9)
+I (..\Framework\platform_cfg.h)(0x5CB0BA5F)
 I (..\CMSIS\stm32f10x.h)(0x59A7A1A1)
 I (..\CMSIS\core_cm3.h)(0x59A7A1A1)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\stdint.h)(0x51C7C554)
@@ -982,7 +982,7 @@ I (..\FWLIB\inc\stm32f10x_tim.h)(0x59A7A1A1)
 I (..\FWLIB\inc\stm32f10x_usart.h)(0x59A7A1A1)
 I (..\FWLIB\inc\stm32f10x_wwdg.h)(0x59A7A1A1)
 I (..\FWLIB\inc\misc.h)(0x59A7A1A1)
-I (..\Framework\variable.h)(0x5CAC91C9)
+I (..\Framework\variable.h)(0x5CB24130)
 I (..\Ethernet\wizchip_conf.h)(0x59A7A1A1)
 I (..\Ethernet\W5500/w5500.h)(0x59A7A1A1)
 I (..\uCOSII\CORE\ucos_ii.h)(0x59A7A1A2)
@@ -999,7 +999,7 @@ I (..\uCOSII\CONFIG\includes.h)(0x59A7A1A2)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\ctype.h)(0x51C7C554)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\stdarg.h)(0x51C7C554)
 I (..\Framework\interface.h)(0x5C6EAC91)
-I (..\Framework\framework.h)(0x5CA031E9)
+I (..\Framework\framework.h)(0x5CB15921)
 I (..\DRIVE\DrTimer.h)(0x5C87E14A)
 I (..\DRIVE\DrGpio.h)(0x5C700791)
 I (..\DRIVE\DrSpi.h)(0x59A7A1A1)
@@ -1008,7 +1008,7 @@ I (..\DRIVE\DrUart.h)(0x5C8115EB)
 I (..\DRIVE\DrCan.h)(0x59A7A1A1)
 I (..\DRIVE\DrAdc.h)(0x5C6908D9)
 I (..\DRIVE\DrEthernet.h)(0x59A7A1A1)
-I (..\Task\Task_Main.h)(0x5CA8D576)
+I (..\Task\Task_Main.h)(0x5CB1E5CD)
 F (..\DRIVE\DrGpio.h)(0x5C700791)()
 F (..\DRIVE\DrSpi.c)(0x5C71A0B1)(-c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I..\uCOSII\CONFIG -I..\uCOSII\PORT -I..\uCOSII\CORE -I..\FWLIB\inc -I..\CMSIS -I..\DRIVE -I..\USER -I..\Task -I..\Internet -I..\Ethernet -I..\Ethernet\W5500 -I..\Internet -I..\Internet\HTTP -I..\Internet\DNS -I..\Internet\DHCP -I..\MQTT -I..\Framework --c99-I "C:\Program Files (x86)\Keil\ARM\RV31\INC"-I "C:\Program Files (x86)\Keil\ARM\CMSIS\Include"-I "C:\Program Files (x86)\Keil\ARM\Inc\ST\STM32F10x"-DSTM32F10X_CL -DUSE_STDPERIPH_DRIVER-o ..\output\drspi.o --depend ..\output\drspi.d)
 I (..\Framework\main.h)(0x5C7019B4)
@@ -1017,7 +1017,7 @@ I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\stdlib.h)(0x51C7C554)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\string.h)(0x51C7C554)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\math.h)(0x51C7C554)
 I (..\Framework\t_list.h)(0x59A7A1A2)
-I (..\Framework\platform_cfg.h)(0x5C9CEBB9)
+I (..\Framework\platform_cfg.h)(0x5CB0BA5F)
 I (..\CMSIS\stm32f10x.h)(0x59A7A1A1)
 I (..\CMSIS\core_cm3.h)(0x59A7A1A1)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\stdint.h)(0x51C7C554)
@@ -1046,7 +1046,7 @@ I (..\FWLIB\inc\stm32f10x_tim.h)(0x59A7A1A1)
 I (..\FWLIB\inc\stm32f10x_usart.h)(0x59A7A1A1)
 I (..\FWLIB\inc\stm32f10x_wwdg.h)(0x59A7A1A1)
 I (..\FWLIB\inc\misc.h)(0x59A7A1A1)
-I (..\Framework\variable.h)(0x5CAC91C9)
+I (..\Framework\variable.h)(0x5CB24130)
 I (..\Ethernet\wizchip_conf.h)(0x59A7A1A1)
 I (..\Ethernet\W5500/w5500.h)(0x59A7A1A1)
 I (..\uCOSII\CORE\ucos_ii.h)(0x59A7A1A2)
@@ -1063,7 +1063,7 @@ I (..\uCOSII\CONFIG\includes.h)(0x59A7A1A2)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\ctype.h)(0x51C7C554)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\stdarg.h)(0x51C7C554)
 I (..\Framework\interface.h)(0x5C6EAC91)
-I (..\Framework\framework.h)(0x5CA031E9)
+I (..\Framework\framework.h)(0x5CB15921)
 I (..\DRIVE\DrTimer.h)(0x5C87E14A)
 I (..\DRIVE\DrGpio.h)(0x5C700791)
 I (..\DRIVE\DrSpi.h)(0x59A7A1A1)
@@ -1072,7 +1072,7 @@ I (..\DRIVE\DrUart.h)(0x5C8115EB)
 I (..\DRIVE\DrCan.h)(0x59A7A1A1)
 I (..\DRIVE\DrAdc.h)(0x5C6908D9)
 I (..\DRIVE\DrEthernet.h)(0x59A7A1A1)
-I (..\Task\Task_Main.h)(0x5CA8D576)
+I (..\Task\Task_Main.h)(0x5CB1E5CD)
 F (..\DRIVE\DrSpi.h)(0x59A7A1A1)()
 F (..\DRIVE\DrEthernet.c)(0x5C8DCCB6)(-c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I..\uCOSII\CONFIG -I..\uCOSII\PORT -I..\uCOSII\CORE -I..\FWLIB\inc -I..\CMSIS -I..\DRIVE -I..\USER -I..\Task -I..\Internet -I..\Ethernet -I..\Ethernet\W5500 -I..\Internet -I..\Internet\HTTP -I..\Internet\DNS -I..\Internet\DHCP -I..\MQTT -I..\Framework --c99-I "C:\Program Files (x86)\Keil\ARM\RV31\INC"-I "C:\Program Files (x86)\Keil\ARM\CMSIS\Include"-I "C:\Program Files (x86)\Keil\ARM\Inc\ST\STM32F10x"-DSTM32F10X_CL -DUSE_STDPERIPH_DRIVER-o ..\output\drethernet.o --depend ..\output\drethernet.d)
 I (..\Framework\main.h)(0x5C7019B4)
@@ -1081,7 +1081,7 @@ I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\stdlib.h)(0x51C7C554)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\string.h)(0x51C7C554)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\math.h)(0x51C7C554)
 I (..\Framework\t_list.h)(0x59A7A1A2)
-I (..\Framework\platform_cfg.h)(0x5C9CEBB9)
+I (..\Framework\platform_cfg.h)(0x5CB0BA5F)
 I (..\CMSIS\stm32f10x.h)(0x59A7A1A1)
 I (..\CMSIS\core_cm3.h)(0x59A7A1A1)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\stdint.h)(0x51C7C554)
@@ -1110,7 +1110,7 @@ I (..\FWLIB\inc\stm32f10x_tim.h)(0x59A7A1A1)
 I (..\FWLIB\inc\stm32f10x_usart.h)(0x59A7A1A1)
 I (..\FWLIB\inc\stm32f10x_wwdg.h)(0x59A7A1A1)
 I (..\FWLIB\inc\misc.h)(0x59A7A1A1)
-I (..\Framework\variable.h)(0x5CAC91C9)
+I (..\Framework\variable.h)(0x5CB24130)
 I (..\Ethernet\wizchip_conf.h)(0x59A7A1A1)
 I (..\Ethernet\W5500/w5500.h)(0x59A7A1A1)
 I (..\uCOSII\CORE\ucos_ii.h)(0x59A7A1A2)
@@ -1127,7 +1127,7 @@ I (..\uCOSII\CONFIG\includes.h)(0x59A7A1A2)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\ctype.h)(0x51C7C554)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\stdarg.h)(0x51C7C554)
 I (..\Framework\interface.h)(0x5C6EAC91)
-I (..\Framework\framework.h)(0x5CA031E9)
+I (..\Framework\framework.h)(0x5CB15921)
 I (..\DRIVE\DrTimer.h)(0x5C87E14A)
 I (..\DRIVE\DrGpio.h)(0x5C700791)
 I (..\DRIVE\DrSpi.h)(0x59A7A1A1)
@@ -1136,7 +1136,7 @@ I (..\DRIVE\DrUart.h)(0x5C8115EB)
 I (..\DRIVE\DrCan.h)(0x59A7A1A1)
 I (..\DRIVE\DrAdc.h)(0x5C6908D9)
 I (..\DRIVE\DrEthernet.h)(0x59A7A1A1)
-I (..\Task\Task_Main.h)(0x5CA8D576)
+I (..\Task\Task_Main.h)(0x5CB1E5CD)
 I (..\Ethernet\spi.h)(0x59A7A1A1)
 I (..\Internet\HTTP\httputil.h)(0x59A7A1A2)
 I (..\Ethernet\socket.h)(0x59A7A1A1)
@@ -1149,7 +1149,7 @@ I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\stdlib.h)(0x51C7C554)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\string.h)(0x51C7C554)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\math.h)(0x51C7C554)
 I (..\Framework\t_list.h)(0x59A7A1A2)
-I (..\Framework\platform_cfg.h)(0x5C9CEBB9)
+I (..\Framework\platform_cfg.h)(0x5CB0BA5F)
 I (..\CMSIS\stm32f10x.h)(0x59A7A1A1)
 I (..\CMSIS\core_cm3.h)(0x59A7A1A1)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\stdint.h)(0x51C7C554)
@@ -1178,7 +1178,7 @@ I (..\FWLIB\inc\stm32f10x_tim.h)(0x59A7A1A1)
 I (..\FWLIB\inc\stm32f10x_usart.h)(0x59A7A1A1)
 I (..\FWLIB\inc\stm32f10x_wwdg.h)(0x59A7A1A1)
 I (..\FWLIB\inc\misc.h)(0x59A7A1A1)
-I (..\Framework\variable.h)(0x5CAC91C9)
+I (..\Framework\variable.h)(0x5CB24130)
 I (..\Ethernet\wizchip_conf.h)(0x59A7A1A1)
 I (..\Ethernet\W5500/w5500.h)(0x59A7A1A1)
 I (..\uCOSII\CORE\ucos_ii.h)(0x59A7A1A2)
@@ -1195,7 +1195,7 @@ I (..\uCOSII\CONFIG\includes.h)(0x59A7A1A2)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\ctype.h)(0x51C7C554)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\stdarg.h)(0x51C7C554)
 I (..\Framework\interface.h)(0x5C6EAC91)
-I (..\Framework\framework.h)(0x5CA031E9)
+I (..\Framework\framework.h)(0x5CB15921)
 I (..\DRIVE\DrTimer.h)(0x5C87E14A)
 I (..\DRIVE\DrGpio.h)(0x5C700791)
 I (..\DRIVE\DrSpi.h)(0x59A7A1A1)
@@ -1204,8 +1204,8 @@ I (..\DRIVE\DrUart.h)(0x5C8115EB)
 I (..\DRIVE\DrCan.h)(0x59A7A1A1)
 I (..\DRIVE\DrAdc.h)(0x5C6908D9)
 I (..\DRIVE\DrEthernet.h)(0x59A7A1A1)
-I (..\Task\Task_Main.h)(0x5CA8D576)
-I (..\Task\Task_MB_RTU_Master.h)(0x5CA8E462)
+I (..\Task\Task_Main.h)(0x5CB1E5CD)
+I (..\Task\Task_MB_RTU_Master.h)(0x5CB2F791)
 I (..\Framework\t_list_impl.h)(0x59A7A1A2)
 F (..\DRIVE\DrCan.c)(0x5C506B87)(-c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I..\uCOSII\CONFIG -I..\uCOSII\PORT -I..\uCOSII\CORE -I..\FWLIB\inc -I..\CMSIS -I..\DRIVE -I..\USER -I..\Task -I..\Internet -I..\Ethernet -I..\Ethernet\W5500 -I..\Internet -I..\Internet\HTTP -I..\Internet\DNS -I..\Internet\DHCP -I..\MQTT -I..\Framework --c99-I "C:\Program Files (x86)\Keil\ARM\RV31\INC"-I "C:\Program Files (x86)\Keil\ARM\CMSIS\Include"-I "C:\Program Files (x86)\Keil\ARM\Inc\ST\STM32F10x"-DSTM32F10X_CL -DUSE_STDPERIPH_DRIVER-o ..\output\drcan.o --depend ..\output\drcan.d)
 I (..\Framework\main.h)(0x5C7019B4)
@@ -1214,7 +1214,7 @@ I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\stdlib.h)(0x51C7C554)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\string.h)(0x51C7C554)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\math.h)(0x51C7C554)
 I (..\Framework\t_list.h)(0x59A7A1A2)
-I (..\Framework\platform_cfg.h)(0x5C9CEBB9)
+I (..\Framework\platform_cfg.h)(0x5CB0BA5F)
 I (..\CMSIS\stm32f10x.h)(0x59A7A1A1)
 I (..\CMSIS\core_cm3.h)(0x59A7A1A1)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\stdint.h)(0x51C7C554)
@@ -1243,7 +1243,7 @@ I (..\FWLIB\inc\stm32f10x_tim.h)(0x59A7A1A1)
 I (..\FWLIB\inc\stm32f10x_usart.h)(0x59A7A1A1)
 I (..\FWLIB\inc\stm32f10x_wwdg.h)(0x59A7A1A1)
 I (..\FWLIB\inc\misc.h)(0x59A7A1A1)
-I (..\Framework\variable.h)(0x5CAC91C9)
+I (..\Framework\variable.h)(0x5CB24130)
 I (..\Ethernet\wizchip_conf.h)(0x59A7A1A1)
 I (..\Ethernet\W5500/w5500.h)(0x59A7A1A1)
 I (..\uCOSII\CORE\ucos_ii.h)(0x59A7A1A2)
@@ -1260,7 +1260,7 @@ I (..\uCOSII\CONFIG\includes.h)(0x59A7A1A2)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\ctype.h)(0x51C7C554)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\stdarg.h)(0x51C7C554)
 I (..\Framework\interface.h)(0x5C6EAC91)
-I (..\Framework\framework.h)(0x5CA031E9)
+I (..\Framework\framework.h)(0x5CB15921)
 I (..\DRIVE\DrTimer.h)(0x5C87E14A)
 I (..\DRIVE\DrGpio.h)(0x5C700791)
 I (..\DRIVE\DrSpi.h)(0x59A7A1A1)
@@ -1269,7 +1269,7 @@ I (..\DRIVE\DrUart.h)(0x5C8115EB)
 I (..\DRIVE\DrCan.h)(0x59A7A1A1)
 I (..\DRIVE\DrAdc.h)(0x5C6908D9)
 I (..\DRIVE\DrEthernet.h)(0x59A7A1A1)
-I (..\Task\Task_Main.h)(0x5CA8D576)
+I (..\Task\Task_Main.h)(0x5CB1E5CD)
 F (..\DRIVE\DrAdc.c)(0x5C756048)(-c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I..\uCOSII\CONFIG -I..\uCOSII\PORT -I..\uCOSII\CORE -I..\FWLIB\inc -I..\CMSIS -I..\DRIVE -I..\USER -I..\Task -I..\Internet -I..\Ethernet -I..\Ethernet\W5500 -I..\Internet -I..\Internet\HTTP -I..\Internet\DNS -I..\Internet\DHCP -I..\MQTT -I..\Framework --c99-I "C:\Program Files (x86)\Keil\ARM\RV31\INC"-I "C:\Program Files (x86)\Keil\ARM\CMSIS\Include"-I "C:\Program Files (x86)\Keil\ARM\Inc\ST\STM32F10x"-DSTM32F10X_CL -DUSE_STDPERIPH_DRIVER-o ..\output\dradc.o --depend ..\output\dradc.d)
 I (..\Framework\main.h)(0x5C7019B4)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\stdio.h)(0x51C7C554)
@@ -1277,7 +1277,7 @@ I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\stdlib.h)(0x51C7C554)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\string.h)(0x51C7C554)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\math.h)(0x51C7C554)
 I (..\Framework\t_list.h)(0x59A7A1A2)
-I (..\Framework\platform_cfg.h)(0x5C9CEBB9)
+I (..\Framework\platform_cfg.h)(0x5CB0BA5F)
 I (..\CMSIS\stm32f10x.h)(0x59A7A1A1)
 I (..\CMSIS\core_cm3.h)(0x59A7A1A1)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\stdint.h)(0x51C7C554)
@@ -1306,7 +1306,7 @@ I (..\FWLIB\inc\stm32f10x_tim.h)(0x59A7A1A1)
 I (..\FWLIB\inc\stm32f10x_usart.h)(0x59A7A1A1)
 I (..\FWLIB\inc\stm32f10x_wwdg.h)(0x59A7A1A1)
 I (..\FWLIB\inc\misc.h)(0x59A7A1A1)
-I (..\Framework\variable.h)(0x5CAC91C9)
+I (..\Framework\variable.h)(0x5CB24130)
 I (..\Ethernet\wizchip_conf.h)(0x59A7A1A1)
 I (..\Ethernet\W5500/w5500.h)(0x59A7A1A1)
 I (..\uCOSII\CORE\ucos_ii.h)(0x59A7A1A2)
@@ -1323,7 +1323,7 @@ I (..\uCOSII\CONFIG\includes.h)(0x59A7A1A2)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\ctype.h)(0x51C7C554)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\stdarg.h)(0x51C7C554)
 I (..\Framework\interface.h)(0x5C6EAC91)
-I (..\Framework\framework.h)(0x5CA031E9)
+I (..\Framework\framework.h)(0x5CB15921)
 I (..\DRIVE\DrTimer.h)(0x5C87E14A)
 I (..\DRIVE\DrGpio.h)(0x5C700791)
 I (..\DRIVE\DrSpi.h)(0x59A7A1A1)
@@ -1332,7 +1332,7 @@ I (..\DRIVE\DrUart.h)(0x5C8115EB)
 I (..\DRIVE\DrCan.h)(0x59A7A1A1)
 I (..\DRIVE\DrAdc.h)(0x5C6908D9)
 I (..\DRIVE\DrEthernet.h)(0x59A7A1A1)
-I (..\Task\Task_Main.h)(0x5CA8D576)
+I (..\Task\Task_Main.h)(0x5CB1E5CD)
 F (..\CMSIS\core_cm3.c)(0x59A7A1A1)(-c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I..\uCOSII\CONFIG -I..\uCOSII\PORT -I..\uCOSII\CORE -I..\FWLIB\inc -I..\CMSIS -I..\DRIVE -I..\USER -I..\Task -I..\Internet -I..\Ethernet -I..\Ethernet\W5500 -I..\Internet -I..\Internet\HTTP -I..\Internet\DNS -I..\Internet\DHCP -I..\MQTT -I..\Framework --c99-I "C:\Program Files (x86)\Keil\ARM\RV31\INC"-I "C:\Program Files (x86)\Keil\ARM\CMSIS\Include"-I "C:\Program Files (x86)\Keil\ARM\Inc\ST\STM32F10x"-DSTM32F10X_CL -DUSE_STDPERIPH_DRIVER-o ..\output\core_cm3.o --depend ..\output\core_cm3.d)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\stdint.h)(0x51C7C554)
 F (..\CMSIS\system_stm32f10x.c)(0x5C8380B0)(-c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I..\uCOSII\CONFIG -I..\uCOSII\PORT -I..\uCOSII\CORE -I..\FWLIB\inc -I..\CMSIS -I..\DRIVE -I..\USER -I..\Task -I..\Internet -I..\Ethernet -I..\Ethernet\W5500 -I..\Internet -I..\Internet\HTTP -I..\Internet\DNS -I..\Internet\DHCP -I..\MQTT -I..\Framework --c99-I "C:\Program Files (x86)\Keil\ARM\RV31\INC"-I "C:\Program Files (x86)\Keil\ARM\CMSIS\Include"-I "C:\Program Files (x86)\Keil\ARM\Inc\ST\STM32F10x"-DSTM32F10X_CL -DUSE_STDPERIPH_DRIVER-o ..\output\system_stm32f10x.o --depend ..\output\system_stm32f10x.d)
@@ -2077,7 +2077,7 @@ I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\stdlib.h)(0x51C7C554)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\string.h)(0x51C7C554)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\math.h)(0x51C7C554)
 I (..\Framework\t_list.h)(0x59A7A1A2)
-I (..\Framework\platform_cfg.h)(0x5C9CEBB9)
+I (..\Framework\platform_cfg.h)(0x5CB0BA5F)
 I (..\CMSIS\stm32f10x.h)(0x59A7A1A1)
 I (..\CMSIS\core_cm3.h)(0x59A7A1A1)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\stdint.h)(0x51C7C554)
@@ -2106,7 +2106,7 @@ I (..\FWLIB\inc\stm32f10x_tim.h)(0x59A7A1A1)
 I (..\FWLIB\inc\stm32f10x_usart.h)(0x59A7A1A1)
 I (..\FWLIB\inc\stm32f10x_wwdg.h)(0x59A7A1A1)
 I (..\FWLIB\inc\misc.h)(0x59A7A1A1)
-I (..\Framework\variable.h)(0x5CAC91C9)
+I (..\Framework\variable.h)(0x5CB24130)
 I (..\Ethernet\wizchip_conf.h)(0x59A7A1A1)
 I (..\Ethernet\W5500/w5500.h)(0x59A7A1A1)
 I (..\uCOSII\CORE\ucos_ii.h)(0x59A7A1A2)
@@ -2123,7 +2123,7 @@ I (..\uCOSII\CONFIG\includes.h)(0x59A7A1A2)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\ctype.h)(0x51C7C554)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\stdarg.h)(0x51C7C554)
 I (..\Framework\interface.h)(0x5C6EAC91)
-I (..\Framework\framework.h)(0x5CA031E9)
+I (..\Framework\framework.h)(0x5CB15921)
 I (..\DRIVE\DrTimer.h)(0x5C87E14A)
 I (..\DRIVE\DrGpio.h)(0x5C700791)
 I (..\DRIVE\DrSpi.h)(0x59A7A1A1)
@@ -2132,7 +2132,7 @@ I (..\DRIVE\DrUart.h)(0x5C8115EB)
 I (..\DRIVE\DrCan.h)(0x59A7A1A1)
 I (..\DRIVE\DrAdc.h)(0x5C6908D9)
 I (..\DRIVE\DrEthernet.h)(0x59A7A1A1)
-I (..\Task\Task_Main.h)(0x5CA8D576)
+I (..\Task\Task_Main.h)(0x5CB1E5CD)
 F (..\Ethernet\W5500\w5500.c)(0x5C65A45C)(-c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I..\uCOSII\CONFIG -I..\uCOSII\PORT -I..\uCOSII\CORE -I..\FWLIB\inc -I..\CMSIS -I..\DRIVE -I..\USER -I..\Task -I..\Internet -I..\Ethernet -I..\Ethernet\W5500 -I..\Internet -I..\Internet\HTTP -I..\Internet\DNS -I..\Internet\DHCP -I..\MQTT -I..\Framework --c99-I "C:\Program Files (x86)\Keil\ARM\RV31\INC"-I "C:\Program Files (x86)\Keil\ARM\CMSIS\Include"-I "C:\Program Files (x86)\Keil\ARM\Inc\ST\STM32F10x"-DSTM32F10X_CL -DUSE_STDPERIPH_DRIVER-o ..\output\w5500.o --depend ..\output\w5500.d)
 I (..\Ethernet\W5500\w5500.h)(0x59A7A1A1)
 I (C:\Program Files (x86)\Keil\ARM\ARMCC\include\stdint.h)(0x51C7C554)
