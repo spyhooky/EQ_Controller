@@ -3,7 +3,7 @@
 
 #define SLAVEID_FREQ                                    1U  //变频器从节点ID
 
-#define MAX_RUNNING_FREQ                                50  //电机最大运行频率
+#define MAX_RUNNING_FREQ                               120  //电机最大运行频率
 #define MOTOR_SPEED                                    995  //电机转速
 #define DIAMETER_REDUCER                     (float)0.1265  //减速机直径
 #define DIAMETER_WIRE                          (float)0.01  //线缆直径
@@ -20,10 +20,10 @@
 #define INIT_POSITION_WIRE                           30000  //缆绳初始位置
 #define BAND_TYPE_BRAKE_DELAY_THRES                     20  //2s,电机运行后2s抱闸松开（继电器闭合）
 
-#define FREQ_REDUCE_BASE                                5U  //每次减速的频率基准值
-#define READ8000_INTERTER                               5U  //查询帧周期
-#define FREQ_REDUCE_INTERTER                          100U  //频率减速时间间隔，每隔100ms减5hz
-
+#define FREQ_REDUCE_BASE                                5U  //每次减速的频率基准值，单位100ms
+#define READ8000_INTERTER                               5U  //查询帧周期，单位100ms
+#define FREQ_REDUCE_INTERTER                            5U  //频率减速时间间隔，每隔100ms减5hz
+#define FORCE_REDUCE_10HZ_KEEPING                       5U  //强制减速到10HZ时需要保持的时间，单位100ms
 
 enum Invertor_Offset{//变频器状态参数地址
     off_InvertorError=0,off_CurrFreq,
@@ -35,7 +35,7 @@ enum Write_Data_Off{
 };
 
 enum Diretor_Info{//变频器状态参数地址
-    D_Forward=0,D_Backward
+    D_FALL=0,D_RISE
 };//正向-向上运动，即0mm向30000mm方向的运动，反向-向下运动
 
 enum Motor_Command{

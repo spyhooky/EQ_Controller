@@ -1,5 +1,6 @@
 #include "main.h"
 #include "Task_IO.h"
+#include "Task_PC_Com.h"
 #include "Task_MB_RTU_Master.h"
 #include "Task_Freq_Convert.h"
 #include "Task_MQTT.h"
@@ -12,18 +13,29 @@ volatile BitStatus Invertor_Status;
 volatile BitStatus Motor_Status;
 #define MOTOR_RUNNING                     Motor_Status.Bits.bit0 //电机运行标志
 #define MOTOR_RUN_DELAY                   Motor_Status.Bits.bit1 //电机运行延时，用于抱闸
-#define MOTOR_DIRECTOR                    Motor_Status.Bits.bit2 //吊杆运行方向，正向为自上而下
+#define MOTOR_DIRECTOR                    Motor_Status.Bits.bit2 //吊杆运行方向，上升或者下降
 #define MOTOR_REDUCING                    Motor_Status.Bits.bit3 //电机减速标志
 #define READ_CURR_FREQ_EN                 Motor_Status.Bits.bit4 //是否需要发送查询马达当前频率值的标志
+#define Reserve_Requrirement              Motor_Status.Bits.bit5 //电机需要反向运行，先减速再反向  
+#define FORCE_REDUCE_EN                   Motor_Status.Bits.bit6 //遇到上下限位开关或者电机需要反向时置此标志
+#define FORCE_REDUCE_10HZ                 Motor_Status.Bits.bit7 //强制减速时，频率到10HZ的标志
 
 
-#define FREQ_REDUCE_TABLE_NUM             15
+
+#define FREQ_REDUCE_TABLE_NUM             15U
+
+enum Timer_Type{
+    Motor_Delay,            //松开抱闸的计时，电机运行1-2s后松开，停止减速时再抱紧
+    Read8000,               //查询帧定时计数器
+    Read5001,               //读取当前运行频率的计数器
+    Freq_Reduce,            //减速间隔时间计数器
+    Keep_10HZ,              //反向或者限位减速信号后频率减到10HZ时需要继续维持的时间
+    
+    Timer_Total
+};
+static u16 cTimer[Timer_Total];
 
 u16 InvertorData[NUM_Read_Total];
-u16 Motor_DelayTime;//松开抱闸的计时，电机运行1-2s后松开，停止减速时再抱紧
-u16 Read8000_Timer;//查询帧定时计数器
-u16 Read5001_Timer;//读取当前运行频率的计数器
-u16 Freq_Reduce_Timer;//减速间隔时间计数器
 u16 Motor_Freq_MIN;
 
 enum Init_Parameter_Off{
@@ -49,17 +61,18 @@ typedef struct Freq_Reduce_Info
     u16 reduce_freq;  //开始减速的频率
     u16 pulse_remain; //剩余脉冲个数
 }Freq_Reduce_t;
-const Freq_Reduce_t Table_Freq_Reduce[FREQ_REDUCE_TABLE_NUM]=    //配置减速表
+//本配置表主要用于识别电机对应频率的开始减速的脉冲数，不是电机执行的加速表
+const Freq_Reduce_t Table_Freq_Reduce[FREQ_REDUCE_TABLE_NUM]=   
 {
     {320,30000},
     {240,30000},
     {180,30000},
     {150,20000},
-    {120,10000},//若工作频率为120HZ，则当剩余脉冲数小于10000时就开始减速
-    {100,8000},
-    {90,7000},
-    {80,6000},
-    {70,5000},
+    {120,20000},//若工作频率为120HZ，则当剩余脉冲数小于20000时就开始减速
+    {100,15000},
+    {90,10000},
+    {80,8000},
+    {70,6500},
     {60,5000},
     {50,4000},
     {40,3000},
@@ -149,8 +162,7 @@ static void Freq_Convert_Init(void)
 {
     u8 i;
     Invertor_Status.Byte = 0;
-    Motor_DelayTime=0;
-    Read8000_Timer = 0;
+    memset((u8 *)&cTimer[0],0,sizeof(cTimer));
     Global_Variable.Suspende_Target_Position = INIT_POSITION_WIRE;
     Global_Variable.Suspende_Current_Position = INIT_POSITION_WIRE;
     memset(InvertorData,0,sizeof(InvertorData));
@@ -182,45 +194,53 @@ static void Freq_Convert_Init(void)
 /*******************************************************************************/
 void TaskFreq_Timer100ms(void)
 {
-    Read8000_Timer++;
-    if(Read8000_Timer >= READ8000_INTERTER)
+    cTimer[Read8000]++;
+    if(cTimer[Read8000] >= READ8000_INTERTER)
     {//周期读取状态寄存器值
-        Read8000_Timer = 0;
-        RTU_AddReqBlock(&rtu_ctx,&RTU_Req_Read8000);
+        cTimer[Read8000] = 0;
+        if(MOTOR_REDUCING == OFF)
+        {
+            RTU_AddReqBlock(&rtu_ctx,&RTU_Req_Read8000);
+        }
     }
     if(MOTOR_RUNNING == ON)
     {
-        if(Motor_DelayTime >= BAND_TYPE_BRAKE_DELAY_THRES)
+        if(cTimer[Motor_Delay] >= BAND_TYPE_BRAKE_DELAY_THRES)
         {
-            BAND_TYPE_BRAKE_OUT = ON;//抱闸断开
+            if(MOTOR_REDUCING == OFF)
+            {
+                BAND_TYPE_BRAKE_OUT = ON;//抱闸断开
+            }
         }
         else
         {
-            Motor_DelayTime++;
+            cTimer[Motor_Delay]++;
         }
     }
     else
     {
-        Motor_DelayTime = 0;
+        cTimer[Motor_Delay] = 0;
         BAND_TYPE_BRAKE_OUT = OFF;//抱闸开启
-    }
-
-    if(READ_CURR_FREQ_EN == ON)
-    {
-        Read5001_Timer++;
-    }
-    else
-    {
-        Read5001_Timer = 0;
     }
 
     if(MOTOR_REDUCING == ON)
     {
-        Freq_Reduce_Timer++;
+        cTimer[Freq_Reduce]++;
+        cTimer[Read5001] = 0;
     }
     else
     {
-        Freq_Reduce_Timer = 0;
+        cTimer[Freq_Reduce] = 0;
+        cTimer[Read5001]++;
+    }
+
+    if(FORCE_REDUCE_10HZ == ON)
+    {
+        cTimer[Keep_10HZ]++;
+    }
+    else
+    {
+        cTimer[Keep_10HZ] = 0;
     }
 }
 
@@ -228,9 +248,7 @@ void TaskFreq_Timer100ms(void)
 /*函数名：  Calculate_Frequence                                                          */
 /*功能说明：计算电机的运行频率                                                            */
 /*输入参数：无                                                                           */       
-/*输出参数：
-1：f(频率)=（50*X（设定速度））/[995*(D1(减速机直径)+D2（钢丝绳直径）*3.14/减速比)]
-*/
+/*输出参数：1：输出值是HZ对应的数值，最大为10000，对应最大频率                                                */
 /****************************************************************************************/
 static u16 Calculate_Frequence(void)
 {
@@ -256,7 +274,7 @@ static void Set_Frequence_Start(void)
     u16 motor_freq;
     
     MOTOR_REDUCING = OFF;
-    if(MOTOR_DIRECTOR == D_Forward)
+    if(MOTOR_DIRECTOR == D_FALL)
     {
         if(Global_Variable.Encode_TargetPulse - Global_Variable.Encode_CurrentPulse >= 2000)
         {
@@ -280,9 +298,8 @@ static void Set_Frequence_Start(void)
             MOTOR_REDUCING = ON;
         }
     }
-    
-    Global_Variable.Suspende_Current_Speed = (((u32)motor_freq*(u32)Global_Variable.Para_Independence.Max_Motro_Freq)/10000)/
-        Global_Variable.Para_Independence.Motor_Freq_Factor;
+    Global_Variable.Suspende_Current_Speed = ((u32)motor_freq*(u32)Global_Variable.Para_Independence.Max_Motro_Freq)/10000;
+    Global_Variable.Suspende_Current_Speed /= Global_Variable.Para_Independence.Motor_Freq_Factor;
     //if(Wrdata[Convert_Freq] != Freq_Req)
     {
         WriteData[Convert_Freq] = motor_freq;
@@ -305,18 +322,19 @@ static u16 Frequence_Reduce_Logic(u32 Delta_Pulse)
     
     if(MOTOR_REDUCING == OFF)
     {
-        if(Read5001_Timer >= 20)
+        if(cTimer[Read5001] >= 20)
         {//周期性读取当前电机频率
-            Read5001_Timer = 0;
+            cTimer[Read5001] = 0;
             RTU_AddReqBlock(&rtu_ctx,&RTU_Req_ReadFreq_5001);
-            Global_Variable.Suspende_Current_Speed = (InvertorData[off_CurrFreq]/100)/Global_Variable.Para_Independence.Motor_Freq_Factor;//*10000/100
+            Global_Variable.Suspende_Current_Speed = (InvertorData[off_CurrFreq]/100)/Global_Variable.Para_Independence.Motor_Freq_Factor;
+            //Global_Variable.Suspende_Current_Speed = (InvertorData[off_CurrFreq]/100)/Global_Variable.Para_Independence.Motor_Freq_Factor;//*10000/100
         }
         
         for(i=0;i<FREQ_REDUCE_TABLE_NUM;i++)
         {
             if((InvertorData[off_CurrFreq]/100) >= Table_Freq_Reduce[i].reduce_freq)
             {
-                if(Table_Freq_Reduce[i].pulse_remain >= Delta_Pulse)
+                if((FORCE_REDUCE_EN == ON)||(Table_Freq_Reduce[i].pulse_remain >= Delta_Pulse))
                 {
                     Global_Variable.Suspende_Current_Speed = Table_Freq_Reduce[i].reduce_freq/Global_Variable.Para_Independence.Motor_Freq_Factor;
                     motor_freq = Table_Freq_Reduce[i].reduce_freq*10000/Global_Variable.Para_Independence.Max_Motro_Freq;//
@@ -329,11 +347,11 @@ static u16 Frequence_Reduce_Logic(u32 Delta_Pulse)
     }
     else
     {
-        if(Freq_Reduce_Timer >= FREQ_REDUCE_INTERTER)
+        if(cTimer[Freq_Reduce] >= FREQ_REDUCE_INTERTER)
         {
-            Freq_Reduce_Timer = 0;
-            curfreq = Global_Variable.Suspende_Current_Speed * Global_Variable.Para_Independence.Motor_Freq_Factor - FREQ_REDUCE_BASE;
-            Global_Variable.Suspende_Current_Speed = curfreq/Global_Variable.Para_Independence.Motor_Freq_Factor;
+            cTimer[Freq_Reduce] = 0;
+            Global_Variable.Suspende_Current_Speed -= (u16)(FREQ_REDUCE_BASE/Global_Variable.Para_Independence.Motor_Freq_Factor);
+            curfreq = Global_Variable.Suspende_Current_Speed * Global_Variable.Para_Independence.Motor_Freq_Factor;
             motor_freq = curfreq*10000/Global_Variable.Para_Independence.Max_Motro_Freq;//
         }
         else
@@ -357,7 +375,11 @@ static void Set_Frequence_Running(u32 Delta_Pulse)
 {
     u16 motor_freq;
     motor_freq = Frequence_Reduce_Logic(Delta_Pulse);
-    motor_freq = motor_freq<Motor_Freq_MIN?Motor_Freq_MIN:motor_freq;
+    if(motor_freq <= Motor_Freq_MIN)
+    {
+        MOTOR_REDUCING = OFF;
+        motor_freq = Motor_Freq_MIN;
+    }
 
     if(WriteData[Convert_Freq] > motor_freq)
     {
@@ -373,9 +395,9 @@ static void Set_Frequence_Running(u32 Delta_Pulse)
 /*输入参数：无                                                                   */
 /*输出参数：无                                                                  */
 /*******************************************************************************/
-void Motor_Forward(void)
+void MotorMove_Fall(void)
 {
-    MOTOR_DIRECTOR = D_Forward;
+    MOTOR_DIRECTOR = D_FALL;
     Set_Frequence_Start();
     //if(Wrdata[Control_CMD] != Motor_Fardward_Run)
     {
@@ -390,9 +412,9 @@ void Motor_Forward(void)
 /*输入参数：无                                                                  */
 /*输出参数：无                                                                  */
 /*******************************************************************************/
-void Motor_Backward(void)
+void MotorMove_Rise(void)
 {
-    MOTOR_DIRECTOR = D_Backward;
+    MOTOR_DIRECTOR = D_RISE;
     Set_Frequence_Start();
     //if(Wrdata[Control_CMD] != Motor_Backward_Run)
     {
@@ -440,7 +462,42 @@ void Task_Freq_Convert(void *p_arg)
     s32 Delta_Pulse;
     while (1)
     {        
-        if(MOTOR_DIRECTOR == D_Forward)
+        if((FORCE_REDUCE_EN == ON)&&(MOTOR_REDUCING == OFF))//强制减速完成，当前频率是最小频率10HZ
+        {//此条件必须放在该while的最上边判断，否则会导致条件无法满足
+            FORCE_REDUCE_EN = OFF;
+            FORCE_REDUCE_10HZ = ON;
+            cTimer[Keep_10HZ] = 0;
+        }
+
+        if(cTimer[Keep_10HZ] >= FORCE_REDUCE_10HZ_KEEPING)
+        {
+            if(Reserve_Requrirement == ON)
+            {
+                cTimer[Motor_Delay] = 0;//重新计时2s再松抱闸
+                Global_Variable.Encode_TargetPulse = (s32)((Global_Variable.Para_Independence.Suspende_Limit_Up-Global_Variable.Suspende_Target_Position)/ \
+                    Global_Variable.Para_Independence.Lenth_Per_Pulse);
+                if(Global_Variable.Encode_TargetPulse > Global_Variable.Encode_CurrentPulse)
+                {
+                    MotorMove_Fall();
+                }
+                else
+                {
+                    MotorMove_Rise();
+                }
+            }
+            else
+            {
+                MOTOR_RUNNING = OFF;
+                Motor_Stop(Motor_Stop_Reduce);
+            }
+        }
+        
+        if((Limit_Up_SlowDown == ON)||(Limit_Down_SlowDown == ON)||(Reserve_Requrirement == ON))
+        {
+            FORCE_REDUCE_EN = ON;
+        }
+        
+        if(MOTOR_DIRECTOR == D_FALL)
         {
             Delta_Pulse = Global_Variable.Encode_TargetPulse - Global_Variable.Encode_CurrentPulse;
         }
@@ -448,11 +505,11 @@ void Task_Freq_Convert(void *p_arg)
         {
             Delta_Pulse = Global_Variable.Encode_CurrentPulse - Global_Variable.Encode_TargetPulse;
         }
-        if(Delta_Pulse < 10u)
+        if(Delta_Pulse < 20u)
         {
-            if(MOTOR_RUNNING == ON)
+            if((MOTOR_RUNNING == ON)/*&&(MOTOR_REDUCING == OFF)*/)
             {
-                Motor_DelayTime = 0;
+                cTimer[Motor_Delay] = 0;
                 Motor_Stop(Motor_Stop_Reduce);
                 MOTOR_RUNNING = OFF;
             }
@@ -467,40 +524,51 @@ void Task_Freq_Convert(void *p_arg)
             MOTOR_RUNNING = ON;
             CMD_Rope_Wire = OFF;
             Global_Variable.Encode_TargetPulse = 0;
-            Motor_Backward();
+            MotorMove_Rise();
         }
+        
         if(CMD_Suspender_Min == ON)//单个吊杆降到零点坐标位置（吊杆的最低位置）
         {
             MOTOR_RUNNING = ON;
             CMD_Suspender_Min = OFF;
-            Global_Variable.Encode_TargetPulse = INIT_POSITION_WIRE/Global_Variable.Para_Independence.Lenth_Per_Pulse;
-            Motor_Forward();
+            Global_Variable.Encode_TargetPulse = Global_Variable.Para_Independence.Suspende_Limit_Up/Global_Variable.Para_Independence.Lenth_Per_Pulse;
+            MotorMove_Fall();
         }
+        
         if(CMD_Suspender_Emergency_Stop == ON)//单个吊杆急停
         {
             MOTOR_RUNNING = OFF;
+            FORCE_REDUCE_EN = OFF;
+            MOTOR_REDUCING = OFF;
             CMD_Suspender_Emergency_Stop = OFF;
             Motor_Stop(Motor_Stop_Free);            
         }
+        
         if(CMD_Suspender_Target == ON)//单个吊杆运行到设定的目标位置
         {
             MOTOR_RUNNING = ON;
             CMD_Suspender_Target = OFF;
-            Global_Variable.Encode_TargetPulse = (s32)((INIT_POSITION_WIRE-Global_Variable.Suspende_Target_Position)/ \
+            Global_Variable.Encode_TargetPulse = (s32)((Global_Variable.Para_Independence.Suspende_Limit_Up-Global_Variable.Suspende_Target_Position)/ \
                 Global_Variable.Para_Independence.Lenth_Per_Pulse);
             if(Global_Variable.Encode_TargetPulse > Global_Variable.Encode_CurrentPulse)
             {
-                Motor_Forward();
+                MotorMove_Fall();
             }
             else
             {
-                Motor_Backward();
+                MotorMove_Rise();
             }
         }
-        if(CMD_ParaDownload_Independent == ON)//单个微控制器个性化参数下载
+
+        if(Err_Summit_Attempt == ON)//单个吊杆急停
         {
-            //CMD_ParaDownload_Independent = OFF;
-            
+            if(MOTOR_RUNNING == ON)
+            {
+                MOTOR_RUNNING = OFF;
+                FORCE_REDUCE_EN = OFF;
+                MOTOR_REDUCING = OFF;
+                Motor_Stop(Motor_Stop_Free);   
+            }
         }
 
         OSTimeDlyHMSM(0, 0, 0, 1);

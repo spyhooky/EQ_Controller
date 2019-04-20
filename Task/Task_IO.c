@@ -37,7 +37,7 @@ static struct DIPType           DigitInput_Sts[DIGIT_INPUT_CHN_NUM];//
 #define Cur_Input_Status(n)		DigitInput_Sts[n].digitstatus.Bits.cur_status
 #define DigitInputTimerEn(n)	DigitInput_Sts[n].digitstatus.Bits.timer_en
 #define INPUT_STS_KEEP_TIME(n)	DigitInput_Sts[n].keep_time
-#define DIGIT_INPUT_FILTER                            100u //数字开关量滤波时间，单位ms
+#define DIGIT_INPUT_FILTER                            10u //数字开关量滤波时间，单位ms
 
 /**********仅仅测试串口时使用************/
 static u16 en_test=0;//该值写成1时，默认500ms周期向外部发送数据
@@ -128,7 +128,7 @@ void Task_IO_Init(void)
 /***************************************************************************/
 static void Output_MainFunction(void)
 {
-    if(BAND_TYPE_BRAKE_OUT == ON)
+    if(BAND_TYPE_BRAKE_OUT == ON)//抱闸输出
     {
         RELAY_1_OUT(ON);
     }
@@ -205,7 +205,7 @@ void Blink_LED_Status(u16 mstimer)
 static void LED_MainFunction(void)
 {
 	if(LED_Blink_End == TRUE)
-	{
+	{//LED亮的时间到，控制LED灭
 		LED_Blink_End = FALSE;
 		Blink_LED_Status(0);
 	}

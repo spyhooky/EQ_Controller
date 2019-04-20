@@ -211,10 +211,12 @@ typedef struct ParaIndependence_Group
 {
     u8 Suspende_Type;//吊杆类型
     u8 Convert_Cfg;//变频器有无，0-无变频器，1-有变频器，通过485控制
-    u16 Suspende_Limit_Up;//吊杆上限位高度，单位mm
     float Motor_Freq_Factor; //电机运行频率的系数C1，本电机的系数为0.3665，实际工程以计算为准
     float Lenth_Per_Pulse;   //每脉冲钢丝绳所走的长度系数C2，本电机所对应的系数为0.1419，实际工程以计算为准
     u8 Max_Motro_Freq;    //电机运行最大频率
+    u16 Suspende_Limit_Up;//吊杆上限位高度，单位mm
+    u16 Reduce_Limit_Up;//上限位减速信号坐标，单位mm
+    u16 Reduce_Limit_Down;//下限位减速信号坐标，单位mm
 }ParaIndependence_Info;
 
 typedef struct Global_Variable_Group

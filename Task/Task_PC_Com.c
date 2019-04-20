@@ -49,7 +49,9 @@ static void Task_PC_Message_Update(void *p_arg);
 /*******************************************************************************/
 static void PC_COM_Init(void)
 {
-    
+    memset(&RespondToPC,0,sizeof(RespondToPC));
+    memset((u8 *)&_Running_Error_Sts[0],0,sizeof(_Running_Error_Sts));
+    memset(&Polling_Frame_Respond,0,sizeof(Polling_Frame_Respond));
 }
 
 /********************************************************************************/
@@ -179,12 +181,19 @@ static void Parameter_Download(u8 *data,u8 len)
     u16 index=0;
     Global_Variable.Para_Independence.Suspende_Type = data[index++];
     Global_Variable.Para_Independence.Convert_Cfg = data[index++];
-    Global_Variable.Para_Independence.Suspende_Limit_Up = (data[index++]*256)+data[index++];
     UnPackage_Float(&data[index],&Global_Variable.Para_Independence.Motor_Freq_Factor);
     index += 4;
-    UnPackage_Float(&data[8],&Global_Variable.Para_Independence.Lenth_Per_Pulse);
+    UnPackage_Float(&data[index],&Global_Variable.Para_Independence.Lenth_Per_Pulse);
     index += 4;
-    Global_Variable.Para_Independence.Max_Motro_Freq = data[index];
+    Global_Variable.Para_Independence.Max_Motro_Freq = (data[index++]*256);
+    Global_Variable.Para_Independence.Max_Motro_Freq += data[index++];
+    Global_Variable.Para_Independence.Suspende_Limit_Up = (data[index++]*256);
+    Global_Variable.Para_Independence.Suspende_Limit_Up += data[index++];
+    Global_Variable.Para_Independence.Reduce_Limit_Up = (data[index++]*256);
+    Global_Variable.Para_Independence.Reduce_Limit_Up += data[index++];
+    Global_Variable.Para_Independence.Reduce_Limit_Down = (data[index++]*256);
+    Global_Variable.Para_Independence.Reduce_Limit_Down += data[index++];
+    
 }
 
 /********************************************************************************/
@@ -204,13 +213,18 @@ static void Parameter_Read(void)
     RespondToPC.databuf[index++] = sizeof(Global_Variable.Para_Independence);
     RespondToPC.databuf[index++] = Global_Variable.Para_Independence.Suspende_Type;
     RespondToPC.databuf[index++] = Global_Variable.Para_Independence.Convert_Cfg;
-    RespondToPC.databuf[index++] = Global_Variable.Para_Independence.Suspende_Limit_Up>>8;
-    RespondToPC.databuf[index++] = Global_Variable.Para_Independence.Suspende_Limit_Up&0xff;
     Package_Float(Global_Variable.Para_Independence.Motor_Freq_Factor,&RespondToPC.databuf[index]);
     index += 4;
     Package_Float(Global_Variable.Para_Independence.Lenth_Per_Pulse,&RespondToPC.databuf[index]);
     index += 4;
-    RespondToPC.databuf[index++] = Global_Variable.Para_Independence.Max_Motro_Freq;
+    RespondToPC.databuf[index++] = Global_Variable.Para_Independence.Max_Motro_Freq>>8;
+    RespondToPC.databuf[index++] = Global_Variable.Para_Independence.Max_Motro_Freq&0xff;
+    RespondToPC.databuf[index++] = Global_Variable.Para_Independence.Suspende_Limit_Up>>8;
+    RespondToPC.databuf[index++] = Global_Variable.Para_Independence.Suspende_Limit_Up&0xff;
+    RespondToPC.databuf[index++] = Global_Variable.Para_Independence.Reduce_Limit_Up>>8;
+    RespondToPC.databuf[index++] = Global_Variable.Para_Independence.Reduce_Limit_Up&0xff;
+    RespondToPC.databuf[index++] = Global_Variable.Para_Independence.Reduce_Limit_Down>>8;
+    RespondToPC.databuf[index++] = Global_Variable.Para_Independence.Reduce_Limit_Down&0xff;
     CrcCheck = Get_rtuCrc16(RespondToPC.databuf,RespondToPC.datalen-2);
     RespondToPC.databuf[RespondToPC.datalen-2] = CrcCheck%256;
     RespondToPC.databuf[RespondToPC.datalen-1] = CrcCheck>>8;
@@ -252,7 +266,7 @@ void Broadcast_Frame_Parse(u8 *data, u16 len)
             }
             break;
         case Suspender_Emergency_Stop_B://È«²¿µõ¸Ë¼±Í£02
-            if(len == data[2] + 5)
+            if(len == 4)
             {
                 CrcCheck = Get_rtuCrc16(data,len-2);
                 if((CrcCheck%256 == data[len-2])&&((CrcCheck>>8) == data[len-1]))
@@ -359,7 +373,7 @@ void Broadcast_Frame_Parse(u8 *data, u16 len)
                 CrcCheck = Get_rtuCrc16(data,len-2);
                 if((CrcCheck%256 == data[len-2])&&((CrcCheck>>8) == data[len-1]))
                 {
-                    memcpy(&Global_Variable.Para_Independence,&data[3],data[2]);
+                    memcpy(&Global_Variable.Para_Common,&data[3],data[2]);
                     CMD_ParaDownload_Common = ON;
                 }
             }
@@ -416,7 +430,7 @@ void Node_Frame_Parse(u8 *data, u16 len)
                     CrcCheck = Get_rtuCrc16(data,len-2);
                     if((CrcCheck%256 == data[len-2])&&((CrcCheck>>8) == data[len-1]))
                     {
-                        Global_Variable.Suspende_Target_Position = 30000;
+                        Global_Variable.Suspende_Target_Position = Global_Variable.Para_Independence.Suspende_Limit_Up;
                         Global_Variable.Suspende_Target_Speed = (data[3]<<8)+data[4];
                         CMD_Rope_Wire = ON;
                         Postive_Responde(Rope_Wire_F);
