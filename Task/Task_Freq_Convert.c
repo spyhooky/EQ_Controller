@@ -9,20 +9,24 @@
 
 #ifdef __TASK_FREQ_CONVERT_H
 
-volatile BitStatus Invertor_Status;
-volatile BitStatus Motor_Status;
-#define MOTOR_RUNNING                     Motor_Status.Bits.bit0 //µç»úÔËÐÐ±êÖ¾
-#define MOTOR_RUN_DELAY                   Motor_Status.Bits.bit1 //µç»úÔËÐÐÑÓÊ±£¬ÓÃÓÚ±§Õ¢
-#define MOTOR_DIRECTOR                    Motor_Status.Bits.bit2 //µõ¸ËÔËÐÐ·½Ïò£¬ÉÏÉý»òÕßÏÂ½µ
-#define MOTOR_REDUCING                    Motor_Status.Bits.bit3 //µç»ú¼õËÙ±êÖ¾
-#define READ_CURR_FREQ_EN                 Motor_Status.Bits.bit4 //ÊÇ·ñÐèÒª·¢ËÍ²éÑ¯Âí´ïµ±Ç°ÆµÂÊÖµµÄ±êÖ¾
-#define Reserve_Requrirement              Motor_Status.Bits.bit5 //µç»úÐèÒª·´ÏòÔËÐÐ£¬ÏÈ¼õËÙÔÙ·´Ïò  
-#define FORCE_REDUCE_EN                   Motor_Status.Bits.bit6 //Óöµ½ÉÏÏÂÏÞÎ»¿ª¹Ø»òÕßµç»úÐèÒª·´ÏòÊ±ÖÃ´Ë±êÖ¾
-#define FORCE_REDUCE_10HZ                 Motor_Status.Bits.bit7 //Ç¿ÖÆ¼õËÙÊ±£¬ÆµÂÊµ½10HZµÄ±êÖ¾
+volatile BitStatus Invertor_Status[2];
+volatile BitStatus Motor_Status[2];
+#define MOTOR_RUNNING                     Motor_Status[0].Bits.bit0 //µç»úÔËÐÐ±êÖ¾
+#define MOTOR_RUN_DELAY                   Motor_Status[0].Bits.bit1 //µç»úÔËÐÐÑÓÊ±£¬ÓÃÓÚ±§Õ¢
+#define MOTOR_DIRECTOR                    Motor_Status[0].Bits.bit2 //µõ¸ËÔËÐÐ·½Ïò£¬ÉÏÉý»òÕßÏÂ½µ
+#define MOTOR_REDUCING                    Motor_Status[0].Bits.bit3 //µç»ú¼õËÙ±êÖ¾
+#define READ_CURR_FREQ_EN                 Motor_Status[0].Bits.bit4 //ÊÇ·ñÐèÒª·¢ËÍ²éÑ¯Âí´ïµ±Ç°ÆµÂÊÖµµÄ±êÖ¾
+#define Reserve_Requrirement              Motor_Status[0].Bits.bit5 //µç»úÐèÒª·´ÏòÔËÐÐ£¬ÏÈ¼õËÙÔÙ·´Ïò  
+#define FORCE_REDUCE_EN                   Motor_Status[0].Bits.bit6 //Óöµ½ÉÏÏÂÏÞÎ»¿ª¹Ø»òÕßµç»úÐèÒª·´ÏòÊ±ÖÃ´Ë±êÖ¾
+#define FORCE_REDUCE_10HZ                 Motor_Status[0].Bits.bit7 //Ç¿ÖÆ¼õËÙÊ±£¬ÆµÂÊµ½10HZµÄ±êÖ¾
+#define MOTOR_Init                        Motor_Status[1].Bits.bit0 //µõ¸Ë³õÊ¼»¯½øÐÐÖÐ
+#define MOTOR_CORRENT_UP                  Motor_Status[1].Bits.bit1 //µç»úÉÏÎ»ÖÃÐÞÕý±êÖ¾
+#define MOTOR_CORRENT_DOWN                Motor_Status[1].Bits.bit2 //µç»úÏÂÎ»ÖÃÐÞÕý±êÖ¾
 
+#define FREQ_REDUCE_TABLE_NUM               15U
 
-
-#define FREQ_REDUCE_TABLE_NUM             15U
+#define SWITCH_LIMIT_DETECT                 1U //¼ì²âµ½ÏÞÎ»¿ª¹Ø£¬ÏÞÎ»¿ª¹ØÊÇ³£±Õ¿ª¹Ø£¬ËùÒÔÕý³£Ê±ÖµÎª0
+#define SWITCH_LIMIT_UNDETECT               0U //Î´¼ì²âµ½ÏÞÎ»¿ª¹Ø
 
 enum Timer_Type{
     Motor_Delay,            //ËÉ¿ª±§Õ¢µÄ¼ÆÊ±£¬µç»úÔËÐÐ1-2sºóËÉ¿ª£¬Í£Ö¹¼õËÙÊ±ÔÙ±§½ô
@@ -30,6 +34,7 @@ enum Timer_Type{
     Read5001,               //¶ÁÈ¡µ±Ç°ÔËÐÐÆµÂÊµÄ¼ÆÊýÆ÷
     Freq_Reduce,            //¼õËÙ¼ä¸ôÊ±¼ä¼ÆÊýÆ÷
     Keep_10HZ,              //·´Ïò»òÕßÏÞÎ»¼õËÙÐÅºÅºóÆµÂÊ¼õµ½10HZÊ±ÐèÒª¼ÌÐøÎ¬³ÖµÄÊ±¼ä
+    Motor_Correct,          //µç»úÎ»ÖÃÐÞÕý£¬ÏÈ·¢Í£»úÃüÁî£¬ÑÓÊ±ºóÐÞÕýÖµ
     
     Timer_Total
 };
@@ -52,8 +57,8 @@ enum Init_Parameter_Off{
 
 typedef struct Init_Para_Type_Info
 {
-    u16 ParaAddr;
-    u16 DataValue;
+    u16 ParaAddr;   //³õÊ¼»¯²ÎÊýµÄ¼Ä´æÆ÷µØÖ·
+    u16 DataValue;  //³õÊ¼»¯²ÎÊýµÄÖµ
 }Init_Para_t;
 
 typedef struct Freq_Reduce_Info
@@ -68,14 +73,14 @@ const Freq_Reduce_t Table_Freq_Reduce[FREQ_REDUCE_TABLE_NUM]=
     {240,30000},
     {180,30000},
     {150,20000},
-    {120,20000},//Èô¹¤×÷ÆµÂÊÎª120HZ£¬Ôòµ±Ê£ÓàÂö³åÊýÐ¡ÓÚ20000Ê±¾Í¿ªÊ¼¼õËÙ
-    {100,15000},
+    {120,16000},//Èô¹¤×÷ÆµÂÊÎª120HZ£¬Ôòµ±Ê£ÓàÂö³åÊýÐ¡ÓÚ20000Ê±¾Í¿ªÊ¼¼õËÙ
+    {100,12000},
     {90,10000},
     {80,8000},
     {70,6500},
     {60,5000},
-    {50,4000},
-    {40,3000},
+    {50,3500},
+    {40,2000},
     {30,1200},
     {20,800},
     {10,500}
@@ -122,7 +127,7 @@ struct RTU_ReqBlock RTU_Req_WriteCMD_6000= //RTUÊý¾ÝÐ´ÇëÇó¿é-¿ØÖÆÃüÁî 1-Õý×ª 2-·
 	EXCUTE_SUCCESS,                             //Ö´ÐÐ½á¹û
 	0x6000,                                     //²Ù×÷¼Ä´æÆ÷µØÖ·
 	0x01,                                       //²Ù×÷¼Ä´æÆ÷ÊýÁ¿
-	(u16*)&WriteData[Control_CMD]                  //Ö´ÐÐµÄÊý¾Ý£¬¶ÁÈ¡µÄ¼Ä´æÆ÷Êý¾Ý»òÐ´²Ù×÷µÄÊý¾Ý
+	(u16*)&WriteData[Control_CMD]               //Ö´ÐÐµÄÊý¾Ý£¬¶ÁÈ¡µÄ¼Ä´æÆ÷Êý¾Ý»òÐ´²Ù×÷µÄÊý¾Ý
 };
 
 struct RTU_ReqBlock RTU_Req_WriteFreq_5000= //RTUÊý¾ÝÇëÇó¿é,ÉèÖÃÔËÐÐÆµÂÊ
@@ -135,7 +140,7 @@ struct RTU_ReqBlock RTU_Req_WriteFreq_5000= //RTUÊý¾ÝÇëÇó¿é,ÉèÖÃÔËÐÐÆµÂÊ
 	EXCUTE_SUCCESS,                             //Ö´ÐÐ½á¹û
 	0x5000,                                     //²Ù×÷¼Ä´æÆ÷µØÖ·
 	0x01,                                       //²Ù×÷¼Ä´æÆ÷ÊýÁ¿
-	(u16*)&WriteData[Convert_Freq]                 //Ö´ÐÐµÄÊý¾Ý£¬¶ÁÈ¡µÄ¼Ä´æÆ÷Êý¾Ý»òÐ´²Ù×÷µÄÊý¾Ý
+	(u16*)&WriteData[Convert_Freq]              //Ö´ÐÐµÄÊý¾Ý£¬¶ÁÈ¡µÄ¼Ä´æÆ÷Êý¾Ý»òÐ´²Ù×÷µÄÊý¾Ý
 };
 
 struct RTU_ReqBlock RTU_Req_ReadFreq_5001= //RTUÊý¾ÝÇëÇó¿é,ÉèÖÃÔËÐÐÆµÂÊ
@@ -161,10 +166,11 @@ struct RTU_ReqBlock RTU_Req_ReadFreq_5001= //RTUÊý¾ÝÇëÇó¿é,ÉèÖÃÔËÐÐÆµÂÊ
 static void Freq_Convert_Init(void)
 {
     u8 i;
-    Invertor_Status.Byte = 0;
+    Invertor_Status[0].Byte = 0;
+    Invertor_Status[1].Byte = 0;
     memset((u8 *)&cTimer[0],0,sizeof(cTimer));
-    Global_Variable.Suspende_Target_Position = INIT_POSITION_WIRE;
-    Global_Variable.Suspende_Current_Position = INIT_POSITION_WIRE;
+    Global_Variable.Suspende_PositionTarget = Global_Variable.Para_Independence.Suspende_Limit_Up;
+    Global_Variable.Suspende_PositionCurrent = Global_Variable.Para_Independence.Suspende_Limit_Up;
     memset(InvertorData,0,sizeof(InvertorData));
     memset(WriteData,0,sizeof(WriteData));
     Motor_Freq_MIN = ((u32)10*10000/Global_Variable.Para_Independence.Max_Motro_Freq);
@@ -206,8 +212,8 @@ void TaskFreq_Timer100ms(void)
     if(MOTOR_RUNNING == ON)
     {
         if(cTimer[Motor_Delay] >= BAND_TYPE_BRAKE_DELAY_THRES)
-        {
-            if(MOTOR_REDUCING == OFF)
+        {//µç»ú¿ªÊ¼ÔËÐÐÊ±300msÄÚÍê³É±§Õ¢ÔÙ¶Ï¿ª
+            //if(MOTOR_REDUCING == OFF)
             {
                 BAND_TYPE_BRAKE_OUT = ON;//±§Õ¢¶Ï¿ª
             }
@@ -224,24 +230,34 @@ void TaskFreq_Timer100ms(void)
     }
 
     if(MOTOR_REDUCING == ON)
-    {
-        cTimer[Freq_Reduce]++;
+    {//µç»úµ±Ç°´¦ÓÚ¼õËÙ×´Ì¬
+        cTimer[Freq_Reduce]++;//¼õËÙ³ÖÐøÊ±¼ä¼ÆÊ±
         cTimer[Read5001] = 0;
     }
     else
     {
         cTimer[Freq_Reduce] = 0;
-        cTimer[Read5001]++;
+        cTimer[Read5001]++;//¶ÁÈ¡µ±Ç°µç»úÔËÐÐÆµÂÊµÄÊ±¼ä¼ÆÊ±
     }
 
     if(FORCE_REDUCE_10HZ == ON)
-    {
-        cTimer[Keep_10HZ]++;
+    {//ÆµÂÊ¼õµ½10HZµÄ±êÖ¾£¬Ò»°ãÖ¸µÄÊÇÇ¿ÖÆ¼õËÙ£¬ÈçÓöµ½¼õËÙ¿ª¹Ø»òÕßÐèÒª·´ÏòÊ±£¬Õý³£µ½Ä¿±êÎ»ÖÃ¶ø½øÐÐµÄ×ÔÖ÷¼õËÙ²»»áÖÃ´Ë±êÖ¾
+        cTimer[Keep_10HZ]++;//¸Ã¼ÆÊ±Æ÷ÓÃÓÚÆµÂÊ¼õµ½10HZÊ±±£³ÖÒ»¶¨Ê±¼äºóÈÃµç»úÍ£Ö¹»ò·´Ïò
     }
     else
     {
         cTimer[Keep_10HZ] = 0;
     }
+		
+    if((MOTOR_CORRENT_UP == ON)||(MOTOR_CORRENT_DOWN == ON))
+    {//Óöµ½ÉÏÏÂÏÞÎ»¿ª¹Ø
+        cTimer[Motor_Correct]++;//¸Ã¼ÆÊ±Æ÷ÓÃÓÚÓöµ½ÏÞÎ»¿ª¹ØÊ±ÑÓ³ÙÒ»¶¨Ê±¼äºóÐÞÕýÂö³åÊýºÍµõ¸ËÎ»ÖÃÖµ
+    }
+    else
+    {
+        cTimer[Motor_Correct] = 0;
+    }
+		
 }
 
 /****************************************************************************************/
@@ -254,7 +270,7 @@ static u16 Calculate_Frequence(void)
 {
     float temp;
     u16 ret_freq;
-    temp = Global_Variable.Suspende_Target_Speed*Global_Variable.Para_Independence.Motor_Freq_Factor;
+    temp = Global_Variable.Suspende_SpeedTarget*Global_Variable.Para_Independence.Motor_Freq_Factor;
     temp = temp>Global_Variable.Para_Independence.Max_Motro_Freq?Global_Variable.Para_Independence.Max_Motro_Freq:temp;
     ret_freq = (u16)(temp*10000/Global_Variable.Para_Independence.Max_Motro_Freq);
     ret_freq = ret_freq<Motor_Freq_MIN?Motor_Freq_MIN:ret_freq;
@@ -276,7 +292,7 @@ static void Set_Frequence_Start(void)
     MOTOR_REDUCING = OFF;
     if(MOTOR_DIRECTOR == D_FALL)
     {
-        if(Global_Variable.Encode_TargetPulse - Global_Variable.Encode_CurrentPulse >= 2000)
+        if(Global_Variable.Encode_PulseTarget - Global_Variable.Encode_PulseCurrent >= 2000)
         {
             motor_freq = Calculate_Frequence();
         }
@@ -288,18 +304,25 @@ static void Set_Frequence_Start(void)
     }
     else//(MOTOR_DIRECTOR == D_Forward)
     {
-        if(Global_Variable.Encode_CurrentPulse - Global_Variable.Encode_TargetPulse >= 2000)
+        if(MOTOR_Init == OFF)
         {
-            motor_freq = Calculate_Frequence();
+            if(Global_Variable.Encode_PulseCurrent - Global_Variable.Encode_PulseTarget >= 2000)
+            {
+                motor_freq = Calculate_Frequence();
+            }
+            else
+            {
+                motor_freq = Motor_Freq_MIN;
+                MOTOR_REDUCING = ON;
+            }
         }
         else
         {
-            motor_freq = Motor_Freq_MIN;
-            MOTOR_REDUCING = ON;
+            motor_freq = Calculate_Frequence();
         }
     }
-    Global_Variable.Suspende_Current_Speed = ((u32)motor_freq*(u32)Global_Variable.Para_Independence.Max_Motro_Freq)/10000;
-    Global_Variable.Suspende_Current_Speed /= Global_Variable.Para_Independence.Motor_Freq_Factor;
+    Global_Variable.Suspende_SpeedCurrent = ((u32)motor_freq*(u32)Global_Variable.Para_Independence.Max_Motro_Freq)/10000;
+    Global_Variable.Suspende_SpeedCurrent /= Global_Variable.Para_Independence.Motor_Freq_Factor;
     //if(Wrdata[Convert_Freq] != Freq_Req)
     {
         WriteData[Convert_Freq] = motor_freq;
@@ -322,44 +345,52 @@ static u16 Frequence_Reduce_Logic(u32 Delta_Pulse)
     
     if(MOTOR_REDUCING == OFF)
     {
-        if(cTimer[Read5001] >= 20)
-        {//ÖÜÆÚÐÔ¶ÁÈ¡µ±Ç°µç»úÆµÂÊ
+        if(cTimer[Read5001] >= 1)
+        {//µ±µç»ú´¦ÓÚ·Ç¼õËÙ×´Ì¬Ê±ÖÜÆÚÐÔ¶ÁÈ¡µ±Ç°µç»úÆµÂÊ
             cTimer[Read5001] = 0;
             RTU_AddReqBlock(&rtu_ctx,&RTU_Req_ReadFreq_5001);
-            Global_Variable.Suspende_Current_Speed = (InvertorData[off_CurrFreq]/100)/Global_Variable.Para_Independence.Motor_Freq_Factor;
+            Global_Variable.Suspende_SpeedCurrent = ((InvertorData[off_CurrFreq]*Global_Variable.Para_Independence.Max_Motro_Freq)/10000)/
+                Global_Variable.Para_Independence.Motor_Freq_Factor;
             //Global_Variable.Suspende_Current_Speed = (InvertorData[off_CurrFreq]/100)/Global_Variable.Para_Independence.Motor_Freq_Factor;//*10000/100
         }
+        curfreq = (Global_Variable.Para_Independence.Max_Motro_Freq * InvertorData[off_CurrFreq]) / 10000;
         
         for(i=0;i<FREQ_REDUCE_TABLE_NUM;i++)
         {
-            if((InvertorData[off_CurrFreq]/100) >= Table_Freq_Reduce[i].reduce_freq)
-            {
+            if(curfreq >= Table_Freq_Reduce[i].reduce_freq)
+            {//±éÀú¼õËÙÆðÊ¼µÄÊ£ÓàÂö³åÊý
                 if((FORCE_REDUCE_EN == ON)||(Table_Freq_Reduce[i].pulse_remain >= Delta_Pulse))
-                {
-                    Global_Variable.Suspende_Current_Speed = Table_Freq_Reduce[i].reduce_freq/Global_Variable.Para_Independence.Motor_Freq_Factor;
+                {//Âú×ã¼õËÙÌõ¼þÊ±¿ªÊ¼¼õËÙ£¬²¢ÖÃÎ»
+                    Global_Variable.Suspende_SpeedCurrent = Table_Freq_Reduce[i].reduce_freq/Global_Variable.Para_Independence.Motor_Freq_Factor;
                     motor_freq = Table_Freq_Reduce[i].reduce_freq*10000/Global_Variable.Para_Independence.Max_Motro_Freq;//
                     MOTOR_REDUCING = ON;
                     break;
                 }
             }
         }
-        motor_freq = WriteData[Convert_Freq];
+        if(MOTOR_REDUCING == OFF)
+        {
+            motor_freq = WriteData[Convert_Freq];
+        }
     }
     else
     {
         if(cTimer[Freq_Reduce] >= FREQ_REDUCE_INTERTER)
-        {
-            cTimer[Freq_Reduce] = 0;
-            Global_Variable.Suspende_Current_Speed -= (u16)(FREQ_REDUCE_BASE/Global_Variable.Para_Independence.Motor_Freq_Factor);
-            curfreq = Global_Variable.Suspende_Current_Speed * Global_Variable.Para_Independence.Motor_Freq_Factor;
-            motor_freq = curfreq*10000/Global_Variable.Para_Independence.Max_Motro_Freq;//
+        {//Ã¿¸ôÒ»¶¨Ê±¼ä¼õËÙ¹Ì¶¨ÆµÂÊ
+            if(WriteData[Convert_Freq] > Motor_Freq_MIN)//ÆµÂÊ»¹Î´¼õµ½×îµÍµÄ10HZ
+            {
+                cTimer[Freq_Reduce] = 0;
+                Global_Variable.Suspende_SpeedCurrent -= (u16)(FREQ_REDUCE_BASE/Global_Variable.Para_Independence.Motor_Freq_Factor);
+                curfreq = Global_Variable.Suspende_SpeedCurrent * Global_Variable.Para_Independence.Motor_Freq_Factor;//HZ
+                motor_freq = curfreq*10000/Global_Variable.Para_Independence.Max_Motro_Freq;//
+            }
         }
         else
         {
             motor_freq = WriteData[Convert_Freq];
         }
     }
-    return motor_freq;
+    return motor_freq;//¸ÃÆµÂÊµÄµ¥Î»ÊÇ·¢¸ø±äÆµÆ÷µÄÖµ£¬0-10000¶ÔÓ¦0-×î´óÆµÂÊ
 }
 
 
@@ -390,36 +421,54 @@ static void Set_Frequence_Running(u32 Delta_Pulse)
 
 
 /********************************************************************************/
-/*º¯ÊýÃû£º  Motor_Forward                                                        */
-/*¹¦ÄÜËµÃ÷£ºµç»úÕý×ªÃüÁî                                                          */
+/*º¯ÊýÃû£º  MotorMove_Fall                                                        */
+/*¹¦ÄÜËµÃ÷£ºµç»úÏòÏÂÔË¶¯ÃüÁî                                                          */
 /*ÊäÈë²ÎÊý£ºÎÞ                                                                   */
 /*Êä³ö²ÎÊý£ºÎÞ                                                                  */
 /*******************************************************************************/
 void MotorMove_Fall(void)
 {
     MOTOR_DIRECTOR = D_FALL;
-    Set_Frequence_Start();
-    //if(Wrdata[Control_CMD] != Motor_Fardward_Run)
-    {
-        WriteData[Control_CMD] = Motor_Fardward_Run;
-        RTU_AddReqBlock(&rtu_ctx,&RTU_Req_WriteCMD_6000);
+    if(Global_Variable.Para_Independence.Convert_Cfg == ON)
+    {//ÓÐ±äÆµÆ÷ÅäÖÃ
+        Set_Frequence_Start();
+        //if(Wrdata[Control_CMD] != Motor_Fardward_Run)
+        {
+            WriteData[Control_CMD] = Motor_Fardward_Run;
+            RTU_AddReqBlock(&rtu_ctx,&RTU_Req_WriteCMD_6000);
+        }
+    }
+    else
+    {//ÎÞ±äÆµÆ÷ÅäÖÃ
+        CONTACTOR_RISE_OUT = OFF;
+        CONTACTOR_FALL_OUT = ON;
+        CONTACTOR_STOP_OUT = OFF;
     }
 }
 
 /********************************************************************************/
-/*º¯ÊýÃû£º  Motor_Backward                                                      */
-/*¹¦ÄÜËµÃ÷£ºµç»ú·´×ªÃüÁî                                                         */
+/*º¯ÊýÃû£º  MotorMove_Rise                                                      */
+/*¹¦ÄÜËµÃ÷£ºµç»úÏòÉÏÔË¶¯ÃüÁî                                                         */
 /*ÊäÈë²ÎÊý£ºÎÞ                                                                  */
 /*Êä³ö²ÎÊý£ºÎÞ                                                                  */
 /*******************************************************************************/
 void MotorMove_Rise(void)
 {
     MOTOR_DIRECTOR = D_RISE;
-    Set_Frequence_Start();
-    //if(Wrdata[Control_CMD] != Motor_Backward_Run)
-    {
-        WriteData[Control_CMD] = Motor_Backward_Run;
-        RTU_AddReqBlock(&rtu_ctx,&RTU_Req_WriteCMD_6000);
+    if(Global_Variable.Para_Independence.Convert_Cfg == ON)
+    {//ÓÐ±äÆµÆ÷ÅäÖÃ
+        Set_Frequence_Start();
+        //if(Wrdata[Control_CMD] != Motor_Backward_Run)
+        {
+            WriteData[Control_CMD] = Motor_Backward_Run;
+            RTU_AddReqBlock(&rtu_ctx,&RTU_Req_WriteCMD_6000);
+        }
+    }
+    else
+    {//ÎÞ±äÆµÆ÷ÅäÖÃ
+        CONTACTOR_RISE_OUT = ON;
+        CONTACTOR_FALL_OUT = OFF;
+        CONTACTOR_STOP_OUT = OFF;
     }
 }
 
@@ -432,18 +481,32 @@ void MotorMove_Rise(void)
 static void Motor_Stop(u8 stoptype)
 {
     u8 stopmode;
-    if((stoptype ==Motor_Stop_Reduce)||(stoptype ==Motor_Stop_Free))
-    {   
-        stopmode = stoptype;
+    if(Global_Variable.Para_Independence.Convert_Cfg == ON)
+    {//ÓÐ±äÆµÆ÷ÅäÖÃ
+        MOTOR_RUNNING = OFF;
+        FORCE_REDUCE_10HZ = OFF;
+        cTimer[Keep_10HZ] = 0;
+        FORCE_REDUCE_EN = OFF;
+        MOTOR_REDUCING = OFF;
+        if((stoptype ==Motor_Stop_Reduce)||(stoptype ==Motor_Stop_Free))
+        {   
+            stopmode = stoptype;
+        }
+        else
+        {
+            stopmode = Motor_Stop_Free;
+        }
+        //if(WriteData[Control_CMD] != stopmode)
+        {
+            WriteData[Control_CMD] = stopmode;
+            RTU_AddReqBlock_Front(&rtu_ctx,&RTU_Req_WriteCMD_6000);
+        }
     }
     else
-    {
-        stopmode = Motor_Stop_Free;
-    }
-    if(WriteData[Control_CMD] != stopmode)
-    {
-        WriteData[Control_CMD] = stopmode;
-        RTU_AddReqBlock_Front(&rtu_ctx,&RTU_Req_WriteCMD_6000);
+    {//ÎÞ±äÆµÆ÷ÅäÖÃ
+        CONTACTOR_RISE_OUT = OFF;
+        CONTACTOR_FALL_OUT = OFF;
+        CONTACTOR_STOP_OUT = ON;
     }
 }
 
@@ -460,70 +523,230 @@ void Task_Freq_Convert(void *p_arg)
 //     ethparm = (struct wiz_NetInfo_t *)p_arg;
     Freq_Convert_Init();
     s32 Delta_Pulse;
+    u8 pre_limit_rise;
+    u8 pre_limit_fall;
     while (1)
     {        
+        if(CMD_Suspender_Init == ON)
+        {//µõ¸Ë³õÊ¼»¯ÇëÇó
+            CMD_Suspender_Init = OFF;
+            Global_Variable.Encode_PulseTarget = (Global_Variable.Suspende_PositionTarget-Global_Variable.Para_Independence.Suspende_Limit_Up) / Global_Variable.Para_Independence.Lenth_Per_Pulse;
+            MOTOR_RUNNING = ON;
+            MOTOR_Init = ON;
+            MotorMove_Rise();
+        }
+    
         if((FORCE_REDUCE_EN == ON)&&(MOTOR_REDUCING == OFF))//Ç¿ÖÆ¼õËÙÍê³É£¬µ±Ç°ÆµÂÊÊÇ×îÐ¡ÆµÂÊ10HZ
         {//´ËÌõ¼þ±ØÐë·ÅÔÚ¸ÃwhileµÄ×îÉÏ±ßÅÐ¶Ï£¬·ñÔò»áµ¼ÖÂÌõ¼þÎÞ·¨Âú×ã
-            FORCE_REDUCE_EN = OFF;
-            FORCE_REDUCE_10HZ = ON;
-            cTimer[Keep_10HZ] = 0;
+            if(MOTOR_Init == OFF)
+            {//±ØÐëÊÇ·Çµõ¸Ë³õÊ¼»¯×´Ì¬ÏÂ
+                FORCE_REDUCE_EN = OFF;
+                FORCE_REDUCE_10HZ = ON;
+                cTimer[Keep_10HZ] = 0;
+            }
         }
 
-        if(cTimer[Keep_10HZ] >= FORCE_REDUCE_10HZ_KEEPING)
-        {
-            if(Reserve_Requrirement == ON)
-            {
-                cTimer[Motor_Delay] = 0;//ÖØÐÂ¼ÆÊ±2sÔÙËÉ±§Õ¢
-                Global_Variable.Encode_TargetPulse = (s32)((Global_Variable.Para_Independence.Suspende_Limit_Up-Global_Variable.Suspende_Target_Position)/ \
-                    Global_Variable.Para_Independence.Lenth_Per_Pulse);
-                if(Global_Variable.Encode_TargetPulse > Global_Variable.Encode_CurrentPulse)
-                {
-                    MotorMove_Fall();
+        if(Global_Variable.Para_Independence.Convert_Cfg == ON)
+        {//ÓÐ±äÆµÆ÷ÅäÖÃ
+            if(cTimer[Keep_10HZ] >= FORCE_REDUCE_10HZ_KEEPING)
+            {//Ç¿ÖÆ¼õËÙµ½10HZÇÒ±£³Ö¹Ì¶¨Ê±¼äºóÐèÒªÍ£Ö¹µç»úÔËÐÐ»òÕß¿ªÊ¼·´ÏòÔËÐÐ
+                FORCE_REDUCE_10HZ = OFF;
+                if(Reserve_Requrirement == ON)
+                {//ÐèÒª·´ÏòÔËÐÐ
+                    Reserve_Requrirement = OFF;
+                    cTimer[Motor_Delay] = 0;//ÖØÐÂ¼ÆÊ±500msÔÙËÉ±§Õ¢
+                    Global_Variable.Encode_PulseTarget = (s32)((Global_Variable.Para_Independence.Suspende_Limit_Up-Global_Variable.Suspende_PositionTarget)/ \
+                        Global_Variable.Para_Independence.Lenth_Per_Pulse);
+                    if(Global_Variable.Encode_PulseTarget > Global_Variable.Encode_PulseCurrent)
+                    {
+                        MotorMove_Fall();
+                    }
+                    else
+                    {
+                        MotorMove_Rise();
+                    }
                 }
                 else
                 {
-                    MotorMove_Rise();
+                    Motor_Stop(Motor_Stop_Reduce);
+                }
+            }
+        }
+        else
+        {//ÎÞ±äÆµÆ÷ÅäÖÃ
+            if(FORCE_REDUCE_10HZ == ON)
+            {
+                Motor_Stop(Motor_Stop_Reduce);
+            }
+        }
+
+
+        if(MOTOR_RUNNING == ON)
+        {
+            if(((Limit_Up_SlowDown == ON)&&(MOTOR_DIRECTOR == D_RISE))||((Limit_Down_SlowDown == ON)&&(MOTOR_DIRECTOR == D_FALL))||
+                (Reserve_Requrirement == ON))//ÔËÐÐ¹ý³ÌÖÐÓöµ½ÏÞÎ»¼õËÙÐÅºÅ
+            {
+                if(MOTOR_Init == OFF)//µõ¸Ë³õÊ¼»¯Ê±ÐèÒªÔËÐÐÖÁÏÞÎ»¿ª¹Ø´¦
+                {
+                    FORCE_REDUCE_EN = ON;
                 }
             }
             else
             {
-                MOTOR_RUNNING = OFF;
-                Motor_Stop(Motor_Stop_Reduce);
+                FORCE_REDUCE_EN = OFF;
+            }
+
+            if(Limit_Rise_Signal == ON)
+            {//ÔËÐÐ¹ý³ÌÖÐÓöµ½ÉÏÏÞÎ»ÐÅºÅ
+                MOTOR_Init = OFF;
+                if(MOTOR_DIRECTOR == D_RISE)
+                {//µç»úÉÏÉý
+                    if(BAND_TYPE_BRAKE_OUT == ON)
+                    {
+                        BAND_TYPE_BRAKE_OUT = OFF;//±§Õ¢¶Ï¿ª
+                    }
+                    Motor_Stop(Motor_Stop_Reduce);
+                    
+                    if(pre_limit_rise == OFF)
+                    {//ÐèÒª½øÐÐÎ»ÖÃ²¹³¥
+                        MOTOR_CORRENT_UP = ON; 
+                    }
+                }
+                else
+                {//µç»úÏÂ½µ
+
+                }
+            }
+            else
+            {
+#if 0
+                if(pre_limit_rise == ON)
+                {//ÐèÒª½øÐÐÎ»ÖÃ²¹³¥
+                    OS_ENTER_CRITICAL(); 
+                    Global_Variable.Suspende_PositionCurrent = Global_Variable.Para_Independence.Suspende_Limit_Up;
+                    Global_Variable.Compensate_Pulse = 0 - Global_Variable.Encode_PulseCurrent;//¹ý³åÁËÐèÒª²¹³¥ÕýÖµ
+                    Global_Variable.Compensate_En = ON;
+                    OS_EXIT_CRITICAL();
+                }
+#endif
+            }
+
+            if(Limit_Fall_Signal == ON)
+            {//ÔËÐÐ¹ý³ÌÖÐÓöµ½ÏÂÏÞÎ»ÐÅºÅ
+                if(MOTOR_DIRECTOR == D_FALL)
+                {
+                    if(BAND_TYPE_BRAKE_OUT == ON)
+                    {
+                        BAND_TYPE_BRAKE_OUT = OFF;//±§Õ¢¶Ï¿ª
+                    }
+                    Motor_Stop(Motor_Stop_Reduce);
+
+                    if(pre_limit_fall == OFF)
+                    {//ÐèÒª½øÐÐÎ»ÖÃ²¹³¥
+                        MOTOR_CORRENT_DOWN = ON; 
+                    }
+                }
+                else
+                {
+
+                }
+            }
+            else
+            {
+#if 0
+                if(pre_limit_fall == ON)
+                {//ÐèÒª½øÐÐÎ»ÖÃ²¹³¥
+                    OS_ENTER_CRITICAL(); 
+                    Global_Variable.Suspende_PositionCurrent = 0;
+                    Global_Variable.Compensate_Pulse = (Global_Variable.Para_Independence.Suspende_Limit_Up/Global_Variable.Para_Independence.Lenth_Per_Pulse)
+                        - Global_Variable.Encode_PulseCurrent;//¹ý³åÁË¾Í²¹³¥¸ºÖµ
+                    Global_Variable.Compensate_En = ON;
+                    OS_EXIT_CRITICAL();
+                }
+#endif
             }
         }
-        
-        if((Limit_Up_SlowDown == ON)||(Limit_Down_SlowDown == ON)||(Reserve_Requrirement == ON))
+        pre_limit_rise = Limit_Rise_Signal;
+        pre_limit_fall = Limit_Fall_Signal;
+
+        if(cTimer[Motor_Correct] >= 6U)//Óöµ½ÏÞÎ»¿ª¹ØºóµÈ´ý600ms£¬ÔÙÐÞÕýÂö³åÊýºÍµ±Ç°Î»ÖÃÖµ
         {
-            FORCE_REDUCE_EN = ON;
+            cTimer[Motor_Correct] = 0;
+            if(MOTOR_CORRENT_UP == ON)
+            {
+                MOTOR_CORRENT_UP = OFF;
+                OS_ENTER_CRITICAL(); 
+                Global_Variable.Suspende_PositionCurrent = Global_Variable.Para_Independence.Suspende_Limit_Up;
+                Global_Variable.Compensate_Pulse = 0 - Global_Variable.Encode_PulseCurrent;//¹ý³åÁËÐèÒª²¹³¥ÕýÖµ
+                Global_Variable.Compensate_En = ON;
+                OS_EXIT_CRITICAL();
+            }
+
+            if(MOTOR_CORRENT_DOWN == ON)
+            {
+                MOTOR_CORRENT_DOWN = OFF;
+                OS_ENTER_CRITICAL(); 
+                Global_Variable.Suspende_PositionCurrent = 0;
+                Global_Variable.Compensate_Pulse = (Global_Variable.Para_Independence.Suspende_Limit_Up/Global_Variable.Para_Independence.Lenth_Per_Pulse)
+                    - Global_Variable.Encode_PulseCurrent;//¹ý³åÁË¾Í²¹³¥¸ºÖµ
+                Global_Variable.Compensate_En = ON;
+                OS_EXIT_CRITICAL();
+            }
         }
+
         
         if(MOTOR_DIRECTOR == D_FALL)
         {
-            Delta_Pulse = Global_Variable.Encode_TargetPulse - Global_Variable.Encode_CurrentPulse;
+            Delta_Pulse = Global_Variable.Encode_PulseTarget - Global_Variable.Encode_PulseCurrent;
         }
         else
         {
-            Delta_Pulse = Global_Variable.Encode_CurrentPulse - Global_Variable.Encode_TargetPulse;
+            Delta_Pulse = Global_Variable.Encode_PulseCurrent - Global_Variable.Encode_PulseTarget;
         }
-        if(Delta_Pulse < 20u)
-        {
-            if((MOTOR_RUNNING == ON)/*&&(MOTOR_REDUCING == OFF)*/)
-            {
-                cTimer[Motor_Delay] = 0;
-                Motor_Stop(Motor_Stop_Reduce);
-                MOTOR_RUNNING = OFF;
+
+        if(Global_Variable.Para_Independence.Convert_Cfg == ON)
+        { //ÓÐ±äÆµÆ÷ÅäÖÃ
+#if 0
+    	    if((Delta_Pulse < 1000u)&&(MOTOR_REDUCING == ON))
+            {//Âö³åÊýÐ¡ÓÚ1000Ê±Á¢¼´¶Ï¿ª±§Õ¢
+                if(BAND_TYPE_BRAKE_OUT == ON)
+                {
+                    BAND_TYPE_BRAKE_OUT = OFF;//±§Õ¢¶Ï¿ª
+                }
             }
+#endif
+
+            if((Delta_Pulse < REMAIN_PULSE_NUMBER_FOR_FREQ_STOP)||(Delta_Pulse < 0))
+            {
+                if(BAND_TYPE_BRAKE_OUT == ON)
+                {//µç»úµ½´ïÄ¿±êÎ»ÖÃÊ±£¬¾ÍÁ¢¼´±§Õ¢£¬²»ÒªÌáÇ°±§Õ¢
+                    cTimer[Motor_Delay] = 0;
+                    BAND_TYPE_BRAKE_OUT = OFF;//±§Õ¢¶Ï¿ª
+                }
+                if(MOTOR_RUNNING == ON)/*&&(MOTOR_REDUCING == OFF)*/
+                {
+                    Motor_Stop(Motor_Stop_Reduce);//µ½´ïÄ¿±êÎ»ÖÃ£¬Ö´ÐÐ¼õËÙÍ£»ú
+                }
+            }
+            else
+            {
+                Set_Frequence_Running(Delta_Pulse);
+            }
+
         }
         else
-        {
-            Set_Frequence_Running(Delta_Pulse);
+        { //ÎÞ±äÆµÆ÷ÅäÖÃ
+            if(Delta_Pulse < REMAIN_PULSE_NUMBER_FOR_STOP)
+            {
+                Motor_Stop(Motor_Stop_Reduce);
+            }
         }
         
         if(CMD_Rope_Wire == ON)//µ¥¸öµõ¸ËÊÕÀ¿£¨¸´Î»µõ¸ËÎ»ÖÃ£¬¾ÍÊÇµõ¸ËµÄ×î¸ßÎ»ÖÃ£©
         {
             MOTOR_RUNNING = ON;
             CMD_Rope_Wire = OFF;
-            Global_Variable.Encode_TargetPulse = 0;
+            Global_Variable.Encode_PulseTarget = 0;
             MotorMove_Rise();
         }
         
@@ -531,15 +754,16 @@ void Task_Freq_Convert(void *p_arg)
         {
             MOTOR_RUNNING = ON;
             CMD_Suspender_Min = OFF;
-            Global_Variable.Encode_TargetPulse = Global_Variable.Para_Independence.Suspende_Limit_Up/Global_Variable.Para_Independence.Lenth_Per_Pulse;
+            Global_Variable.Encode_PulseTarget = Global_Variable.Para_Independence.Suspende_Limit_Up/Global_Variable.Para_Independence.Lenth_Per_Pulse;
             MotorMove_Fall();
         }
         
-        if(CMD_Suspender_Emergency_Stop == ON)//µ¥¸öµõ¸Ë¼±Í£
+        if(CMD_Suspender_Emergency_Stop == ON)//ÉÏÎ»»úÃüÁî£ºµ¥¸öµõ¸Ë¼±Í£
         {
-            MOTOR_RUNNING = OFF;
-            FORCE_REDUCE_EN = OFF;
-            MOTOR_REDUCING = OFF;
+            if(BAND_TYPE_BRAKE_OUT == ON)
+            {
+                BAND_TYPE_BRAKE_OUT = OFF;//±§Õ¢¶Ï¿ª
+            }
             CMD_Suspender_Emergency_Stop = OFF;
             Motor_Stop(Motor_Stop_Free);            
         }
@@ -548,9 +772,9 @@ void Task_Freq_Convert(void *p_arg)
         {
             MOTOR_RUNNING = ON;
             CMD_Suspender_Target = OFF;
-            Global_Variable.Encode_TargetPulse = (s32)((Global_Variable.Para_Independence.Suspende_Limit_Up-Global_Variable.Suspende_Target_Position)/ \
+            Global_Variable.Encode_PulseTarget = (s32)((Global_Variable.Para_Independence.Suspende_Limit_Up-Global_Variable.Suspende_PositionTarget)/ \
                 Global_Variable.Para_Independence.Lenth_Per_Pulse);
-            if(Global_Variable.Encode_TargetPulse > Global_Variable.Encode_CurrentPulse)
+            if(Global_Variable.Encode_PulseTarget > Global_Variable.Encode_PulseCurrent)
             {
                 MotorMove_Fall();
             }
@@ -560,13 +784,26 @@ void Task_Freq_Convert(void *p_arg)
             }
         }
 
-        if(Err_Summit_Attempt == ON)//µ¥¸öµõ¸Ë¼±Í£
+        if(Err_Stop_Signal == ON)//¼±Í£°´Å¥£ºµõ¸Ë¼±Í£
         {
             if(MOTOR_RUNNING == ON)
             {
-                MOTOR_RUNNING = OFF;
-                FORCE_REDUCE_EN = OFF;
-                MOTOR_REDUCING = OFF;
+                if(BAND_TYPE_BRAKE_OUT == ON)
+                {
+                    BAND_TYPE_BRAKE_OUT = OFF;//±§Õ¢¶Ï¿ª
+                }
+                Motor_Stop(Motor_Stop_Free);   
+            }
+        }
+
+        if(Err_Summit_Attempt == ON)//³å¶¥¹ÊÕÏ£ºµõ¸Ë¼±Í£
+        {
+            if(MOTOR_RUNNING == ON)
+            {
+                if(BAND_TYPE_BRAKE_OUT == ON)
+                {
+                    BAND_TYPE_BRAKE_OUT = OFF;//±§Õ¢¶Ï¿ª
+                }
                 Motor_Stop(Motor_Stop_Free);   
             }
         }
@@ -578,5 +815,4 @@ void Task_Freq_Convert(void *p_arg)
 
 
 #endif
-
 

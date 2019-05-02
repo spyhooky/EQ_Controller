@@ -5,6 +5,7 @@
 
 
 static unsigned short  g_u16Timer100usDelayCount  = 0;/*100us定时器计数器*/
+static unsigned short  g_u16Timer1msDelayCount  = 0;/*1ms定时器计数器*/
 static unsigned short  g_u16Timer100usCount  = 0;/*100us定时器计数器*/
 
 
@@ -56,10 +57,10 @@ void TIM5_IRQ(void)/* 100ms */
 void Delay1ms(u16 l_u16Count)
 {
 
-    g_u16Timer100usDelayCount = l_u16Count * 10;
-    while (g_u16Timer100usDelayCount)
+    g_u16Timer1msDelayCount = l_u16Count;
+    while (g_u16Timer1msDelayCount)
     {
-        if(g_u16Timer100usDelayCount%200==0)
+        if(g_u16Timer1msDelayCount%50 == 0)
 		{
 			IWDG_ReloadCounter();
 		}
@@ -186,7 +187,7 @@ void TIM5_Config(void)/* 100ms */
 
 void DrTimer_Init(void)
 {
-    TIM2_Config();
+    //TIM2_Config();//100us鏆傛椂涓嶄娇鐢?
     TIM3_Config();
     TIM5_Config();
     TIM4_Encoder_Config();

@@ -197,27 +197,36 @@ void Calculate_Wire_Position(u16 sch_timer,u16 sch_cycle)
         if((EncodePulse > 0xC000u)&&(PrePluse_Number < 0x2000u))
         {//正转到反转导致数值翻转
             Pulse_Total = Pulse_Total - (0xffffu - EncodePulse + PrePluse_Number);
-            Global_Variable.Encode_CurrentPulse = Pulse_Total/4;
         }
         else
         {//正常正转，数值累加未翻转
             Pulse_Total = Pulse_Total + (EncodePulse - PrePluse_Number);
-            Global_Variable.Encode_CurrentPulse = Pulse_Total/4;
         }
+        if(Global_Variable.Compensate_En == ON)
+        {
+            Global_Variable.Compensate_En = OFF;
+            Pulse_Total = Pulse_Total + Global_Variable.Compensate_Pulse*4;
+        }
+        Global_Variable.Encode_PulseCurrent = Pulse_Total/4;
     }
     else
     {//上次值大于当前值
         if((EncodePulse < 0x2000u)&&(PrePluse_Number > 0xC000u))
         {//正常正转数值翻转
             Pulse_Total = Pulse_Total + (0xffffu - PrePluse_Number + EncodePulse);
-            Global_Variable.Encode_CurrentPulse = Pulse_Total/4;
         }
         else
         {//正常反转，数值减小未翻转
             Pulse_Total = Pulse_Total - (PrePluse_Number - EncodePulse);
-            Global_Variable.Encode_CurrentPulse = Pulse_Total/4;
         }
+        if(Global_Variable.Compensate_En == ON)
+        {
+            Global_Variable.Compensate_En = OFF;
+            Pulse_Total = Pulse_Total + Global_Variable.Compensate_Pulse*4;
+        }
+        Global_Variable.Encode_PulseCurrent = Pulse_Total/4;
     }    
+    
     if(EncodePulse != PrePluse_Number)
     {
         /*******************************************************************/
@@ -225,8 +234,8 @@ void Calculate_Wire_Position(u16 sch_timer,u16 sch_cycle)
         /*****  相对于初始位置的长度 = ------------ * 周长 / 减速比     ******/
         /*****                         每圈脉冲数                      ******/
         /*******************************************************************/
-        Wire_Position_Float = Global_Variable.Encode_CurrentPulse * Global_Variable.Para_Independence.Lenth_Per_Pulse;
-        Global_Variable.Suspende_Current_Position = INIT_POSITION_WIRE - (s16)Wire_Position_Float;
+        Wire_Position_Float = Global_Variable.Encode_PulseCurrent * Global_Variable.Para_Independence.Lenth_Per_Pulse;
+        Global_Variable.Suspende_PositionCurrent = Global_Variable.Para_Independence.Suspende_Limit_Up - (s16)Wire_Position_Float;
         PrePluse_Number = EncodePulse;
     }
 }

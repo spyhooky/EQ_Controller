@@ -15,7 +15,7 @@ enum Func_BROADCAST{
 };
 
 enum Func_Node{
-    Polling=0,Rope_Wire_F,Suspender_Min_F,Suspender_Emergency_Stop_F,Suspender_Target_F,ParaDownload_Independent,Read_Common_Para,Read_Independent_Para
+    Polling=0,Rope_Wire_F,Suspender_Min_F,Suspender_Emergency_Stop_F,Suspender_Target_F,ParaDownload_Independent,Read_Common_Para,Read_Independent_Para,Suspender_Init,
 };
 
 enum Error_Type{
@@ -98,17 +98,9 @@ static void Negtive_Responde(u8 err)
 /*******************************************************************************/
 static void Update_Running_ErrorSts(void)
 {
-    Polling_Frame_Respond.Suspende_Position = Global_Variable.Suspende_Current_Position;//吊杆当前位置,单位mm
-    Polling_Frame_Respond.Suspende_Running_Status = Global_Variable.Suspende_Current_Speed;//吊杆运行状态
-    Suspende_Reset = (Global_Variable.Digit_InputStatus>>0)&0x01;//0-吊杆复位
-    Limit_Up_Signal = (Global_Variable.Digit_InputStatus>>1)&0x01;//1-上限位信号
-    Limit_Down_Signal = (Global_Variable.Digit_InputStatus>>2)&0x01;//2-下限位信号
-    Limit_Up_SlowDown = (Global_Variable.Digit_InputStatus>>3)&0x01;//3-上限位减速信号
-    Limit_Down_SlowDown = (Global_Variable.Digit_InputStatus>>4)&0x01;//4-下限位减速信号
-    Band_Type_Brake = (Global_Variable.Digit_InputStatus>>5)&0x01;//5-抱闸信号
-    Err_Stop_Signal = (Global_Variable.Digit_InputStatus>>6)&0x01;//16-急停故障
-    Err_Summit_Attempt = (Global_Variable.Digit_InputStatus>>7)&0x01;//17-冲顶故障
-    Err_Loose_Rope = (Global_Variable.Digit_InputStatus>>8)&0x01;//18-松绳故障
+    Polling_Frame_Respond.Suspende_Position = Global_Variable.Suspende_PositionCurrent;//吊杆当前位置,单位mm
+    Polling_Frame_Respond.Suspende_Running_Status = Global_Variable.Suspende_SpeedCurrent;//吊杆运行状态
+    
     Err_Temp_Hign = (Global_Variable.CurrentEnvTemp>70)?1:0;//19-SLAVE高温故障
     Err_Temp_Low = (Global_Variable.CurrentEnvTemp<-40)?1:0;//20-SLAVE低温故障
     Err_Voltage_High = (Global_Variable.Power_5V>6)?1:0;//21-SLAVE高压故障
@@ -244,23 +236,23 @@ void Broadcast_Frame_Parse(u8 *data, u16 len)
     switch(data[1])
     {
         case Rope_Wire_B://全部吊杆收揽绳命令帧00
-            if(len == data[2] + 5)
+            if(len == 7)
             {
                 CrcCheck = Get_rtuCrc16(data,len-2);
                 if((CrcCheck%256 == data[len-2])&&((CrcCheck>>8) == data[len-1]))
                 {
-                    Global_Variable.Suspende_Target_Speed = (data[3]<<8)+data[4];
+                    Global_Variable.Suspende_SpeedTarget = (data[3]<<8)+data[4];
                     CMD_Rope_Wire = ON;
                 }
             }
             break;
         case Suspender_Min_B://全部吊杆降到零点位置坐标01
-            if(len == data[2] + 5)
+            if(len == 7)
             {
                 CrcCheck = Get_rtuCrc16(data,len-2);
                 if((CrcCheck%256 == data[len-2])&&((CrcCheck>>8) == data[len-1]))
                 {
-                    Global_Variable.Suspende_Target_Speed = (data[3]<<8)+data[4];
+                    Global_Variable.Suspende_SpeedTarget = (data[3]<<8)+data[4];
                     CMD_Suspender_Min = ON;
                 }
             }
@@ -271,7 +263,7 @@ void Broadcast_Frame_Parse(u8 *data, u16 len)
                 CrcCheck = Get_rtuCrc16(data,len-2);
                 if((CrcCheck%256 == data[len-2])&&((CrcCheck>>8) == data[len-1]))
                 {
-                    Global_Variable.Suspende_Target_Speed = (data[3]<<8)+data[4];
+                    Global_Variable.Suspende_SpeedTarget = (data[3]<<8)+data[4];
                     CMD_Suspender_Emergency_Stop = ON;
                 }
             }
@@ -292,10 +284,10 @@ void Broadcast_Frame_Parse(u8 *data, u16 len)
                     if((CrcCheck%256 == data[len-2])&&((CrcCheck>>8) == data[len-1]))
                     {
                         index = (5+ data[4]) + index * 4;
-                        Global_Variable.Suspende_Target_Position = (data[index++]<<8);
-                        Global_Variable.Suspende_Target_Position += data[index++];
-                        Global_Variable.Suspende_Target_Speed = (data[index++]<<8);
-                        Global_Variable.Suspende_Target_Speed += data[index++];
+                        Global_Variable.Suspende_PositionTarget = (data[index++]<<8);
+                        Global_Variable.Suspende_PositionTarget += data[index++];
+                        Global_Variable.Suspende_SpeedTarget = (data[index++]<<8);
+                        Global_Variable.Suspende_SpeedTarget += data[index++];
                         CMD_Suspender_Target = ON;
                     }
                 }
@@ -317,8 +309,8 @@ void Broadcast_Frame_Parse(u8 *data, u16 len)
                     if((CrcCheck%256 == data[len-2])&&((CrcCheck>>8) == data[len-1]))
                     {
                         index = (5+ data[4]) + index * 2;
-                        Global_Variable.Suspende_Target_Speed = (data[index++]<<8);
-                        Global_Variable.Suspende_Target_Speed += data[index++];
+                        Global_Variable.Suspende_SpeedTarget = (data[index++]<<8);
+                        Global_Variable.Suspende_SpeedTarget += data[index++];
                         CMD_Rope_Wire = ON;
                     }
                 }
@@ -340,8 +332,8 @@ void Broadcast_Frame_Parse(u8 *data, u16 len)
                     if((CrcCheck%256 == data[len-2])&&((CrcCheck>>8) == data[len-1]))
                     {
                         index = (5+ data[4]) + index * 2;
-                        Global_Variable.Suspende_Target_Speed = (data[index++]<<8);
-                        Global_Variable.Suspende_Target_Speed += data[index++];
+                        Global_Variable.Suspende_SpeedTarget = (data[index++]<<8);
+                        Global_Variable.Suspende_SpeedTarget += data[index++];
                         CMD_Suspender_Min = ON;
                     }
                 }
@@ -430,8 +422,8 @@ void Node_Frame_Parse(u8 *data, u16 len)
                     CrcCheck = Get_rtuCrc16(data,len-2);
                     if((CrcCheck%256 == data[len-2])&&((CrcCheck>>8) == data[len-1]))
                     {
-                        Global_Variable.Suspende_Target_Position = Global_Variable.Para_Independence.Suspende_Limit_Up;
-                        Global_Variable.Suspende_Target_Speed = (data[3]<<8)+data[4];
+                        Global_Variable.Suspende_PositionTarget = Global_Variable.Para_Independence.Suspende_Limit_Up;
+                        Global_Variable.Suspende_SpeedTarget = (data[3]<<8)+data[4];
                         CMD_Rope_Wire = ON;
                         Postive_Responde(Rope_Wire_F);
                     }
@@ -458,8 +450,8 @@ void Node_Frame_Parse(u8 *data, u16 len)
                     CrcCheck = Get_rtuCrc16(data,len-2);
                     if((CrcCheck%256 == data[len-2])&&((CrcCheck>>8) == data[len-1]))
                     {
-                        Global_Variable.Suspende_Target_Position = 0;
-                        Global_Variable.Suspende_Target_Speed = (data[3]<<8)+data[4];
+                        Global_Variable.Suspende_PositionTarget = 0;
+                        Global_Variable.Suspende_SpeedTarget = (data[3]<<8)+data[4];
                         CMD_Suspender_Min = ON;
                         Postive_Responde(Suspender_Min_F);
                     }
@@ -486,7 +478,7 @@ void Node_Frame_Parse(u8 *data, u16 len)
                     CrcCheck = Get_rtuCrc16(data,len-2);
                     if((CrcCheck%256 == data[len-2])&&((CrcCheck>>8) == data[len-1]))
                     {
-                        Global_Variable.Suspende_Target_Speed = (data[3]<<8)+data[4];
+                        Global_Variable.Suspende_SpeedTarget = (data[3]<<8)+data[4];
                         CMD_Suspender_Emergency_Stop = ON;
                         Postive_Responde(Suspender_Emergency_Stop_F);
                     }
@@ -513,8 +505,8 @@ void Node_Frame_Parse(u8 *data, u16 len)
                     CrcCheck = Get_rtuCrc16(data,len-2);
                     if((CrcCheck%256 == data[len-2])&&((CrcCheck>>8) == data[len-1]))
                     {
-                        Global_Variable.Suspende_Target_Position = (data[3]<<8)+data[4];
-                        Global_Variable.Suspende_Target_Speed = (data[5]<<8)+data[6];
+                        Global_Variable.Suspende_PositionTarget = (data[3]<<8)+data[4];
+                        Global_Variable.Suspende_SpeedTarget = (data[5]<<8)+data[6];
                         CMD_Suspender_Target = ON;
                         Postive_Responde(Suspender_Target_F);
                     }
@@ -596,6 +588,34 @@ void Node_Frame_Parse(u8 *data, u16 len)
                     {
                         CMD_Read_Independent_Para = ON;
                         Parameter_Read();
+                    }
+                    else
+                    {
+                        Negtive_Responde(Error_Check);
+                    }
+                }
+                else
+                {
+                    if(len < 4)
+                    {
+                        Negtive_Responde(Error_Timeout);
+                    }
+                    else
+                    {
+                        Negtive_Responde(Error_Other);
+                    }
+                }
+                break;
+            case Suspender_Init://吊杆初始化命令
+                if(len == 4U)
+                {
+                    CrcCheck = Get_rtuCrc16(data,len-2);
+                    if((CrcCheck%256 == data[len-2])&&((CrcCheck>>8) == data[len-1]))
+                    {
+                        CMD_Suspender_Init = ON;
+                        Global_Variable.Suspende_PositionTarget = 60000;
+                        Global_Variable.Suspende_SpeedTarget = 30/Global_Variable.Para_Independence.Motor_Freq_Factor;
+                        Postive_Responde(Suspender_Init);
                     }
                     else
                     {

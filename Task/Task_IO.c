@@ -1,6 +1,6 @@
 #include "main.h"
 #include "Task_IO.h"
-//#include "Task_LED.h"
+#include "Task_PC_Com.h"
 #include "DrUart.h"
 
 #define DETECT_ONLY_STARTUP
@@ -304,7 +304,16 @@ static void INPUT_Check_Mainfunction(void)
             INPUT_STS_KEEP_TIME(i) = 0u;
             Cur_Input_Status(i) = cur_level[i];
             //更新该输入口状态值
-            Global_Variable.Digit_InputStatus = (cur_level[i]==0)? ((1<<i)|Global_Variable.Digit_InputStatus):((~(1<<i))&Global_Variable.Digit_InputStatus);
+            Global_Variable.Digit_InputStatus = (cur_level[i]!=0)? ((1<<i)|Global_Variable.Digit_InputStatus):((~(1<<i))&Global_Variable.Digit_InputStatus);
+            Suspende_Reset = (Global_Variable.Digit_InputStatus>>0)&0x01;//0-吊杆复位
+            Limit_Rise_Signal = (Global_Variable.Digit_InputStatus>>1)&0x01;//1-上限位信号
+            Limit_Fall_Signal = (Global_Variable.Digit_InputStatus>>2)&0x01;//2-下限位信号
+            Limit_Up_SlowDown = (Global_Variable.Digit_InputStatus>>3)&0x01;//3-上限位减速信号
+            Limit_Down_SlowDown = (Global_Variable.Digit_InputStatus>>4)&0x01;//4-下限位减速信号
+            Band_Type_Brake = (Global_Variable.Digit_InputStatus>>5)&0x01;//5-抱闸信号
+            Err_Stop_Signal = (Global_Variable.Digit_InputStatus>>6)&0x01;//16-急停故障
+            Err_Summit_Attempt = (Global_Variable.Digit_InputStatus>>7)&0x01;//17-冲顶故障
+            Err_Loose_Rope = (Global_Variable.Digit_InputStatus>>8)&0x01;//18-松绳故障
         }
         Pre_Input_Level(i) = cur_level[i];
     }

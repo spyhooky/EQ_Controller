@@ -224,13 +224,15 @@ typedef struct Global_Variable_Group
 	u8 DIP_SwitchStatus;                //当前拨码开关状态
 	u32 Digit_InputStatus;              //数字开关量状态，0-断开，1-对地闭合
 	float CurrentEnvTemp;               //当前环境温度
-	s32 Encode_CurrentPulse;            //编码器当前计数
-	s32 Encode_TargetPulse;              //编码器目标计数
-    float Power_5V;                     //电源电压
-    s16 Suspende_Current_Position;      //吊杆当前位置,单位mm
-    u16 Suspende_Current_Speed;         //吊杆运行状态,    电机运行的实际    速度，单位：mm/s
-    s16 Suspende_Target_Position;       //吊杆目标位置,单位mm
-    u16 Suspende_Target_Speed;          //吊杆目标运行的    速度，单位：mm/s
+	float Power_5V;                     //电源电压
+	s32 Encode_PulseCurrent;            //编码器当前计数
+	s32 Encode_PulseTarget;             //编码器目标计数
+	s32 Compensate_Pulse;               //补偿的脉冲数
+	u8  Compensate_En;                  //需要补偿的标志
+    s32 Suspende_PositionCurrent;       //吊杆当前位置,单位mm
+    s32 Suspende_PositionTarget;        //吊杆目标位置,单位mm
+    u16 Suspende_SpeedCurrent;          //吊杆运行状态,    电机运行的实际    速度，单位：mm/s
+    u16 Suspende_SpeedTarget;           //吊杆目标运行的    速度，单位：mm/s
     ParaIndependence_Info  Para_Independence;//微控制器个性化参数
     u8  Para_Common[255];               //读取微控制器共性参数
     u32 powertimer;

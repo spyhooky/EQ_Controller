@@ -21,8 +21,8 @@ extern Polling_Frame_Info Polling_Frame_Respond;
 //extern volatile digitstatus    	        _Running_Error_Sts[6];
 //#define Running_Error_Sts(n)    _Running_Error_Sts[n].bytetype
 #define Suspende_Reset  		        Polling_Frame_Respond.Running_Error_Sts[0].Bits.bit0 //0-吊杆复位
-#define Limit_Up_Signal  		        Polling_Frame_Respond.Running_Error_Sts[0].Bits.bit1 //1-上限位信号
-#define Limit_Down_Signal  		        Polling_Frame_Respond.Running_Error_Sts[0].Bits.bit2 //2-下限位信号
+#define Limit_Rise_Signal  		        Polling_Frame_Respond.Running_Error_Sts[0].Bits.bit1 //1-上限位信号
+#define Limit_Fall_Signal  		        Polling_Frame_Respond.Running_Error_Sts[0].Bits.bit2 //2-下限位信号
 #define Limit_Up_SlowDown  		        Polling_Frame_Respond.Running_Error_Sts[0].Bits.bit3 //3-上限位减速信号
 #define Limit_Down_SlowDown  	        Polling_Frame_Respond.Running_Error_Sts[0].Bits.bit4 //4-下限位减速信号
 #define Band_Type_Brake       	        Polling_Frame_Respond.Running_Error_Sts[0].Bits.bit5 //5-抱闸信号

@@ -17,13 +17,18 @@
 #define ENCODER_SPEED               (REDUCTION_SPEED/((float)ENCODER_GEAR_NUM/(float)REDUCTION_GEAR_NUM))   //编码器转速
 #define LENTH_PER_PULSE             ((LENTH_REDUCTION_PER_MINUTE/ENCODER_SPEED)/((float)PULSE_PER_CYCLE/1000)) //编码器每脉冲对应钢丝绳所走的长度L,单位为mm
 
-#define INIT_POSITION_WIRE                           30000  //缆绳初始位置
-#define BAND_TYPE_BRAKE_DELAY_THRES                     20  //2s,电机运行后2s抱闸松开（继电器闭合）
+#define INIT_POSITION_WIRE                           30000  //缆绳默认初始位置
+#define BAND_TYPE_BRAKE_DELAY_THRES                     3U  //300ms,电机运行300ms后抱闸松开（继电器闭合）
 
-#define FREQ_REDUCE_BASE                                5U  //每次减速的频率基准值，单位100ms
-#define READ8000_INTERTER                               5U  //查询帧周期，单位100ms
+#define FREQ_REDUCE_BASE                                5U  //每次减速的频率基准值，单位5HZ,时间单位：FREQ_REDUCE_INTERTER
 #define FREQ_REDUCE_INTERTER                            5U  //频率减速时间间隔，每隔100ms减5hz
 #define FORCE_REDUCE_10HZ_KEEPING                       5U  //强制减速到10HZ时需要保持的时间，单位100ms
+#define READ8000_INTERTER                               5U  //查询帧周期，单位100ms
+
+#define REMAIN_PULSE_NUMBER_FOR_BRAKE                   50 //需要松抱闸时剩余脉冲数
+#define REMAIN_PULSE_NUMBER_FOR_FREQ_STOP               20 //有变频器配置时开始停机的剩余脉冲数
+#define REMAIN_PULSE_NUMBER_FOR_STOP                    30 //无变频器配置时开始停机的剩余脉冲数
+
 
 enum Invertor_Offset{//变频器状态参数地址
     off_InvertorError=0,off_CurrFreq,
@@ -53,15 +58,18 @@ typedef struct Invertor_Status_Group
 
 //extern volatile digitstatus    	        _Running_Error_Sts[6];
 //#define Running_Error_Sts(n)    _Running_Error_Sts[n].bytetype
-extern volatile BitStatus Invertor_Status;
-#define CMD_Rope_Wire  		                Invertor_Status.Bits.bit0 //0-对单个吊杆的收揽命令
-#define CMD_Suspender_Min  		            Invertor_Status.Bits.bit1 //1-将单个吊杆运行到零位位置
-#define CMD_Suspender_Emergency_Stop  		Invertor_Status.Bits.bit2 //2-对单个吊杆的急停命令
-#define CMD_Suspender_Target  		        Invertor_Status.Bits.bit3 //3-将吊杆运行到目标坐标位置
-#define CMD_ParaDownload_Independent  	    Invertor_Status.Bits.bit4 //4-微控制器个性化参数下载（数据待定）
-#define CMD_Read_Common_Para       	        Invertor_Status.Bits.bit5 //5-读某个微控制器的共性参数（数据待定）
-#define CMD_Read_Independent_Para      	    Invertor_Status.Bits.bit6 //6-读某个微控制器的个性化参数（数据待定）
-#define CMD_ParaDownload_Common             Invertor_Status.Bits.bit7 //7-预留
+extern volatile BitStatus Invertor_Status[2];
+#define CMD_Rope_Wire  		                Invertor_Status[0].Bits.bit0 //0-对单个吊杆的收揽命令
+#define CMD_Suspender_Min  		            Invertor_Status[0].Bits.bit1 //1-将单个吊杆运行到零位位置
+#define CMD_Suspender_Emergency_Stop  		Invertor_Status[0].Bits.bit2 //2-对单个吊杆的急停命令
+#define CMD_Suspender_Target  		        Invertor_Status[0].Bits.bit3 //3-将吊杆运行到目标坐标位置
+#define CMD_ParaDownload_Independent  	    Invertor_Status[0].Bits.bit4 //4-微控制器个性化参数下载（数据待定）
+#define CMD_Read_Common_Para       	        Invertor_Status[0].Bits.bit5 //5-读某个微控制器的共性参数（数据待定）
+#define CMD_Read_Independent_Para      	    Invertor_Status[0].Bits.bit6 //6-读某个微控制器的个性化参数（数据待定）
+#define CMD_Suspender_Init                  Invertor_Status[0].Bits.bit7 //7-吊杆初始化
+
+#define CMD_ParaDownload_Common             Invertor_Status[1].Bits.bit0 //0-下载共性参数
+
 
 
 extern u16 InvertorData[NUM_Read_Total];
