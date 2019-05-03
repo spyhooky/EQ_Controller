@@ -15,7 +15,8 @@ enum Func_BROADCAST{
 };
 
 enum Func_Node{
-    Polling=0,Rope_Wire_F,Suspender_Min_F,Suspender_Emergency_Stop_F,Suspender_Target_F,ParaDownload_Independent,Read_Common_Para,Read_Independent_Para,Suspender_Init,
+    Polling=0,Rope_Wire_F,Suspender_Min_F,Suspender_Emergency_Stop_F,Suspender_Target_F,ParaDownload_Independent,Read_Common_Para_F,Read_Independent_Para_F,
+        Suspender_Init_F,Limit_Measure_F,Read_Limit_Result_F
 };
 
 enum Error_Type{
@@ -201,7 +202,7 @@ static void Parameter_Read(void)
     RespondToPC.datalen = 5 + sizeof(Global_Variable.Para_Independence);  
     memset(RespondToPC.databuf,0,sizeof(RespondToPC.databuf));
     RespondToPC.databuf[index++] = Global_Variable.DIP_SwitchStatus;
-    RespondToPC.databuf[index++] = Read_Common_Para;   
+    RespondToPC.databuf[index++] = Read_Independent_Para_F;   
     RespondToPC.databuf[index++] = sizeof(Global_Variable.Para_Independence);
     RespondToPC.databuf[index++] = Global_Variable.Para_Independence.Suspende_Type;
     RespondToPC.databuf[index++] = Global_Variable.Para_Independence.Convert_Cfg;
@@ -222,6 +223,35 @@ static void Parameter_Read(void)
     RespondToPC.databuf[RespondToPC.datalen-1] = CrcCheck>>8;
 }
 
+/********************************************************************************/
+/*函数名：  Limit_Result_Read                                                    */
+/*功能说明：读取状态上下限位位置结果                                                     */
+/*输入参数：cmd                                                                */
+/*输出参数：无                                                                  */
+/*******************************************************************************/
+static void Limit_Result_Read(u8 cmd)
+{
+    u16 CrcCheck;
+    u16 index=0;
+    RespondToPC.datalen = 5 + 2;  
+    memset(RespondToPC.databuf,0,sizeof(RespondToPC.databuf));
+    RespondToPC.databuf[index++] = Global_Variable.DIP_SwitchStatus;
+    RespondToPC.databuf[index++] = cmd;   
+    RespondToPC.databuf[index++] = 0x02;
+    if(Limit_Measure_Status == M_SUCCESS)
+    {
+        RespondToPC.databuf[index++] = Global_Variable.Para_Independence.Reduce_Limit_Up>>8;
+        RespondToPC.databuf[index++] = Global_Variable.Para_Independence.Reduce_Limit_Up;
+    }
+    else
+    {
+        RespondToPC.databuf[index++] = 0xFF;
+        RespondToPC.databuf[index++] = 0xFF;
+    }
+    CrcCheck = Get_rtuCrc16(RespondToPC.databuf,RespondToPC.datalen-2);
+    RespondToPC.databuf[RespondToPC.datalen-2] = CrcCheck%256;
+    RespondToPC.databuf[RespondToPC.datalen-1] = CrcCheck>>8;
+}
 
 /********************************************************************************/
 /*函数名：  Broadcast_Frame_Parse                                                */
@@ -554,7 +584,7 @@ void Node_Frame_Parse(u8 *data, u16 len)
                     }
                 }
                 break;
-            case Read_Common_Para://读单个微控制器的共性参数
+            case Read_Common_Para_F://读单个微控制器的共性参数
                 if(len == 4U)
                 {
                     CrcCheck = Get_rtuCrc16(data,len-2);
@@ -580,7 +610,7 @@ void Node_Frame_Parse(u8 *data, u16 len)
                     }
                 }
                 break;
-            case Read_Independent_Para://读单个微控制器的个性化参数
+            case Read_Independent_Para_F://读单个微控制器的个性化参数
                 if(len == 4U)
                 {
                     CrcCheck = Get_rtuCrc16(data,len-2);
@@ -606,7 +636,7 @@ void Node_Frame_Parse(u8 *data, u16 len)
                     }
                 }
                 break;
-            case Suspender_Init://吊杆初始化命令
+            case Suspender_Init_F://吊杆初始化命令
                 if(len == 4U)
                 {
                     CrcCheck = Get_rtuCrc16(data,len-2);
@@ -614,8 +644,61 @@ void Node_Frame_Parse(u8 *data, u16 len)
                     {
                         CMD_Suspender_Init = ON;
                         Global_Variable.Suspende_PositionTarget = 60000;
-                        Global_Variable.Suspende_SpeedTarget = 30/Global_Variable.Para_Independence.Motor_Freq_Factor;
-                        Postive_Responde(Suspender_Init);
+                        Global_Variable.Suspende_SpeedTarget = 15/Global_Variable.Para_Independence.Motor_Freq_Factor;  //吊杆初始化频率
+                        Postive_Responde(Suspender_Init_F);
+                    }
+                    else
+                    {
+                        Negtive_Responde(Error_Check);
+                    }
+                }
+                else
+                {
+                    if(len < 4)
+                    {
+                        Negtive_Responde(Error_Timeout);
+                    }
+                    else
+                    {
+                        Negtive_Responde(Error_Other);
+                    }
+                }
+                break;
+            case Limit_Measure_F:
+                if(len == 4U)
+                {
+                    CrcCheck = Get_rtuCrc16(data,len-2);
+                    if((CrcCheck%256 == data[len-2])&&((CrcCheck>>8) == data[len-1]))
+                    {
+                        CMD_Limit_Measure = ON;
+                        Global_Variable.Suspende_SpeedTarget = 15/Global_Variable.Para_Independence.Motor_Freq_Factor;  //吊杆初始化频率
+                        Postive_Responde(Limit_Measure_F);
+                    }
+                    else
+                    {
+                        Negtive_Responde(Error_Check);
+                    }
+                }
+                else
+                {
+                    if(len < 4)
+                    {
+                        Negtive_Responde(Error_Timeout);
+                    }
+                    else
+                    {
+                        Negtive_Responde(Error_Other);
+                    }
+                }
+                break;
+            case Read_Limit_Result_F:
+                if(len == 4U)
+                {
+                    CrcCheck = Get_rtuCrc16(data,len-2);
+                    if((CrcCheck%256 == data[len-2])&&((CrcCheck>>8) == data[len-1]))
+                    {
+                        CMD_Read_Limit_Result = ON;
+                        Limit_Result_Read(Read_Limit_Result_F);
                     }
                     else
                     {
@@ -636,8 +719,7 @@ void Node_Frame_Parse(u8 *data, u16 len)
                 break;
             default:
                 Negtive_Responde(Error_Func);
-            break;
-        
+                break;
         }
     }
     else

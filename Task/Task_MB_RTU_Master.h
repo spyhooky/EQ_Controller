@@ -11,7 +11,7 @@
 #define RTU_RECE_LENGTH             120 * 2        //接受缓冲区大小
 
 #define UART_CHN_CONVERT_FREQ                RS485_2
-#define POLLING_INTERVAL                         3u  //RTU周期发送请求帧的最小间隔时间
+#define POLLING_INTERVAL                        12u  //RTU周期发送请求帧的最小间隔时间
 #define REQUIRE_TIMEOUT                        1000u  //RTU请求超时时间，超过该时间认为从节点未反应
 
 
@@ -63,7 +63,7 @@ enum MB_TCP_ErrorStatusTyp{
 
 enum STATUS_EVENT_t
 {
-	EV_NONE,EV_REQ,EV_TO,EV_RX_OK
+	EV_NONE,EV_REQ,EV_TO,EV_RX_OK,EV_RX_CRC_ERR
 };
 
 enum PPI_FSM {

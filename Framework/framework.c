@@ -108,6 +108,7 @@ void Framework_Timer1ms(void)
     TCPIP_Timer1ms();
     #endif
     Software_Timer++;
+    TaskFreq_Timer1ms();
 }
 
 /****************************************************************************/
@@ -118,7 +119,7 @@ void Framework_Timer1ms(void)
 /***************************************************************************/
 void Framework_Timer100ms(void)
 {
-    TaskFreq_Timer100ms();
+    
 }
 
 

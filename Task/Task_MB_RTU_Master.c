@@ -228,7 +228,7 @@ void UART_RTU_Recv(unsigned char  l_u8ReceData)
 		}
 		else
 		{
-			
+			rtu_ctx.event = EV_RX_CRC_ERR;
 		}
 	}
 	else if((rtu_ctx.rxindex==7)&&(OP_Mode==WRITE))
