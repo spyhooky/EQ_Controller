@@ -186,6 +186,11 @@ static void Parameter_Download(u8 *data,u8 len)
     Global_Variable.Para_Independence.Reduce_Limit_Up += data[index++];
     Global_Variable.Para_Independence.Reduce_Limit_Down = (data[index++]*256);
     Global_Variable.Para_Independence.Reduce_Limit_Down += data[index++];
+    Global_Variable.Para_Independence.Freq_Change_Timer = (data[index++]*256);
+    Global_Variable.Para_Independence.Freq_Change_Timer += data[index++];
+    Global_Variable.Para_Independence.Distance_10HZ = data[index++];
+    Global_Variable.Para_Independence.Step_Size_Base = data[index++];
+    Global_Variable.Para_Independence.Pulze_NumBase = data[index++];
     
 }
 
@@ -218,6 +223,11 @@ static void Parameter_Read(void)
     RespondToPC.databuf[index++] = Global_Variable.Para_Independence.Reduce_Limit_Up&0xff;
     RespondToPC.databuf[index++] = Global_Variable.Para_Independence.Reduce_Limit_Down>>8;
     RespondToPC.databuf[index++] = Global_Variable.Para_Independence.Reduce_Limit_Down&0xff;
+    RespondToPC.databuf[index++] = Global_Variable.Para_Independence.Freq_Change_Timer>>8;
+    RespondToPC.databuf[index++] = Global_Variable.Para_Independence.Freq_Change_Timer&0xff;
+    RespondToPC.databuf[index++] = Global_Variable.Para_Independence.Distance_10HZ;
+    RespondToPC.databuf[index++] = Global_Variable.Para_Independence.Step_Size_Base;
+    RespondToPC.databuf[index++] = Global_Variable.Para_Independence.Pulze_NumBase;
     CrcCheck = Get_rtuCrc16(RespondToPC.databuf,RespondToPC.datalen-2);
     RespondToPC.databuf[RespondToPC.datalen-2] = CrcCheck%256;
     RespondToPC.databuf[RespondToPC.datalen-1] = CrcCheck>>8;

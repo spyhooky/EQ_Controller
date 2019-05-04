@@ -213,10 +213,14 @@ typedef struct ParaIndependence_Group
     u8 Convert_Cfg;//变频器有无，0-无变频器，1-有变频器，通过485控制
     float Motor_Freq_Factor; //电机运行频率的系数C1，本电机的系数为0.3665，实际工程以计算为准
     float Lenth_Per_Pulse;   //每脉冲钢丝绳所走的长度系数C2，本电机所对应的系数为0.1419，实际工程以计算为准
-    u8 Max_Motro_Freq;    //电机运行最大频率
+    u16 Max_Motro_Freq;    //电机运行最大频率
     u16 Suspende_Limit_Up;//吊杆上限位高度，单位mm
     u16 Reduce_Limit_Up;//上限位减速信号坐标，单位mm
     u16 Reduce_Limit_Down;//下限位减速信号坐标，单位mm
+    u16 Freq_Change_Timer;//加减速定时器定时值,电机运行时频率改变的间隔时间
+    u8 Distance_10HZ;//加减速定时时长以10Hz运行的编码器脉冲数
+    u8 Step_Size_Base;//加减速频率步长
+    u8 Pulze_NumBase;//在10HZ的基础上，每加减一次速度，编码器脉冲数递增的脉冲数
 }ParaIndependence_Info;
 
 typedef struct Global_Variable_Group

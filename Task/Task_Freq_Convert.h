@@ -3,7 +3,7 @@
 
 #define SLAVEID_FREQ                                    1U  //变频器从节点ID
 
-#define MAX_RUNNING_FREQ                               120  //电机最大运行频率
+#define MAX_RUNNING_FREQ                               100  //电机最大运行频率
 #define MOTOR_SPEED                                    995  //电机转速
 #define DIAMETER_REDUCER                     (float)0.1265  //减速机直径
 #define DIAMETER_WIRE                          (float)0.01  //线缆直径
@@ -17,10 +17,11 @@
 #define ENCODER_SPEED               (REDUCTION_SPEED/((float)ENCODER_GEAR_NUM/(float)REDUCTION_GEAR_NUM))   //编码器转速
 #define LENTH_PER_PULSE             ((LENTH_REDUCTION_PER_MINUTE/ENCODER_SPEED)/((float)PULSE_PER_CYCLE/1000)) //编码器每脉冲对应钢丝绳所走的长度L,单位为mm
 
-#define INIT_POSITION_WIRE                           30000  //缆绳默认初始位置
+#define INIT_POSITION_WIRE                           5000  //缆绳默认初始位置
 #define BAND_TYPE_BRAKE_DELAY_THRES                   300U  //300ms,电机运行300ms后抱闸松开（继电器闭合）
 
-#define FREQ_REDUCE_BASE                                2  //每次减速的频率基准值，单位5HZ,时间单位：FREQ_REDUCE_INTERTER
+#define FREQ_STARTMOVE_BASE                             10//电机运行的起始频率以及电机停止时减速最后的频率
+#define FREQ_CHANGE_BASE                                2  //每次减速的频率基准值，单位5HZ,时间单位：FREQ_REDUCE_INTERTER
 #define FREQ_REDUCE_INTERTER                          300U  //频率减速时间间隔，每隔100ms减5hz
 #define FORCE_REDUCE_10HZ_KEEPING                     500U  //强制减速到10HZ时需要保持的时间，单位100ms
 #define READ8000_INTERTER                             500U  //查询帧周期，单位100ms

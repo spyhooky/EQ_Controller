@@ -369,10 +369,14 @@ void ReadFlashData(void)
         Global_Variable.Para_Independence.Convert_Cfg = 1;
         Global_Variable.Para_Independence.Motor_Freq_Factor = 0.3665;
         Global_Variable.Para_Independence.Lenth_Per_Pulse = LENTH_PER_PULSE;
-        Global_Variable.Para_Independence.Max_Motro_Freq = (u8)MAX_RUNNING_FREQ;
+        Global_Variable.Para_Independence.Max_Motro_Freq = (u16)MAX_RUNNING_FREQ;
         Global_Variable.Para_Independence.Suspende_Limit_Up = INIT_POSITION_WIRE;
         Global_Variable.Para_Independence.Reduce_Limit_Up = 0;
         Global_Variable.Para_Independence.Reduce_Limit_Down = 0;
+        Global_Variable.Para_Independence.Freq_Change_Timer = FREQ_REDUCE_INTERTER;
+        Global_Variable.Para_Independence.Distance_10HZ = 57;
+        Global_Variable.Para_Independence.Step_Size_Base = FREQ_CHANGE_BASE;
+        Global_Variable.Para_Independence.Pulze_NumBase = 12;
     }
     
 }
