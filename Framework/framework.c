@@ -236,7 +236,8 @@ void Calculate_Wire_Position(u16 sch_timer,u16 sch_cycle)
         /*****                         Ã¿È¦Âö³åÊý                      ******/
         /*******************************************************************/
         Wire_Position_Float = Global_Variable.Encode_PulseCurrent * Global_Variable.Para_Independence.Lenth_Per_Pulse;
-        Global_Variable.Suspende_PositionCurrent = Global_Variable.Para_Independence.Suspende_Limit_Up - (s16)Wire_Position_Float;
+        Global_Variable.Suspende_PositionCurrent = Global_Variable.Para_Independence.Suspende_Limit_Up - (s16)Wire_Position_Float - 
+            (Global_Variable.Para_Independence.Suspende_Limit_Up - Global_Variable.Suspende_PositionMemory);
         PrePluse_Number = EncodePulse;
     }
 }

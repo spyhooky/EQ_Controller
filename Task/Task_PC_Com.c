@@ -11,7 +11,7 @@
 OS_STK STK_PC_MSG_UPD[STKSIZE_PC_MSG_UPD];
 
 enum Func_BROADCAST{
-    Rope_Wire_B=0,Suspender_Min_B,Suspender_Emergency_Stop_B,Suspender_Target_G,Rope_Wire_G,Suspender_Min_G,Suspender_Emergency_Stop_G,ParaDownload_Common
+    Rope_Wire_B=0,Suspender_Min_B,Suspender_Emergency_Stop_B,Suspender_Target_G,Rope_Wire_G,Suspender_Min_G,Suspender_Emergency_Stop_G,ParaDownload_Common,Download_Local_G
 };
 
 enum Func_Node{
@@ -248,10 +248,10 @@ static void Limit_Result_Read(u8 cmd)
     RespondToPC.databuf[index++] = Global_Variable.DIP_SwitchStatus;
     RespondToPC.databuf[index++] = cmd;   
     RespondToPC.databuf[index++] = 0x02;
-    if(Limit_Measure_Status == M_SUCCESS)
+    if(Get_Limit_Measure_Status() == M_SUCCESS)
     {
-        RespondToPC.databuf[index++] = Global_Variable.Para_Independence.Reduce_Limit_Up>>8;
-        RespondToPC.databuf[index++] = Global_Variable.Para_Independence.Reduce_Limit_Up;
+        RespondToPC.databuf[index++] = Global_Variable.Para_Independence.Suspende_Limit_Up>>8;
+        RespondToPC.databuf[index++] = Global_Variable.Para_Independence.Suspende_Limit_Up;
     }
     else
     {
@@ -407,6 +407,16 @@ void Broadcast_Frame_Parse(u8 *data, u16 len)
                 {
                     memcpy(&Global_Variable.Para_Common,&data[3],data[2]);
                     CMD_ParaDownload_Common = ON;
+                }
+            }
+            break;
+        case Download_Local_G://主要用于将本地参数写到flash内
+            if(len == 4)
+            {
+                CrcCheck = Get_rtuCrc16(data,len-2);
+                if((CrcCheck%256 == data[len-2])&&((CrcCheck>>8) == data[len-1]))
+                {
+                    CMD_Download_LocalCfg = ON;
                 }
             }
             break;

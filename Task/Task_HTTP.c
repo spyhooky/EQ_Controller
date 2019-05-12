@@ -19,7 +19,7 @@ void Task_HTTP(void *p_arg)
     {
         if(do_http())
         {
-            HTTP_DataHandler();    //HTTP网页更新数据请求
+            Flash_DataHandler();    //HTTP网页更新数据请求
         }
         OSTimeDlyHMSM(0, 0, 0, 1);
     }

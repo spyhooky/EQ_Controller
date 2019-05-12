@@ -77,8 +77,8 @@ void Config_DrCommon(void)
     //RCC_DeInit();
     
     //NVIC_DeInit();
+    ReadFlashCfg();
     
-    ReadFlashCfg();//读FLASH数据
     PERIPH_CLOCK_IO_ALL_ENABLE;//使能IO相关的时钟域
     DrGpioInit();
 	DrAdc();//初始化AD寄存器
@@ -104,7 +104,9 @@ void Task_Main(void *p_arg)
     
     (void)p_arg;
     u8 Ethernet_Init_Flag = FALSE;
+    
     ReadFlashData();
+    Global_Variable.Suspende_PositionMemory = Global_Variable.Para_Independence.Suspende_Limit_Up;
     Config_DrCommon();
     Framework_Init();
     //创建IO的task，传入的参数为项目配置信息
@@ -122,7 +124,7 @@ void Task_Main(void *p_arg)
     #ifdef WATCHDOG_ENABLE
         IWDG_WriteAccessCmd(IWDG_WriteAccess_Enable);
         IWDG_SetPrescaler(IWDG_Prescaler_256);//时钟分频40k/256=156hz（6.4ms）
-        IWDG_SetReload(468);//看门狗超时时间为3s 不能大于0xfff（4095） 781为5s
+        IWDG_SetReload(125);//看门狗超时时间为800ms 不能大于0xfff（4095） 781为5s
         IWDG_ReloadCounter();
         IWDG_Enable();//软件看门狗使能
     #endif   
@@ -195,6 +197,7 @@ void Task_BackGround(void *p_arg)
 		Calc_CurrentTemp(Background_Timer,CYCLE_CALC_ENV_TEMP);//计算当前温度值
         Calc_Power_5V(Background_Timer,CYCLE_CALC_POWER_VOL);//计算当前5V电压值
         Para_Download();//写个性化参数
+        Flash_DataHandler();
 		
 		/******************APPLICATION END******************/
         OSTimeDlyHMSM(0, 0, 0, CYCLE_BACKGROUND);//必不可少，否则优先级低的任务得不到运行，时间为1ms
@@ -317,7 +320,7 @@ void ReadFlashCfg(void)
 {
     struct EqController_Cfg_t *readdata;
     u8 flashdata[sizeof(struct EqController_Cfg_t)];
-    FlashReadData(CONFIG_BASEADDR,flashdata,sizeof(struct EqController_Cfg_t));
+    FlashReadData(PARA_CONFIG_BASEADDR,flashdata,sizeof(struct EqController_Cfg_t));
     readdata = (struct EqController_Cfg_t *)&flashdata;
     
     if((readdata->cfgflag[0]==0xAA)&&(readdata->cfgflag[1]==0x55)&&(readdata->cfgflag[2]==0xAA)&&(readdata->cfgflag[3]==0x55))
@@ -404,6 +407,7 @@ void ReadFlashCfg(void)
     //预留11
     
     //USARTCAN.tout = readdata->to_thres;
+    Global_Variable.Suspende_PositionMemory = readdata->Suspende_PosCurr;
     //预留12
 }
 
@@ -417,95 +421,99 @@ void dylms(unsigned int u)
 }
 
 /****************************************************************************/
-/*函数名：  HTTP_DataHandler                                                 */
+/*函数名：  Flash_DataHandler                                                 */
 /*功能说明：WEB数据处理                                                      */
 /*输入参数：p_arg，本项目上该参数为空                                         */
 /*输出参数：无                                                               */
 /****************************************************************************/
 /**********************************/
-void HTTP_DataHandler(void)
+void Flash_DataHandler(void)
 {
     struct EqController_Cfg_t flashdata;
-    flashdata.cfgflag[0] = 0xAA;
-    flashdata.cfgflag[1] = 0x55;
-    flashdata.cfgflag[2] = 0xAA;
-    flashdata.cfgflag[3] = 0x55;
-    flashdata.session_mode=gWIZNETINFO.session_mode;
-    flashdata.stationID=gWIZNETINFO.stationID;
-    //预留1
-    flashdata.mbtcp_addr=gWIZNETINFO.mbtcp_addr;
-    flashdata.mbtcp_datalen=USARTCAN.datalen;
-    flashdata.polltime=gWIZNETINFO.polltime;
-    //预留2
-    
-    memcpy(flashdata.localIP,gWIZNETINFO.iplocal,4);
-    flashdata.localport=gWIZNETINFO.portlocal;
-    //预留3
-    memcpy(flashdata.remoteIP,gWIZNETINFO.ipgoal,4);
-    flashdata.remoteport=gWIZNETINFO.portgoal;
-    //预留4
-    memcpy(flashdata.submask,gWIZNETINFO.sn,4);
-    memcpy(flashdata.gatewayaddr,gWIZNETINFO.gw,4);
-    //预留5
-    
-    flashdata.can_en = USARTCAN.can[EnCAN];
-    flashdata.canbaudrate = USARTCAN.can[canBaudrate];
-    flashdata.can_localID = USARTCAN.can[LocalID];
-    flashdata.can_deviceID = USARTCAN.can[DeviceID];
-    flashdata.can_device_num = USARTCAN.can[IDNum];
-    flashdata.can_datatype = USARTCAN.can[canDatatype];
-    //预留6
-    
-    flashdata.rs232_1_en = USARTCAN.Usart[RS232_1][EnUart];
-    flashdata.rs232_1_baudrate = USARTCAN.Usart[RS232_1][uartBaudrate];
-    flashdata.rs232_1_databit = USARTCAN.Usart[RS232_1][Databits];
-    flashdata.rs232_1_chkbit = USARTCAN.Usart[RS232_1][Chkbits];
-    flashdata.rs232_1_stopbit = USARTCAN.Usart[RS232_1][Stopbits];
-    flashdata.rs232_1_flowctrl = USARTCAN.Usart[RS232_1][Flowctrl];
-    flashdata.rs232_1_datatype = USARTCAN.Usart[RS232_1][uartDatatype];
-    //预留7
-    
-	flashdata.rs485_1_en = USARTCAN.Usart[RS485_1][EnUart];
-    flashdata.rs485_1_baudrate = USARTCAN.Usart[RS485_1][uartBaudrate];
-    flashdata.rs485_1_databit = USARTCAN.Usart[RS485_1][Databits];
-    flashdata.rs485_1_chkbit = USARTCAN.Usart[RS485_1][Chkbits];
-    flashdata.rs485_1_stopbit = USARTCAN.Usart[RS485_1][Stopbits];
-    flashdata.rs485_1_datatype = USARTCAN.Usart[RS485_1][uartDatatype];
-    //预留8
-    
-    flashdata.rs485_2_en = USARTCAN.Usart[RS485_2][EnUart];
-    flashdata.rs485_2_baudrate = USARTCAN.Usart[RS485_2][uartBaudrate];
-    flashdata.rs485_2_databit = USARTCAN.Usart[RS485_2][Databits];
-    flashdata.rs485_2_chkbit = USARTCAN.Usart[RS485_2][Chkbits];
-    flashdata.rs485_2_stopbit = USARTCAN.Usart[RS485_2][Stopbits];
-    flashdata.rs485_2_datatype = USARTCAN.Usart[RS485_2][uartDatatype];
-    //预留9
-	
-	flashdata.rs485_3_en = USARTCAN.Usart[RS485_3][EnUart];
-    flashdata.rs485_3_baudrate = USARTCAN.Usart[RS485_3][uartBaudrate];
-    flashdata.rs485_3_databit = USARTCAN.Usart[RS485_3][Databits];
-    flashdata.rs485_3_chkbit = USARTCAN.Usart[RS485_3][Chkbits];
-    flashdata.rs485_3_stopbit = USARTCAN.Usart[RS485_3][Stopbits];
-    flashdata.rs485_3_datatype = USARTCAN.Usart[RS485_3][uartDatatype];
-    //预留10
-    
-    flashdata.rs485_4_en = USARTCAN.Usart[RS485_4][EnUart];
-    flashdata.rs485_4_baudrate = USARTCAN.Usart[RS485_4][uartBaudrate];
-    flashdata.rs485_4_databit = USARTCAN.Usart[RS485_4][Databits];
-    flashdata.rs485_4_chkbit = USARTCAN.Usart[RS485_4][Chkbits];
-    flashdata.rs485_4_stopbit = USARTCAN.Usart[RS485_4][Stopbits];
-    flashdata.rs485_4_datatype = USARTCAN.Usart[RS485_4][uartDatatype];
-    //预留11
-    
-    //flashdata.to_thres = USARTCAN.tout;
-    //预留12
-    
-    OS_ENTER_CRITICAL();
-    FlashErase(CONFIG_BASEADDR,1);
-    FlashWriteData(CONFIG_BASEADDR,(u8 *)&flashdata,sizeof(flashdata));
-    OS_EXIT_CRITICAL();
-    dylms(500);
-    f_GenSoftwareReset();//flash更新后启动复位，按照新的配置运行
+    if(CMD_Download_LocalCfg == ON)
+    {
+        CMD_Download_LocalCfg = OFF;
+        FlashErase(PARA_CONFIG_BASEADDR,1);
+        flashdata.cfgflag[0] = 0xAA;
+        flashdata.cfgflag[1] = 0x55;
+        flashdata.cfgflag[2] = 0xAA;
+        flashdata.cfgflag[3] = 0x55;
+        flashdata.session_mode=gWIZNETINFO.session_mode;
+        flashdata.stationID=gWIZNETINFO.stationID;
+        //预留1
+        flashdata.mbtcp_addr=gWIZNETINFO.mbtcp_addr;
+        flashdata.mbtcp_datalen=USARTCAN.datalen;
+        flashdata.polltime=gWIZNETINFO.polltime;
+        //预留2
+        
+        memcpy(flashdata.localIP,gWIZNETINFO.iplocal,4);
+        flashdata.localport=gWIZNETINFO.portlocal;
+        //预留3
+        memcpy(flashdata.remoteIP,gWIZNETINFO.ipgoal,4);
+        flashdata.remoteport=gWIZNETINFO.portgoal;
+        //预留4
+        memcpy(flashdata.submask,gWIZNETINFO.sn,4);
+        memcpy(flashdata.gatewayaddr,gWIZNETINFO.gw,4);
+        //预留5
+        
+        flashdata.can_en = USARTCAN.can[EnCAN];
+        flashdata.canbaudrate = USARTCAN.can[canBaudrate];
+        flashdata.can_localID = USARTCAN.can[LocalID];
+        flashdata.can_deviceID = USARTCAN.can[DeviceID];
+        flashdata.can_device_num = USARTCAN.can[IDNum];
+        flashdata.can_datatype = USARTCAN.can[canDatatype];
+        //预留6
+        
+        flashdata.rs232_1_en = USARTCAN.Usart[RS232_1][EnUart];
+        flashdata.rs232_1_baudrate = USARTCAN.Usart[RS232_1][uartBaudrate];
+        flashdata.rs232_1_databit = USARTCAN.Usart[RS232_1][Databits];
+        flashdata.rs232_1_chkbit = USARTCAN.Usart[RS232_1][Chkbits];
+        flashdata.rs232_1_stopbit = USARTCAN.Usart[RS232_1][Stopbits];
+        flashdata.rs232_1_flowctrl = USARTCAN.Usart[RS232_1][Flowctrl];
+        flashdata.rs232_1_datatype = USARTCAN.Usart[RS232_1][uartDatatype];
+        //预留7
+        
+    	flashdata.rs485_1_en = USARTCAN.Usart[RS485_1][EnUart];
+        flashdata.rs485_1_baudrate = USARTCAN.Usart[RS485_1][uartBaudrate];
+        flashdata.rs485_1_databit = USARTCAN.Usart[RS485_1][Databits];
+        flashdata.rs485_1_chkbit = USARTCAN.Usart[RS485_1][Chkbits];
+        flashdata.rs485_1_stopbit = USARTCAN.Usart[RS485_1][Stopbits];
+        flashdata.rs485_1_datatype = USARTCAN.Usart[RS485_1][uartDatatype];
+        //预留8
+        
+        flashdata.rs485_2_en = USARTCAN.Usart[RS485_2][EnUart];
+        flashdata.rs485_2_baudrate = USARTCAN.Usart[RS485_2][uartBaudrate];
+        flashdata.rs485_2_databit = USARTCAN.Usart[RS485_2][Databits];
+        flashdata.rs485_2_chkbit = USARTCAN.Usart[RS485_2][Chkbits];
+        flashdata.rs485_2_stopbit = USARTCAN.Usart[RS485_2][Stopbits];
+        flashdata.rs485_2_datatype = USARTCAN.Usart[RS485_2][uartDatatype];
+        //预留9
+    	
+    	flashdata.rs485_3_en = USARTCAN.Usart[RS485_3][EnUart];
+        flashdata.rs485_3_baudrate = USARTCAN.Usart[RS485_3][uartBaudrate];
+        flashdata.rs485_3_databit = USARTCAN.Usart[RS485_3][Databits];
+        flashdata.rs485_3_chkbit = USARTCAN.Usart[RS485_3][Chkbits];
+        flashdata.rs485_3_stopbit = USARTCAN.Usart[RS485_3][Stopbits];
+        flashdata.rs485_3_datatype = USARTCAN.Usart[RS485_3][uartDatatype];
+        //预留10
+        
+        flashdata.rs485_4_en = USARTCAN.Usart[RS485_4][EnUart];
+        flashdata.rs485_4_baudrate = USARTCAN.Usart[RS485_4][uartBaudrate];
+        flashdata.rs485_4_databit = USARTCAN.Usart[RS485_4][Databits];
+        flashdata.rs485_4_chkbit = USARTCAN.Usart[RS485_4][Chkbits];
+        flashdata.rs485_4_stopbit = USARTCAN.Usart[RS485_4][Stopbits];
+        flashdata.rs485_4_datatype = USARTCAN.Usart[RS485_4][uartDatatype];
+        //预留11
+        
+        //flashdata.to_thres = USARTCAN.tmout;
+        flashdata.Suspende_PosCurr = Global_Variable.Suspende_PositionCurrent;
+        
+        //OS_ENTER_CRITICAL();
+        FlashWriteData(PARA_CONFIG_BASEADDR,(u8 *)&flashdata,sizeof(flashdata));
+        //OS_EXIT_CRITICAL();
+    }
+    //dylms(500);
+    //f_GenSoftwareReset();//flash更新后启动复位，按照新的配置运行
 }
 
 //软件复位

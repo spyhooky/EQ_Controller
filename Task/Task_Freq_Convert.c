@@ -9,27 +9,40 @@
 
 #ifdef __TASK_FREQ_CONVERT_H
 
+typedef union {
+    u16 dword;
+    struct {
+        u8  motor_runsts            :2;
+        u8  accelerate              :1;
+        u8  decelerate              :1;
+    	u8  reserve_req             :1;
+        u8  force_reduce_en         :1;
+    	u8  force_reduce_10hz       :1;
+        u8  motor_stop_delay        :1;
+        u8  motor_runcmd            :2;
+    	u8  limit_measure_sts       :2;
+        u8  correct_sts             :2;
+        u8  reserve1                :1;
+        u8  reserve2                :1;
+    }Bits;
+}MotorStatus_t;
+volatile MotorStatus_t MotorStatus;
+
+
 volatile BitStatus Invertor_Status[2];
 volatile BitStatus Motor_Status[2];
-#define MOTOR_RUNNING                     Motor_Status[0].Bits.bit0 //电机运行标志
-#define MOTOR_RUN_DELAY                   Motor_Status[0].Bits.bit1 //电机运行延时，用于抱闸
-#define MOTOR_DIRECTOR                    Motor_Status[0].Bits.bit2 //吊杆运行方向，上升或者下降
-#define MOTOR_ACCELERATE                  Motor_Status[0].Bits.bit3 //电机加速标志
-#define MOTOR_REDUCING                    Motor_Status[0].Bits.bit4 //电机减速标志
-#define READ_CURR_FREQ_EN                 Motor_Status[0].Bits.bit5 //是否需要发送查询马达当前频率值的标志
-#define Reserve_Requrirement              Motor_Status[0].Bits.bit6 //电机需要反向运行，先减速再反向  
-#define FORCE_REDUCE_EN                   Motor_Status[0].Bits.bit7 //遇到上下限位开关或者电机需要反向时置此标志
-#define FORCE_REDUCE_10HZ                 Motor_Status[1].Bits.bit0 //强制减速时，频率到10HZ的标志
-#define MOTOR_Init                        Motor_Status[1].Bits.bit1 //吊杆初始化进行中
-#define MOTOR_CORRENT_UP                  Motor_Status[1].Bits.bit2 //电机上位置修正标志
-#define MOTOR_CORRENT_DOWN                Motor_Status[1].Bits.bit3 //电机下位置修正标志
-#define MOTOR_STOP_DELAY                  Motor_Status[1].Bits.bit4 //电机急停后延迟
-#define MEASURE_LIMIT_POS                 Motor_Status[1].Bits.bit5 //测量上下限位位置
+#define MOTOR_RUNNING_STS                 MotorStatus.Bits.motor_runsts         //电机运行状态，停止，正向或反向
+#define MOTOR_RUNNING_CMD                 MotorStatus.Bits.motor_runcmd         //电机运行命令，正常运行，初始化，测距  
+#define MOTOR_ACCELERATE                  MotorStatus.Bits.accelerate           //电机加速标志
+#define MOTOR_REDUCING                    MotorStatus.Bits.decelerate           //电机减速标志
+#define Reserve_Requrirement              MotorStatus.Bits.reserve_req          //电机需要反向运行，先减速再反向  
+#define FORCE_REDUCE_EN                   MotorStatus.Bits.force_reduce_en      //遇到上下限位开关或者电机需要反向时置此标志
+#define FORCE_REDUCE_10HZ                 MotorStatus.Bits.force_reduce_10hz    //强制减速时，频率到10HZ的标志
+#define MOTOR_CORRENT_STS                 MotorStatus.Bits.correct_sts          //电机位置修正状态，0-无 1-上修正 2-下修正
+#define MOTOR_STOP_DELAY                  MotorStatus.Bits.motor_stop_delay     //电机急停后延迟
+#define MEASURE_LIMIT_STS                 MotorStatus.Bits.limit_measure_sts    //吊杆行程限位测量状态 0-空闲，1-测量中，2-测量成功，3-测量失败
 
 #define FREQ_REDUCE_TABLE_NUM             100U
-
-#define SWITCH_LIMIT_DETECT                 1U //检测到限位开关，限位开关是常闭开关，所以正常时值为0
-#define SWITCH_LIMIT_UNDETECT               0U //未检测到限位开关
 
 enum Timer_Type{
     Motor_Delay,            //松开抱闸的计时，电机运行1-2s后松开，停止减速时再抱紧
@@ -39,15 +52,15 @@ enum Timer_Type{
     Keep_10HZ,              //反向或者限位减速信号后频率减到10HZ时需要继续维持的时间
     Motor_Correct,          //电机位置修正，先发停机命令，延时后修正值
     Reset_Error_Delay,      //电机急停后复位故障的延时时间，初步定为500ms
+    Read5005,               //读取电机输出功率
     
     Timer_Total
 };
 static u16 cTimer[Timer_Total];
 
-u8 Limit_Measure_Status;//吊杆行程限位测量状态 0-空闲，1-测量中，2-测量成功，3-测量失败
 u16 InvertorData[NUM_Read_Total];
 u16 Motor_Freq_MIN; //输出值是HZ对应的数值，最大为10000，对应最大频率
-s32 Limit_Pulse;    //限位信号处编码器脉冲数
+s32 Limit_Position;    //限位信号处位置值mm
 
 enum Init_Parameter_Off{
     P0_00_CtrlMode=0,           //控制方式选择
@@ -146,18 +159,20 @@ struct RTU_ReqBlock RTU_Req_WriteFreq_5000= //RTU数据请求块,设置运行频率
 	(u16*)&WriteData[Convert_Freq]              //执行的数据，读取的寄存器数据或写操作的数据
 };
 
-struct RTU_ReqBlock RTU_Req_ReadFreq_5001= //RTU数据请求块,设置运行频率
+struct RTU_ReqBlock RTU_Req_ReadPower_5005= //RTU数据请求块,读取当前电机运行功率
 {
-	LIST_HEAD_INIT(RTU_Req_ReadFreq_5001.Entry),
+	LIST_HEAD_INIT(RTU_Req_ReadPower_5005.Entry),
     1,                                          //执行次数，0-无限次
 	UART_CHN_CONVERT_FREQ,                      //执行通道
 	SLAVEID_FREQ,                               //从节点站地址
 	FUNC_RD_HOLDREG,                            //功能码03
 	EXCUTE_SUCCESS,                             //执行结果
-	0x5000,                                     //操作寄存器地址
+	0x5005,                                     //操作寄存器地址
 	0x01,                                       //操作寄存器数量
-	(u16*)&InvertorData[off_CurrFreq]           //执行的数据，读取的寄存器数据或写操作的数据
+	(u16*)&InvertorData[off_CurrFreqPower]      //执行的数据，读取的寄存器数据或写操作的数据
 };
+
+static void Motor_Stop(u8 stoptype);
 
 
 /********************************************************************************/
@@ -171,10 +186,18 @@ static void Freq_Convert_Init(void)
     u8 i;
     Invertor_Status[0].Byte = 0;
     Invertor_Status[1].Byte = 0;
-    Limit_Measure_Status = M_IDLE;
+    MEASURE_LIMIT_STS = M_IDLE;
     memset((u8 *)&cTimer[0],0,sizeof(cTimer));
     Global_Variable.Suspende_PositionTarget = Global_Variable.Para_Independence.Suspende_Limit_Up;
-    Global_Variable.Suspende_PositionCurrent = Global_Variable.Para_Independence.Suspende_Limit_Up;
+    if(Global_Variable.Suspende_PositionMemory != 0xffff)
+    {
+        Global_Variable.Suspende_PositionCurrent = Global_Variable.Suspende_PositionMemory;
+    }
+    else
+    {
+        Global_Variable.Suspende_PositionMemory = 0;
+        Global_Variable.Suspende_PositionCurrent = Global_Variable.Para_Independence.Suspende_Limit_Up;
+    }
     memset(InvertorData,0,sizeof(InvertorData));
     memset(WriteData,0,sizeof(WriteData));
     memset(&Acc_Reduce_Status,0,sizeof(Acc_Reduce_Status));
@@ -205,6 +228,18 @@ static void Freq_Convert_Init(void)
 }
 
 /********************************************************************************/
+/*函数名：  Get_Limit_Measure_Status                                                   */
+/*功能说明： 获取当前测高的状态                                                             */
+/*输入参数：无                                                                  */
+/*输出参数：无                                                                  */
+/*******************************************************************************/
+u8 Get_Limit_Measure_Status(void)
+{
+    return MEASURE_LIMIT_STS;
+}
+
+
+/********************************************************************************/
 /*函数名：  TaskFreq_Timer100ms                                                   */
 /*功能说明：1ms定时函数                                                             */
 /*输入参数：无                                                                  */
@@ -222,8 +257,9 @@ void TaskFreq_Timer1ms(void)
         }
     }
     
-    if(MOTOR_RUNNING == ON)
+    if(MOTOR_RUNNING_STS != OFF) //电机处于运行状态
     {
+        cTimer[Read5005] = 0;
         if(cTimer[Motor_Delay] >= BAND_TYPE_BRAKE_DELAY_THRES)
         {//电机开始运行时300ms内完成抱闸再断开
             //if(MOTOR_REDUCING == OFF)
@@ -240,6 +276,19 @@ void TaskFreq_Timer1ms(void)
     {
         cTimer[Motor_Delay] = 0;
         BAND_TYPE_BRAKE_OUT = OFF;//抱闸开启
+        if(cTimer[Read5005] >= READ_FREQ_POWER_THRES)
+        {
+            cTimer[Read5005] = 0;
+            if(InvertorData[off_CurrFreqPower] != 0)
+            {
+                Motor_Stop(Motor_Stop_Free); 
+            }
+            RTU_AddReqBlock_Front(&rtu_ctx,&RTU_Req_ReadPower_5005);
+        }
+        else
+        {
+            cTimer[Read5005]++;
+        }
     }
 
     if((MOTOR_ACCELERATE == ON)||(MOTOR_REDUCING == ON))
@@ -262,7 +311,7 @@ void TaskFreq_Timer1ms(void)
         cTimer[Keep_10HZ] = 0;
     }
 		
-    if((MOTOR_CORRENT_UP == ON)||(MOTOR_CORRENT_DOWN == ON))
+    if(MOTOR_CORRENT_STS != Corrent_None)
     {//遇到上下限位开关
         cTimer[Motor_Correct]++;//该计时器用于遇到限位开关时延迟一定时间后修正脉冲数和吊杆位置值
     }
@@ -322,7 +371,7 @@ static void Set_Frequence_Start(void)
     Acc_Reduce_Status.Freq_Index = 0;
     Acc_Reduce_Status.Pulse_StartMove = Global_Variable.Encode_PulseCurrent;
     motor_freq = Motor_Freq_MIN;
-    Global_Variable.Suspende_SpeedCurrent = ((u32)motor_freq*(u32)Global_Variable.Para_Independence.Max_Motro_Freq)/10000;
+    Global_Variable.Suspende_SpeedCurrent = ((u32)motor_freq*(u32)Global_Variable.Para_Independence.Max_Motro_Freq)/FREQ_MAX_VALUE;
     Global_Variable.Suspende_SpeedCurrent /= Global_Variable.Para_Independence.Motor_Freq_Factor;
     //if(Wrdata[Convert_Freq] != Freq_Req)
     {
@@ -338,7 +387,6 @@ static void Set_Frequence_Start(void)
 /*输出参数：无
 */
 /****************************************************************************************/
-#if 1
 static u16 Frequence_Acc_Reduce_Logic(u32 Delta_Pulse)
 {
     u8 i;
@@ -352,10 +400,10 @@ static u16 Frequence_Acc_Reduce_Logic(u32 Delta_Pulse)
         {
             reduce_pulse += Table_Freq_Change[i].pulse_num;
         }
-        if((FORCE_REDUCE_EN == ON)||((reduce_pulse + (Table_Freq_Change[Acc_Reduce_Status.Freq_Index+1].pulse_num*2)) >= Delta_Pulse))
+        if((FORCE_REDUCE_EN == ON)||((reduce_pulse + (Table_Freq_Change[Acc_Reduce_Status.Freq_Index+1].pulse_num)) >= Delta_Pulse))
         {//满足减速条件时开始减速，并置位
             Global_Variable.Suspende_SpeedCurrent = Table_Freq_Change[Acc_Reduce_Status.Freq_Index].running_freq/Global_Variable.Para_Independence.Motor_Freq_Factor;
-            motor_freq = Table_Freq_Change[Acc_Reduce_Status.Freq_Index].running_freq*10000/Global_Variable.Para_Independence.Max_Motro_Freq;//
+            motor_freq = Table_Freq_Change[Acc_Reduce_Status.Freq_Index].running_freq*FREQ_MAX_VALUE/Global_Variable.Para_Independence.Max_Motro_Freq;//
             MOTOR_REDUCING = ON;
             MOTOR_ACCELERATE = OFF;
             cTimer[Freq_Acc_Reduce] = 0;
@@ -379,7 +427,7 @@ static u16 Frequence_Acc_Reduce_Logic(u32 Delta_Pulse)
                     Global_Variable.Suspende_SpeedCurrent = Global_Variable.Suspende_SpeedTarget;
                 }
                 curfreq = Global_Variable.Suspende_SpeedCurrent*Global_Variable.Para_Independence.Motor_Freq_Factor;
-                motor_freq = curfreq*10000/Global_Variable.Para_Independence.Max_Motro_Freq;//
+                motor_freq = curfreq*FREQ_MAX_VALUE/Global_Variable.Para_Independence.Max_Motro_Freq;//
             }
             else
             {
@@ -402,11 +450,12 @@ static u16 Frequence_Acc_Reduce_Logic(u32 Delta_Pulse)
                 Acc_Reduce_Status.Freq_Index--;
                 Global_Variable.Suspende_SpeedCurrent = (u16)(Table_Freq_Change[Acc_Reduce_Status.Freq_Index].running_freq/Global_Variable.Para_Independence.Motor_Freq_Factor); 
                 curfreq = Global_Variable.Suspende_SpeedCurrent * Global_Variable.Para_Independence.Motor_Freq_Factor;//HZ
-                motor_freq = curfreq*10000/Global_Variable.Para_Independence.Max_Motro_Freq;//
+                motor_freq = curfreq*FREQ_MAX_VALUE/Global_Variable.Para_Independence.Max_Motro_Freq;//
             }
             else
             {
                 motor_freq = Motor_Freq_MIN;
+                MOTOR_REDUCING = OFF;
             }
         }
         else
@@ -416,97 +465,6 @@ static u16 Frequence_Acc_Reduce_Logic(u32 Delta_Pulse)
     }
     return motor_freq;//该频率的单位是发给变频器的值，0-10000对应0-最大频率
 }
-
-#else
-static u16 Frequence_Acc_Reduce_Logic(u32 Delta_Pulse)
-{
-    u8 i;
-    float curfreq;//HZ
-    u16 motor_freq=0;//输出值是HZ对应的数值，最大为10000，对应最大频率
-    
-    if(MOTOR_REDUCING == OFF)
-    {
-#if 1
-        if(cTimer[Read5001] >= 1)
-        {//当电机处于非减速状态时周期性读取当前电机频率
-            cTimer[Read5001] = 0;
-            RTU_AddReqBlock(&rtu_ctx,&RTU_Req_ReadFreq_5001);
-            Global_Variable.Suspende_SpeedCurrent = ((InvertorData[off_CurrFreq]*Global_Variable.Para_Independence.Max_Motro_Freq)/10000)/
-                Global_Variable.Para_Independence.Motor_Freq_Factor;
-            //Global_Variable.Suspende_Current_Speed = (InvertorData[off_CurrFreq]/100)/Global_Variable.Para_Independence.Motor_Freq_Factor;//*10000/100
-        }
-#endif
-        curfreq = Global_Variable.Suspende_SpeedCurrent * Global_Variable.Para_Independence.Motor_Freq_Factor;
-        
-        for(i=0;i<FREQ_REDUCE_TABLE_NUM;i++)
-        {
-            if(curfreq < Table_Freq_Change[i+1].running_freq)
-            {//遍历减速起始的剩余脉冲数
-                if((FORCE_REDUCE_EN == ON)||(Table_Freq_Change[i].pulse_num >= Delta_Pulse))
-                {//满足减速条件时开始减速，并置位
-                    Global_Variable.Suspende_SpeedCurrent = Table_Freq_Change[i].running_freq/Global_Variable.Para_Independence.Motor_Freq_Factor;
-                    motor_freq = Table_Freq_Change[i].running_freq*10000/Global_Variable.Para_Independence.Max_Motro_Freq;//
-                    MOTOR_REDUCING = ON;
-                    MOTOR_ACCELERATE = OFF;
-                    cTimer[Freq_Acc_Reduce] = 0;
-                    
-                }
-                break;
-            }
-        }
-        if(MOTOR_REDUCING == OFF)
-        {
-            if(((WriteData[Convert_Freq] != Motor_Freq_MIN)&&(cTimer[Freq_Acc_Reduce] >= FREQ_REDUCE_INTERTER))||
-                ((WriteData[Convert_Freq] == Motor_Freq_MIN)&&(cTimer[Freq_Acc_Reduce] >= FORCE_REDUCE_10HZ_KEEPING)))
-            {//10HZ加速时间稍长一点
-                //Pulse_StartMove
-                cTimer[Freq_Acc_Reduce] = 0;
-                if((Global_Variable.Suspende_SpeedTarget > Global_Variable.Suspende_SpeedCurrent)&&
-                    ((Global_Variable.Suspende_SpeedTarget - Global_Variable.Suspende_SpeedCurrent) > (FREQ_CHANGE_BASE/Global_Variable.Para_Independence.Motor_Freq_Factor)))
-                {
-                    Global_Variable.Suspende_SpeedCurrent += (u16)(FREQ_CHANGE_BASE/Global_Variable.Para_Independence.Motor_Freq_Factor); 
-                    MOTOR_ACCELERATE = ON;
-                }
-                else
-                {
-                    MOTOR_ACCELERATE = OFF;
-                    Global_Variable.Suspende_SpeedCurrent = Global_Variable.Suspende_SpeedTarget;
-                }
-                curfreq = Global_Variable.Suspende_SpeedCurrent*Global_Variable.Para_Independence.Motor_Freq_Factor;
-                motor_freq = curfreq*10000/Global_Variable.Para_Independence.Max_Motro_Freq;//
-            }
-            else
-            {
-                motor_freq = WriteData[Convert_Freq];//保持上次值不变
-            }
-        }
-    }
-    else
-    {
-        MOTOR_ACCELERATE = OFF;
-        if(cTimer[Freq_Acc_Reduce] >= FREQ_REDUCE_INTERTER)
-        {//每隔一定时间减速固定频率
-            if(WriteData[Convert_Freq] > Motor_Freq_MIN)//频率还未减到最低的10HZ
-            {
-                cTimer[Freq_Acc_Reduce] = 0;
-                Global_Variable.Suspende_SpeedCurrent -= (u16)(FREQ_CHANGE_BASE/Global_Variable.Para_Independence.Motor_Freq_Factor);
-                curfreq = Global_Variable.Suspende_SpeedCurrent * Global_Variable.Para_Independence.Motor_Freq_Factor;//HZ
-                motor_freq = curfreq*10000/Global_Variable.Para_Independence.Max_Motro_Freq;//
-            }
-            else
-            {
-                motor_freq = Motor_Freq_MIN;
-            }
-        }
-        else
-        {
-            motor_freq = WriteData[Convert_Freq];//保持上次值不变
-        }
-    }
-    return motor_freq;//该频率的单位是发给变频器的值，0-10000对应0-最大频率
-}
-#endif
-
 
 /****************************************************************************************/
 /*函数名：  Set_Frequence_Running                                                          */
@@ -525,10 +483,10 @@ static void Set_Frequence_Running(u32 Delta_Pulse)
         MOTOR_REDUCING = OFF;
         motor_freq = Motor_Freq_MIN;
     }
-    else if(motor_freq >= 10000)
+    else if(motor_freq >= FREQ_MAX_VALUE)
     {
         MOTOR_ACCELERATE = OFF;
-        motor_freq = 10000;
+        motor_freq = FREQ_MAX_VALUE;
     }
     else
     {
@@ -546,14 +504,13 @@ static void Set_Frequence_Running(u32 Delta_Pulse)
 /********************************************************************************/
 /*函数名：  MotorMove_Fall                                                        */
 /*功能说明：电机向下运动命令                                                          */
-/*输入参数：distance运行距离                                                            */
+/*输入参数：distance运行距离,基于上限位的相对距离                                                  */
 /*输出参数：无                                                                  */
 /*******************************************************************************/
 void MotorMove_Fall(s32 distance)
 {
-    MOTOR_RUNNING = ON;
+    MOTOR_RUNNING_STS = DIR_FALL;
     Global_Variable.Encode_PulseTarget = distance/Global_Variable.Para_Independence.Lenth_Per_Pulse;
-    MOTOR_DIRECTOR = D_FALL;
     if(Global_Variable.Para_Independence.Convert_Cfg == ON)
     {//有变频器配置
         Set_Frequence_Start();
@@ -574,13 +531,12 @@ void MotorMove_Fall(s32 distance)
 /********************************************************************************/
 /*函数名：  MotorMove_Rise                                                      */
 /*功能说明：电机向上运动命令                                                         */
-/*输入参数：distance运行距离                                                   */
+/*输入参数：distance运行距离,基于上限位的相对距离                                                */
 /*输出参数：无                                                                  */
 /*******************************************************************************/
 void MotorMove_Rise(s32 distance)
 {
-    MOTOR_RUNNING = ON;
-    MOTOR_DIRECTOR = D_RISE;
+    MOTOR_RUNNING_STS = DIR_RISE;
     Global_Variable.Encode_PulseTarget = distance/Global_Variable.Para_Independence.Lenth_Per_Pulse;
     if(Global_Variable.Para_Independence.Convert_Cfg == ON)
     {//有变频器配置
@@ -610,7 +566,7 @@ static void Motor_Stop(u8 stoptype)
     u8 stopmode;
     if(Global_Variable.Para_Independence.Convert_Cfg == ON)
     {//有变频器配置
-        MOTOR_RUNNING = OFF;
+        MOTOR_RUNNING_STS = Motor_Idle;
         FORCE_REDUCE_10HZ = OFF;
         cTimer[Keep_10HZ] = 0;
         FORCE_REDUCE_EN = OFF;
@@ -625,9 +581,16 @@ static void Motor_Stop(u8 stoptype)
             stopmode = Motor_Stop_Free;
         }
 
-        if((stopmode == Motor_Stop_Free)&&(RTU_Req_Read8000.Status != EXCUTE_FAIL)&&(InvertorData[off_InvertorError] == 0))
-        {//停机前电机无故障
-            MOTOR_STOP_DELAY = ON;
+        if(stopmode == Motor_Stop_Free)
+        {
+            if((RTU_Req_Read8000.Status != EXCUTE_FAIL)&&(InvertorData[off_InvertorError] == 0))
+            {//停机前电机无故障
+                MOTOR_STOP_DELAY = ON;
+            }
+        }
+        else
+        {
+            //CMD_Download_LocalCfg = ON;//存储当前位置
         }
         //if(WriteData[Control_CMD] != stopmode)
         {
@@ -640,6 +603,95 @@ static void Motor_Stop(u8 stoptype)
         CONTACTOR_RISE_OUT = OFF;
         CONTACTOR_FALL_OUT = OFF;
         CONTACTOR_STOP_OUT = ON;
+    }
+    InvertorData[off_CurrFreqPower] = 1;//停机时先设置当前功率为非零，后续再读取寄存器值更新该值
+    RTU_AddReqBlock(&rtu_ctx,&RTU_Req_ReadPower_5005);
+    //CMD_Download_LocalCfg = ON;//存储当前位置
+}
+
+/********************************************************************************/
+/*函数名：  CMD_Freq_Convert                                                   */
+/*功能说明：变频器命令处理函数                                                         */
+/*输入参数：无                                                                   */
+/*输出参数：无                                                                  */
+/*******************************************************************************/
+void CMD_Freq_Convert(void)
+{
+    if(CMD_Suspender_Emergency_Stop == ON)//上位机命令：单个吊杆急停
+    {
+        BAND_TYPE_BRAKE_OUT = OFF;//抱闸断开
+        CMD_Suspender_Emergency_Stop = OFF;
+        Motor_Stop(Motor_Stop_Free);            
+    }
+    else if(CMD_Suspender_Init == ON)
+    {//吊杆初始化请求
+        CMD_Suspender_Init = OFF;
+        if((Global_Variable.Suspende_PositionCurrent + 10) < Global_Variable.Para_Independence.Suspende_Limit_Up)
+        {//当前位置靠近上限位时不执行初始化动作,只有当前位置在上限位以下超过10mm时才执行初始化
+            if(MOTOR_RUNNING_CMD != Motor_Init)
+            {
+                MOTOR_RUNNING_CMD = Motor_Init;
+                MotorMove_Rise(Global_Variable.Suspende_PositionTarget-Global_Variable.Para_Independence.Suspende_Limit_Up);
+            }
+       }
+    }
+    else if(CMD_Rope_Wire == ON)//单个吊杆收揽（复位吊杆位置，就是吊杆的最高位置）
+    {
+        CMD_Rope_Wire = OFF;
+        MotorMove_Rise(Global_Variable.Para_Independence.Suspende_Limit_Up-Global_Variable.Suspende_PositionTarget);
+    }
+    else if(CMD_Suspender_Min == ON)//单个吊杆降到零点坐标位置（吊杆的最低位置）
+    {
+        CMD_Suspender_Min = OFF;
+        MotorMove_Fall(Global_Variable.Para_Independence.Suspende_Limit_Up-Global_Variable.Suspende_PositionTarget);
+    }
+    else if(CMD_Suspender_Target == ON)//单个吊杆运行到设定的目标位置
+    {
+        CMD_Suspender_Target = OFF;
+        if(Global_Variable.Suspende_PositionCurrent > Global_Variable.Suspende_PositionTarget)
+        {
+            if(MOTOR_RUNNING_STS == DIR_RISE)
+            {
+                Reserve_Requrirement = ON;
+            }
+            else
+            {
+                MotorMove_Fall(Global_Variable.Para_Independence.Suspende_Limit_Up-Global_Variable.Suspende_PositionTarget);
+            }
+        }
+        else
+        {
+            if(MOTOR_RUNNING_STS == DIR_FALL)
+            {
+                Reserve_Requrirement = ON;
+            }
+            else
+            {
+                MotorMove_Rise(Global_Variable.Para_Independence.Suspende_Limit_Up-Global_Variable.Suspende_PositionTarget);
+            }
+        }
+    }
+    else if(CMD_Limit_Measure == ON)
+    {
+        CMD_Limit_Measure = OFF;
+        if(MOTOR_RUNNING_CMD != Measure_Distance)
+        {
+            MOTOR_RUNNING_CMD = Measure_Distance;
+            MEASURE_LIMIT_STS = M_MEASURING;
+            if((Limit_Fall_Signal == OFF)&&(Global_Variable.Suspende_PositionCurrent>0))
+            {
+                Global_Variable.Suspende_PositionTarget = -60000;//向下走最大行程，直到遇到下限位开关
+                MotorMove_Fall(Global_Variable.Para_Independence.Suspende_Limit_Up-Global_Variable.Suspende_PositionTarget);
+            }
+            else
+            {
+                //不执行限位测量
+            }
+        }
+    }
+    else
+    {
+
     }
 }
 
@@ -654,39 +706,39 @@ void Task_Freq_Convert(void *p_arg)
 {
 //     struct wiz_NetInfo_t *ethparm;
 //     ethparm = (struct wiz_NetInfo_t *)p_arg;
-    Freq_Convert_Init();
     s32 Delta_Pulse;
     u8 pre_limit_rise;
     u8 pre_limit_fall;
+    u8 pre_Stop_Signal;
+    u8 pre_Summit_Attempt;
+
+    Freq_Convert_Init();
+    
     while (1U+1U==2U)
     {          
         if(Err_Stop_Signal == ON)//急停按钮：吊杆急停
         {
-            if(MOTOR_RUNNING == ON)
+            if(pre_Stop_Signal == OFF)
             {
-                if(BAND_TYPE_BRAKE_OUT == ON)
-                {
-                    BAND_TYPE_BRAKE_OUT = OFF;//抱闸断开
-                }
+                BAND_TYPE_BRAKE_OUT = OFF;//抱闸断开
                 Motor_Stop(Motor_Stop_Free);   
             }
         }
+        pre_Stop_Signal = Err_Stop_Signal;
 
         if(Err_Summit_Attempt == ON)//冲顶故障：吊杆急停
         {
-            if(MOTOR_RUNNING == ON)
+            if(pre_Summit_Attempt == OFF)
             {
-                if(BAND_TYPE_BRAKE_OUT == ON)
-                {
-                    BAND_TYPE_BRAKE_OUT = OFF;//抱闸断开
-                }
+                BAND_TYPE_BRAKE_OUT = OFF;//抱闸断开
                 Motor_Stop(Motor_Stop_Free);   
             }
         }
+        pre_Summit_Attempt = Err_Summit_Attempt;
     
         if((FORCE_REDUCE_EN == ON)&&(MOTOR_REDUCING == OFF))//强制减速完成，当前频率是最小频率10HZ
         {//此条件必须放在该while的最上边判断，否则会导致条件无法满足
-            if(MOTOR_Init == OFF)
+            if(MOTOR_RUNNING_CMD == Motor_Init)
             {//必须是非吊杆初始化状态下
                 FORCE_REDUCE_EN = OFF;
                 FORCE_REDUCE_10HZ = ON;
@@ -727,12 +779,12 @@ void Task_Freq_Convert(void *p_arg)
         }
 
 
-        if(MOTOR_RUNNING == ON)
+        if(MOTOR_RUNNING_STS != OFF)//电机处于运行状态
         {
-            if(((Limit_Up_SlowDown == ON)&&(MOTOR_DIRECTOR == D_RISE))||((Limit_Down_SlowDown == ON)&&(MOTOR_DIRECTOR == D_FALL))||
+            if(((Limit_Up_SlowDown == ON)&&(MOTOR_RUNNING_STS == DIR_RISE))||((Limit_Down_SlowDown == ON)&&(MOTOR_RUNNING_STS == DIR_FALL))||
                 (Reserve_Requrirement == ON))//运行过程中遇到限位减速信号
             {
-                if(MOTOR_Init == OFF)//吊杆初始化时需要运行至限位开关处
+                if(MOTOR_RUNNING_CMD == Motor_Normal)//吊杆初始化和测距需要运行至限位开关处
                 {
                     FORCE_REDUCE_EN = ON;
                 }
@@ -743,11 +795,11 @@ void Task_Freq_Convert(void *p_arg)
             }
 
             
-            if(MOTOR_DIRECTOR == D_RISE)
+            if(MOTOR_RUNNING_STS == DIR_RISE)
             {//电机上升
                 if(Limit_Rise_Signal == ON)
                 {//运行过程中遇到上限位信号
-                    MOTOR_Init = OFF;
+                    MOTOR_RUNNING_CMD = Motor_Normal;
                     if(BAND_TYPE_BRAKE_OUT == ON)
                     {
                         BAND_TYPE_BRAKE_OUT = OFF;//抱闸断开
@@ -756,18 +808,23 @@ void Task_Freq_Convert(void *p_arg)
                     
                     if(pre_limit_rise == OFF)
                     {//需要进行位置补偿
-                        MOTOR_CORRENT_UP = ON; 
-                        if(Limit_Measure_Status == M_MEASURING)
+                        
+                        if(MEASURE_LIMIT_STS == M_MEASURING)
                         {
-                            Limit_Measure_Status = M_SUCCESS;
-                            Limit_Pulse = Limit_Pulse - Global_Variable.Encode_PulseCurrent;//记录上限位脉冲数
-                            Global_Variable.Para_Independence.Suspende_Limit_Up = Limit_Pulse*Global_Variable.Para_Independence.Lenth_Per_Pulse;
+                            MEASURE_LIMIT_STS = M_SUCCESS;
+                            Limit_Position = Global_Variable.Suspende_PositionCurrent-Limit_Position;//记录上限位脉冲数
+                            Global_Variable.Para_Independence.Suspende_Limit_Up = Limit_Position;
+                            CMD_ParaDownload_Independent = ON;//写个性化参数
+                        }
+                        else
+                        {
+                            MOTOR_CORRENT_STS = Corrent_Up; 
                         }
                     }
                 }
                 else if(Global_Variable.Suspende_PositionCurrent >= Global_Variable.Para_Independence.Suspende_Limit_Up)
                 {
-                    if(MOTOR_Init == OFF)//吊杆初始化时需要运行至限位开关处
+                    if((MEASURE_LIMIT_STS != M_MEASURING)&&(MOTOR_RUNNING_CMD != Motor_Init))//吊杆初始化时需要运行至限位开关处
                     {
                         if(BAND_TYPE_BRAKE_OUT == ON)
                         {
@@ -781,7 +838,7 @@ void Task_Freq_Convert(void *p_arg)
 
                 }
             }
-            else
+            else if(MOTOR_RUNNING_STS == DIR_FALL)
             {//电机下降
                 if(Limit_Fall_Signal == ON)
                 {//运行过程中遇到下限位信号
@@ -793,26 +850,37 @@ void Task_Freq_Convert(void *p_arg)
 
                     if(pre_limit_fall == OFF)
                     {//需要进行位置补偿
-                        MOTOR_CORRENT_DOWN = ON; 
-                        if(Limit_Measure_Status == M_MEASURING)
+                        if(MEASURE_LIMIT_STS == M_MEASURING)
                         {
-                            Limit_Pulse = Global_Variable.Encode_PulseCurrent;//记录下限位脉冲数
-                            MotorMove_Rise(-60000);
+                            Limit_Position = Global_Variable.Suspende_PositionCurrent;//记录下限位脉冲数
+                            Global_Variable.Suspende_PositionTarget = 60000;//向下走最大行程，直到遇到下限位开关
+                            MotorMove_Rise(Global_Variable.Para_Independence.Suspende_Limit_Up-Global_Variable.Suspende_PositionTarget);
+                        }
+                        else
+                        {
+                            MOTOR_CORRENT_STS = Corrent_Down; 
                         }
                     }
                 }
                 else if(Global_Variable.Suspende_PositionCurrent <= 0)
                 {
-                    if(BAND_TYPE_BRAKE_OUT == ON)
+                    if(MEASURE_LIMIT_STS != M_MEASURING)
                     {
-                        BAND_TYPE_BRAKE_OUT = OFF;//抱闸断开
+                        if(BAND_TYPE_BRAKE_OUT == ON)
+                        {
+                            BAND_TYPE_BRAKE_OUT = OFF;//抱闸断开
+                        }
+                        Motor_Stop(Motor_Stop_Reduce);
                     }
-                    Motor_Stop(Motor_Stop_Reduce);
                 }
                 else
                 {
 
                 }
+            }
+            else//电机处于空闲状态
+            {
+
             }
             pre_limit_rise = Limit_Rise_Signal;
             pre_limit_fall = Limit_Fall_Signal;
@@ -821,19 +889,18 @@ void Task_Freq_Convert(void *p_arg)
         if(cTimer[Motor_Correct] >= 6U)//遇到限位开关后等待600ms，再修正脉冲数和当前位置值
         {
             cTimer[Motor_Correct] = 0;
-            if(MOTOR_CORRENT_UP == ON)
+            if(MOTOR_CORRENT_STS == Corrent_Up)
             {
-                MOTOR_CORRENT_UP = OFF;
+                MOTOR_CORRENT_STS = Corrent_None;
                 OS_ENTER_CRITICAL(); 
                 Global_Variable.Suspende_PositionCurrent = Global_Variable.Para_Independence.Suspende_Limit_Up;
                 Global_Variable.Compensate_Pulse = 0 - Global_Variable.Encode_PulseCurrent;//过冲了需要补偿正值
                 Global_Variable.Compensate_En = ON;
                 OS_EXIT_CRITICAL();
             }
-
-            if(MOTOR_CORRENT_DOWN == ON)
+            else if(MOTOR_CORRENT_STS == Corrent_Down)
             {
-                MOTOR_CORRENT_DOWN = OFF;
+                MOTOR_CORRENT_STS = Corrent_None;
                 OS_ENTER_CRITICAL(); 
                 Global_Variable.Suspende_PositionCurrent = 0;
                 Global_Variable.Compensate_Pulse = (Global_Variable.Para_Independence.Suspende_Limit_Up/Global_Variable.Para_Independence.Lenth_Per_Pulse)
@@ -841,40 +908,38 @@ void Task_Freq_Convert(void *p_arg)
                 Global_Variable.Compensate_En = ON;
                 OS_EXIT_CRITICAL();
             }
+            else
+            {
+
+            }
         }
 
         
-        if(MOTOR_DIRECTOR == D_FALL)
+        if(MOTOR_RUNNING_STS == DIR_FALL)
         {
             Delta_Pulse = Global_Variable.Encode_PulseTarget - Global_Variable.Encode_PulseCurrent;
         }
-        else
+        else if(MOTOR_RUNNING_STS == DIR_RISE)
         {
             Delta_Pulse = Global_Variable.Encode_PulseCurrent - Global_Variable.Encode_PulseTarget;
+        }
+        else
+        {//电机处于空闲状态
+
         }
 
         if(Global_Variable.Para_Independence.Convert_Cfg == ON)
         { //有变频器配置
-#if 0
-    	    if((Delta_Pulse < 1000u)&&(MOTOR_REDUCING == ON))
-            {//脉冲数小于1000时立即断开抱闸
-                if(BAND_TYPE_BRAKE_OUT == ON)
-                {
-                    BAND_TYPE_BRAKE_OUT = OFF;//抱闸断开
-                }
-            }
-#endif
-
             if((Delta_Pulse < REMAIN_PULSE_NUMBER_FOR_FREQ_STOP)||(Delta_Pulse < 0))
             {
-                if(MOTOR_Init == OFF)//吊杆初始化时需要运行至限位开关处
+                if(MOTOR_RUNNING_CMD != Motor_Init)//吊杆初始化时需要运行至限位开关处
                 {
                     if(BAND_TYPE_BRAKE_OUT == ON)
                     {//电机到达目标位置时，就立即抱闸，不要提前抱闸
                         cTimer[Motor_Delay] = 0;
                         BAND_TYPE_BRAKE_OUT = OFF;//抱闸断开
                     }
-                    if(MOTOR_RUNNING == ON)/*&&(MOTOR_REDUCING == OFF)*/
+                    if(MOTOR_RUNNING_STS != OFF)/*&&(MOTOR_REDUCING == OFF)*/
                     {
                         Motor_Stop(Motor_Stop_Reduce);//到达目标位置，执行减速停机
                     }
@@ -898,59 +963,7 @@ void Task_Freq_Convert(void *p_arg)
             }
         }
 
-        if(CMD_Suspender_Emergency_Stop == ON)//上位机命令：单个吊杆急停
-        {
-            if(BAND_TYPE_BRAKE_OUT == ON)
-            {
-                BAND_TYPE_BRAKE_OUT = OFF;//抱闸断开
-            }
-            CMD_Suspender_Emergency_Stop = OFF;
-            Motor_Stop(Motor_Stop_Free);            
-        }
-        else if(CMD_Suspender_Init == ON)
-        {//吊杆初始化请求
-            CMD_Suspender_Init = OFF;
-            MOTOR_Init = ON;
-            MotorMove_Rise(Global_Variable.Suspende_PositionTarget-Global_Variable.Para_Independence.Suspende_Limit_Up);
-        }
-        else if(CMD_Rope_Wire == ON)//单个吊杆收揽（复位吊杆位置，就是吊杆的最高位置）
-        {
-            CMD_Rope_Wire = OFF;
-            MotorMove_Rise(Global_Variable.Para_Independence.Suspende_Limit_Up-Global_Variable.Suspende_PositionTarget);
-        }
-        else if(CMD_Suspender_Min == ON)//单个吊杆降到零点坐标位置（吊杆的最低位置）
-        {
-            CMD_Suspender_Min = OFF;
-            MotorMove_Fall(Global_Variable.Para_Independence.Suspende_Limit_Up);
-        }
-        else if(CMD_Suspender_Target == ON)//单个吊杆运行到设定的目标位置
-        {
-            CMD_Suspender_Target = OFF;
-            if(Global_Variable.Suspende_PositionCurrent > Global_Variable.Suspende_PositionTarget)
-            {
-                MotorMove_Fall(Global_Variable.Para_Independence.Suspende_Limit_Up-Global_Variable.Suspende_PositionTarget);
-            }
-            else
-            {
-                MotorMove_Rise(Global_Variable.Para_Independence.Suspende_Limit_Up-Global_Variable.Suspende_PositionTarget);
-            }
-        }
-        else if(CMD_Limit_Measure == ON)
-        {
-            Limit_Measure_Status = M_MEASURING;
-            if((Limit_Fall_Signal == OFF)&&(Global_Variable.Suspende_PositionCurrent>0))
-            {
-                MotorMove_Fall(60000);//向下走最大行程，直到遇到下限位开关
-            }
-            else
-            {
-                //不执行限位测量
-            }
-        }
-        else
-        {
-
-        }
+        CMD_Freq_Convert(); 
 
         OSTimeDlyHMSM(0, 0, 0, 1);
     }

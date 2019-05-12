@@ -65,7 +65,7 @@
 
 void Task_Main(void *p_arg);
 void ETH2Usartcan_send(u8 uartcan_chn,u8 *databuf,u16 lenth);
-void HTTP_DataHandler(void);
+void Flash_DataHandler(void);
 void ReadFlashCfg(void);
 
 #endif

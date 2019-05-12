@@ -5,26 +5,26 @@
 
 #ifdef STM32F10X_LD
     #define FLASH_PAGE_SIZE                 0x400U
-    #define CONFIG_BASEADDR                 0x800EC00ul  //常用配置文件的存储起始地址
+    #define PARA_CONFIG_BASEADDR            0x800EC00ul  //常用配置文件的存储起始地址
     #define APP_CRC_ADDR                    0x8024000ul
 #endif
 
 #ifdef STM32F10X_MD
     #define FLASH_PAGE_SIZE                 0x400U
-    #define CONFIG_BASEADDR                 0x800EC00ul
+    #define PARA_CONFIG_BASEADDR            0x800EC00ul
     #define APP_CRC_ADDR                    0x8024000ul
 #endif
 
 #ifdef STM32F10X_HD
     #define FLASH_PAGE_SIZE                 0x800U
-    #define CONFIG_BASEADDR                 0x803A000ul
+    #define PARA_CONFIG_BASEADDR            0x803A000ul
     #define PARA_BASEADDR                   0x803A800ul
     #define APP_CRC_ADDR                    0x8030000ul
 #endif
 
 #ifdef STM32F10X_CL
     #define FLASH_PAGE_SIZE                 0x800U     
-    #define CONFIG_BASEADDR                 0x803A000ul
+    #define PARA_CONFIG_BASEADDR            0x803A000ul
     #define PARA_BASEADDR                   0x803A800ul
     #define APP_CRC_ADDR                    0x8030000ul
 #endif
@@ -41,7 +41,7 @@ enum ADC_Channel
 /***********************************************************************/
 /***************************功能使能区**********************************/
 /***********************************************************************/
-#define DEBUG_ENABLE   //debug模式下禁止看门狗功能和W5500自动keepalive功能
+//#define DEBUG_ENABLE   //debug模式下禁止看门狗功能和W5500自动keepalive功能
 #define W5500_ENABLE                                  //W5500芯片使能，当需要网口进行通讯时该宏定义必须是激活状态
 
 #ifndef DEBUG_ENABLE
