@@ -207,8 +207,10 @@ void Calculate_Wire_Position(u16 sch_timer,u16 sch_cycle)
         {
             Global_Variable.Compensate_En = OFF;
             Pulse_Total = Pulse_Total + Global_Variable.Compensate_Pulse*4;
+            Global_Variable.Suspende_PulseMemory = 0;
+            Global_Variable.Suspende_PositionMemory = 0;
         }
-        Global_Variable.Encode_PulseCurrent = Pulse_Total/4;
+        Global_Variable.Encode_PulseCurrent = Global_Variable.Suspende_PulseMemory + Pulse_Total/4;
     }
     else
     {//上次值大于当前值
@@ -224,8 +226,10 @@ void Calculate_Wire_Position(u16 sch_timer,u16 sch_cycle)
         {
             Global_Variable.Compensate_En = OFF;
             Pulse_Total = Pulse_Total + Global_Variable.Compensate_Pulse*4;
+            Global_Variable.Suspende_PulseMemory = 0;
+            Global_Variable.Suspende_PositionMemory = 0;
         }
-        Global_Variable.Encode_PulseCurrent = Pulse_Total/4;
+        Global_Variable.Encode_PulseCurrent = Global_Variable.Suspende_PulseMemory + Pulse_Total/4;
     }    
     
     if(EncodePulse != PrePluse_Number)
@@ -237,7 +241,7 @@ void Calculate_Wire_Position(u16 sch_timer,u16 sch_cycle)
         /*******************************************************************/
         Wire_Position_Float = Global_Variable.Encode_PulseCurrent * Global_Variable.Para_Independence.Lenth_Per_Pulse;
         Global_Variable.Suspende_PositionCurrent = Global_Variable.Para_Independence.Suspende_Limit_Up - (s16)Wire_Position_Float - 
-            (Global_Variable.Para_Independence.Suspende_Limit_Up - Global_Variable.Suspende_PositionMemory);
+            (Global_Variable.Para_Independence.Suspende_Limit_Up - Global_Variable.Suspende_PositionMemory) + Global_Variable.Suspende_PositionMemory;
         PrePluse_Number = EncodePulse;
     }
 }

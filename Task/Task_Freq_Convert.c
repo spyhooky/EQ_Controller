@@ -192,6 +192,9 @@ static void Freq_Convert_Init(void)
     if(Global_Variable.Suspende_PositionMemory != 0xffff)
     {
         Global_Variable.Suspende_PositionCurrent = Global_Variable.Suspende_PositionMemory;
+        Global_Variable.Suspende_PulseMemory = (Global_Variable.Para_Independence.Suspende_Limit_Up - 
+            Global_Variable.Suspende_PositionMemory) / Global_Variable.Para_Independence.Lenth_Per_Pulse;
+        Global_Variable.Encode_PulseCurrent = Global_Variable.Suspende_PulseMemory;
     }
     else
     {
@@ -567,6 +570,7 @@ static void Motor_Stop(u8 stoptype)
     if(Global_Variable.Para_Independence.Convert_Cfg == ON)
     {//有变频器配置
         MOTOR_RUNNING_STS = Motor_Idle;
+        MOTOR_RUNNING_CMD = Motor_Normal;
         FORCE_REDUCE_10HZ = OFF;
         cTimer[Keep_10HZ] = 0;
         FORCE_REDUCE_EN = OFF;
@@ -676,10 +680,10 @@ void CMD_Freq_Convert(void)
         CMD_Limit_Measure = OFF;
         if(MOTOR_RUNNING_CMD != Measure_Distance)
         {
-            MOTOR_RUNNING_CMD = Measure_Distance;
-            MEASURE_LIMIT_STS = M_MEASURING;
             if((Limit_Fall_Signal == OFF)&&(Global_Variable.Suspende_PositionCurrent>0))
             {
+                MOTOR_RUNNING_CMD = Measure_Distance;
+                MEASURE_LIMIT_STS = M_MEASURING;
                 Global_Variable.Suspende_PositionTarget = -60000;//向下走最大行程，直到遇到下限位开关
                 MotorMove_Fall(Global_Variable.Para_Independence.Suspende_Limit_Up-Global_Variable.Suspende_PositionTarget);
             }
